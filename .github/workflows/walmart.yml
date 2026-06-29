@@ -19,7 +19,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - run: pip install requests
+      - run: pip install playwright
+      - run: python -m playwright install --with-deps chromium
 
       - name: Run availability check
         env:
