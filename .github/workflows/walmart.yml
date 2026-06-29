@@ -33,5 +33,10 @@ jobs:
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
           git add store_products.csv product_summary.csv state_summary.csv line_coverage.csv history.csv
-          git commit -m "weekly availability $(date -u +%Y-%m-%d)" || echo "no changes"
-          git push
+          git commit -m "weekly availability $(date -u +%Y-%m-%d)" || { echo "no changes"; exit 0; }
+          # pull anything that landed while we were crawling, then push (retry a few times)
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            echo "push attempt $i failed, retrying…"; sleep 5
+          done
+          echo "could not push after retries"; exit 1
