@@ -1,0 +1,37 @@
+name: Walmart store availability
+
+# Runs weekly and commits the results back to the repo.
+on:
+  schedule:
+    - cron: "0 13 * * 1"      # every Monday 13:00 UTC (~9am ET)
+  workflow_dispatch: {}        # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write              # needed to commit results back
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: Run availability check
+        env:
+          DI_PROXY: ${{ secrets.DI_PROXY }}            # DataImpulse endpoint
+          WALMART_COOKIE: ${{ secrets.WALMART_COOKIE }} # optional PX fallback
+        run: |
+          python walmart_store_check.py --zips sample_zips.csv --out stores.csv --delay 1.5
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add stores.csv history.csv state_summary.csv
+          git commit -m "weekly availability $(date -u +%Y-%m-%d)" || echo "no changes"
+          git push

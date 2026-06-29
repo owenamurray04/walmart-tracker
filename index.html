@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor's Choice Scrubs — Walmart Availability</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0b1b2b; --panel:#11283d; --panel2:#0f2233; --ink:#eaf2fb; --muted:#9db4ca;
+    --line:#1d3a52; --accent:#3aa0ff; --good:#27c08a; --chip:#16324a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:linear-gradient(180deg,#0b1b2b,#0a1722);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 80px}
+  header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+  h1{font-size:22px;margin:0;font-weight:700}
+  .sub{color:var(--muted);font-size:14px}
+  .updated{color:var(--muted);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .card .n{font-size:30px;font-weight:750;letter-spacing:-.5px}
+  .card .l{color:var(--muted);font-size:13px;margin-top:2px}
+  .accent{color:var(--accent)} .good{color:var(--good)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0}
+  .panel h2{font-size:15px;margin:0 0 12px;font-weight:650;color:#cfe0f0}
+  .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);
+        border-radius:10px;padding:12px 14px;color:var(--muted);font-size:13px;margin:16px 0}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--panel)}
+  tr:hover td{background:#0e2536}
+  .pill{display:inline-block;background:var(--good);color:#04130d;font-weight:700;font-size:11px;
+        padding:2px 8px;border-radius:999px}
+  input[type=search]{background:#0c1f30;border:1px solid var(--line);color:var(--ink);border-radius:9px;
+        padding:8px 11px;width:240px;font-size:14px}
+  .tablewrap{max-height:460px;overflow:auto;border-radius:10px}
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .row > .panel{flex:1;min-width:320px}
+  .foot{color:var(--muted);font-size:12px;margin-top:22px}
+  a{color:var(--accent)}
+  @media(max-width:720px){.cards{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Doctor's Choice Scrubs — Walmart Store Availability</h1>
+      <div class="sub">In-store pickup availability of the Doctor's Choice Elite Rx scrub top across U.S. Walmart stores</div>
+    </div>
+    <div class="updated" id="updated">loading…</div>
+  </header>
+
+  <div class="cards">
+    <div class="card"><div class="n accent" id="c-est">—</div><div class="l">Est. stores nationwide stocking it</div></div>
+    <div class="card"><div class="n good" id="c-instock">—</div><div class="l">In stock in sampled stores</div></div>
+    <div class="card"><div class="n" id="c-scanned">—</div><div class="l">Stores checked this run</div></div>
+    <div class="card"><div class="n" id="c-rate">—</div><div class="l">In-stock rate</div></div>
+  </div>
+
+  <div class="row">
+    <div class="panel"><h2>Estimated national count over time</h2><canvas id="trend" height="150"></canvas></div>
+    <div class="panel"><h2>In-stock stores by state</h2><canvas id="states" height="150"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+      <h2 style="margin:0">Stores where it's in stock right now <span id="t-count" class="sub"></span></h2>
+      <input type="search" id="search" placeholder="Filter by store, city, state…">
+    </div>
+    <div class="tablewrap">
+      <table id="tbl">
+        <thead><tr><th data-k="state">State</th><th data-k="city">City</th><th data-k="store_name">Store</th><th data-k="postal">ZIP</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note" id="note">
+    <strong>What this measures.</strong> Each week we check Walmart's in-store pickup availability for this specific
+    scrub-top listing across a national sample of stores. A store counts as “has it” when you could walk in and buy it
+    today (pickup = in stock). Note this tracks one item/colorway — a store that carries the Doctor's Choice line but is
+    out of this exact top will read as out of stock, so this is a floor on brand presence, not a ceiling.
+  </div>
+
+  <div class="foot">
+    Data collected automatically via GitHub Actions. Source listing:
+    <a href="https://www.walmart.com/ip/15464001789" target="_blank" rel="noopener">Walmart.com</a>.
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+
+async function csv(path){
+  try{
+    const r = await fetch(path + "?t=" + Date.now());
+    if(!r.ok) return null;
+    return parseCSV(await r.text());
+  }catch(e){ return null; }
+}
+function parseCSV(text){
+  const rows=[]; let i=0, f="", row=[], q=false;
+  const push=()=>{row.push(f);f="";}, end=()=>{push();rows.push(row);row=[];};
+  while(i<text.length){
+    const c=text[i];
+    if(q){ if(c=='"'){ if(text[i+1]=='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else { if(c=='"')q=true; else if(c==',')push(); else if(c=='\n')end(); else if(c=='\r'){} else f+=c; }
+    i++;
+  }
+  if(f.length||row.length) end();
+  const head=rows.shift()||[];
+  return rows.filter(r=>r.length>1||r[0]).map(r=>Object.fromEntries(head.map((h,j)=>[h,(r[j]??"").trim()])));
+}
+const fmt = n => n.toLocaleString();
+
+(async function(){
+  const [hist, stores, states] = await Promise.all([
+    csv("history.csv"), csv("stores.csv"), csv("state_summary.csv")
+  ]);
+
+  // ---- headline from latest history row ----
+  if(hist && hist.length){
+    const last = hist[hist.length-1];
+    $("#c-est").textContent     = "~" + fmt(+last.est_national);
+    $("#c-instock").textContent = fmt(+last.in_store);
+    $("#c-scanned").textContent = fmt(+last.unique_stores);
+    $("#c-rate").textContent    = (parseFloat(last.hit_rate)*100).toFixed(1) + "%";
+    $("#updated").textContent   = "Last updated " + (last.date||"").slice(0,10);
+  }
+
+  // ---- trend chart ----
+  if(hist && hist.length){
+    new Chart($("#trend"), {
+      type:"line",
+      data:{ labels: hist.map(h=>(h.date||"").slice(0,10)),
+        datasets:[{ label:"Est. stores nationwide", data:hist.map(h=>+h.est_national),
+          borderColor:"#3aa0ff", backgroundColor:"rgba(58,160,255,.15)", fill:true, tension:.25, pointRadius:3 }]},
+      options:{ plugins:{legend:{display:false}}, scales:{ x:{grid:{color:"#1d3a52"},ticks:{color:"#9db4ca"}},
+        y:{grid:{color:"#1d3a52"},ticks:{color:"#9db4ca"},beginAtZero:true} } }
+    });
+  }
+
+  // ---- state chart (in-stock per state, only states with >0) ----
+  if(states && states.length){
+    const s = states.filter(r=>+r.in_stock>0).sort((a,b)=>+b.in_stock-+a.in_stock);
+    new Chart($("#states"), {
+      type:"bar",
+      data:{ labels:s.map(r=>r.state), datasets:[{ label:"In-stock stores", data:s.map(r=>+r.in_stock),
+        backgroundColor:"#27c08a" }]},
+      options:{ plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{color:"#9db4ca"}},
+        y:{grid:{color:"#1d3a52"},ticks:{color:"#9db4ca",precision:0},beginAtZero:true} } }
+    });
+  }
+
+  // ---- in-stock table ----
+  let inStock = (stores||[]).filter(r => (r.in_store||"").toLowerCase()==="true");
+  $("#t-count").textContent = "(" + inStock.length + ")";
+  const body = $("#tbl tbody");
+  function render(rows){
+    body.innerHTML = rows.map(r =>
+      `<tr><td>${r.state}</td><td>${r.city}</td><td>${r.store_name}</td><td>${r.postal||""}</td>`+
+      `<td><span class="pill">IN STOCK</span></td></tr>`).join("");
+  }
+  render(inStock);
+
+  $("#search").addEventListener("input", e=>{
+    const q=e.target.value.toLowerCase();
+    render(inStock.filter(r=>(r.state+r.city+r.store_name+r.postal).toLowerCase().includes(q)));
+  });
+  let asc=true;
+  document.querySelectorAll("th[data-k]").forEach(th=>th.addEventListener("click",()=>{
+    const k=th.dataset.k; asc=!asc;
+    inStock.sort((a,b)=>(a[k]>b[k]?1:-1)*(asc?1:-1)); render(inStock);
+  }));
+})();
+</script>
+</body>
+</html>
