@@ -32,14 +32,20 @@ USAGE
   python walmart_store_check.py --max-zips 120 --headless  # quick local test
 """
 
-import argparse, csv, os, re, sys, time, secrets
+import argparse, csv, os, re, sys, time, secrets, tempfile, shutil
 from collections import deque, defaultdict
 from datetime import datetime, timezone
 
+# patchright = stealth-patched Playwright (defeats PerimeterX/Cloudflare fingerprinting)
 try:
-    from playwright.sync_api import sync_playwright
+    from patchright.sync_api import sync_playwright
+    HAVE_PATCHRIGHT = True
 except ImportError:
-    sys.exit("Run: pip install playwright && playwright install --with-deps chromium")
+    try:
+        from playwright.sync_api import sync_playwright
+        HAVE_PATCHRIGHT = False
+    except ImportError:
+        sys.exit("Run: pip install patchright && patchright install chrome")
 
 QUERY_HASH = "afe770a1a3a2856a44e153f01c7474896792e124bf562e142e0f8a89575f8f27"
 WARMUP_URL = "https://www.walmart.com/ip/15464001789"
@@ -104,28 +110,31 @@ def proxy_for(creds, sessid):
 
 
 class Session:
-    """A browser bound to one sticky IP, warmed past PerimeterX."""
+    """A stealth browser bound to one sticky IP, warmed past PerimeterX.
+    Uses patchright's recommended max-stealth setup: real Chrome channel +
+    persistent context + no fixed viewport (don't override UA — patchright
+    keeps the real one)."""
     def __init__(self, pw, creds, headless):
         self.pw, self.creds, self.headless = pw, creds, headless
-        self.browser = self.ctx = self.page = None
+        self.ctx = self.page = None
+        self.udd = None
         self.started = 0
 
     def open(self):
         sessid = secrets.token_hex(4)
-        self.browser = self.pw.chromium.launch(
-            headless=self.headless, proxy=proxy_for(self.creds, sessid),
-            args=["--disable-blink-features=AutomationControlled", "--no-sandbox"])
-        self.ctx = self.browser.new_context(user_agent=UA, locale="en-US",
-                                            viewport={"width": 1366, "height": 900})
-        self.ctx.add_init_script("Object.defineProperty(navigator,'webdriver',{get:()=>undefined});")
-        self.page = self.ctx.new_page()
+        self.udd = tempfile.mkdtemp(prefix="wmctx_")
+        self.ctx = self.pw.chromium.launch_persistent_context(
+            self.udd, channel="chrome", headless=self.headless,
+            proxy=proxy_for(self.creds, sessid), no_viewport=True,
+            args=["--no-sandbox"])
+        self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.started = time.time()
         return self._warm(sessid)
 
     def _warm(self, sessid):
         try:
             self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=60000)
-            self.page.wait_for_timeout(4000)  # let PerimeterX JS run
+            self.page.wait_for_timeout(5000)  # let PerimeterX JS run + settle
             ok = self.page.evaluate(
                 "!!document.getElementById('__NEXT_DATA__') && /Doctor/i.test(document.title)")
             print(f"  session {sessid}: warmup {'OK' if ok else 'blocked'}")
@@ -136,9 +145,11 @@ class Session:
 
     def close(self):
         try:
-            self.browser.close()
+            self.ctx.close()
         except Exception:
             pass
+        if self.udd:
+            shutil.rmtree(self.udd, ignore_errors=True)
 
     def expired(self):
         return time.time() - self.started > SESSION_MINUTES * 60
@@ -181,7 +192,7 @@ def main():
 
         def fresh_session():
             for attempt in range(4):
-                if sess.browser:
+                if sess.ctx:
                     sess.close()
                 if sess.open():
                     return True
