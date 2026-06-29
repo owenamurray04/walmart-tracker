@@ -1,75 +1,80 @@
-# Walmart in-store availability tracker — Doctor's Choice scrubs
+# Walmart availability tracker — Doctor's Choice scrubs
 
-Tracks how many of the ~4,788 U.S. Walmart stores carry the **Doctor's Choice
-Elite Rx scrub top** for in-store pickup, refreshes weekly on autopilot, and
-publishes a live **dashboard** you can share with John.
+Tracks how widely the **Doctor's Choice** scrub line is stocked across U.S.
+Walmart stores, refreshes weekly on autopilot, and publishes a live **dashboard**
+to share with John.
 
-**Latest read (Jun 29 2026):** 49 of 1,666 sampled stores in stock (2.9%) →
-**~141 stores nationwide** carrying this exact item. (See the caveat at the
-bottom — this counts one colorway, so it's a floor, not the full brand presence.)
+**Latest read (Jun 29 2026, sampled):** of 1,666 stores checked, **193 stock at
+least one of the 4 tracked products → ~555 stores nationwide**. The **Pro Fit**
+line (royal-blue top / black bottom) is stocked ~3× more widely than **Elite-Rx**
+(navy top / black bottom). Only 14 stores carry all four.
 
----
+## What it tracks & why
 
-## Get it running (≈5 minutes, mostly clicking)
+The brand has 4 core products, each sold in several colors — but most colors
+(gray, pink bottoms, wine, ciel blue) are **online-only and never stocked in
+stores**. So we track the one **least-likely-to-be-sold-out color** of each, found
+by measuring in-stock rates across colors:
 
-1. **Double-click `Upload to GitHub.command`.**
-   It creates a public GitHub repo, pushes everything, and turns on the
-   dashboard. (First time only, it'll have you install/log in to the GitHub CLI —
-   it prints the exact commands.)
+| Product | Color tracked | `product_id` |
+|---|---|---|
+| Elite-Rx Top | Navy | 4ETHFRENRPHZ |
+| Elite-Rx Bottom | Black | 13FORGOSKCZT |
+| Pro Fit Top | Royal Blue | 1ZIJ3VQCTHCY |
+| Pro Fit Bottom | Black | 17IWT6UXSUNY |
 
-2. **Add your proxy as a secret** (the script prints the direct link):
-   repo **Settings → Secrets and variables → Actions → New secret**
-   - name: `DI_PROXY`
-   - value: `http://USER:PASS@gw.dataimpulse.com:823`  ← your DataImpulse creds
+(`products.csv` lists all 18 color-variants discovered, for reference.)
 
-3. **Run it once**: repo **Actions** tab → *Walmart store availability* →
-   *Run workflow*. After that it runs itself every Monday.
+## How full coverage works (no store database needed)
 
-4. **Copy the dashboard link for John**:
-   `https://<your-username>.github.io/<repo-name>/`
-   (the script prints the exact URL; it goes live ~1 minute after step 1).
+Walmart's `nearByNodes` API takes a ZIP and returns the 50 nearest stores — each
+tagged with a product's stock status **and its own ZIP**. The scraper crawls:
+start from seed ZIPs, and every store ZIP discovered becomes a new ZIP to query.
+This breadth-first crawl fans out across the country until it has found every
+store — bootstrapping nationwide coverage from the API itself. It checks all 4
+products at each ZIP.
 
----
+## Run it
 
-## What's in here
+1. **Double-click `Upload to GitHub.command`** → creates a public repo, pushes
+   everything, turns on the dashboard (GitHub Pages).
+2. **Add your proxy secret** (the script prints the link):
+   Settings → Secrets and variables → Actions → `DI_PROXY` =
+   `http://USER:PASS@gw.dataimpulse.com:823`.
+3. **Run it once** from the Actions tab; then it runs every Monday.
+4. **Copy the dashboard link for John**: `https://<you>.github.io/<repo>/`.
+
+## Cost & runtime
+
+Each call is ~30 KB of JSON. A full national crawl is ~4,000 store-ZIPs × 4
+products ≈ 16k calls ≈ ~0.5 GB → **~$0.50/run** of DataImpulse bandwidth; runtime
+~1–2 h (well within the Actions 6 h limit). GitHub compute + Pages are free on a
+public repo.
+
+## Files
 
 | File | Purpose |
 |---|---|
-| `Upload to GitHub.command` | Double-click → publishes/updates everything. |
-| `index.html` | The dashboard (GitHub Pages). Reads the CSVs below. |
-| `walmart_store_check.py` | The scraper (plain `requests`, no browser). |
-| `sample_zips.csv` | 78 ZIPs across all regions — the national sample. |
-| `stores.csv` | In-stock stores (refreshed each run). |
-| `state_summary.csv` | Per-state totals (powers the dashboard chart). |
-| `history.csv` | One row per week → the trend line. |
-| `.github/workflows/walmart.yml` | The weekly run + commits results back. |
+| `Upload to GitHub.command` | Double-click → publish/update everything. |
+| `index.html` | Dashboard (Pages). |
+| `walmart_store_check.py` | The crawler. |
+| `products_tracked.csv` | The 4 products tracked weekly. |
+| `products.csv` | All 18 color-variants (reference). |
+| `sample_zips.csv` | 78 seed ZIPs to start the crawl. |
+| `store_products.csv` | Per-store stock of each product (refreshed each run). |
+| `product_summary.csv` / `state_summary.csv` / `line_coverage.csv` | Analysis rollups. |
+| `history.csv` | One row per week → the trend. |
+| `.github/workflows/walmart.yml` | Weekly run + commits results. |
 
-## How it stays cheap
+## Analysis on the dashboard
 
-Instead of loading a 7 MB page per store, the scraper hits Walmart's store-
-selector API (`nearByNodes`): **one ~30 KB JSON call returns up to 50 nearby
-stores, each already tagged with this item's stock status.** A full sweep is a
-few MB total — **well under $0.10/month** of DataImpulse bandwidth. GitHub
-Actions compute and Pages hosting are free on a public repo.
-
-The proxy is needed only because GitHub's runners use datacenter IPs that
-Walmart's PerimeterX blocks; routing through DataImpulse (residential) fixes it.
-
-## Coverage & accuracy notes
-
-- **Sample vs. census.** The 78 metro ZIPs surface ~1,666 unique stores (each
-  call covers ~50 within ~30 mi). Great for a trend and a national estimate. To
-  count *every* store including rural ones, expand `sample_zips.csv` to ~400–600
-  ZIPs — the scraper de-dupes, so more ZIPs just means fuller coverage.
-- **One item, not the whole line.** We check a single listing (the Ceramic Teal
-  top, `usItemId 15464001789`). A store that carries Doctor's Choice but is out
-  of *this* top reads as out of stock — so ~141 is a **floor** on brand
-  presence. To measure the brand properly, track several SKUs (colors/styles)
-  and count a store if any are available. Easy to add — just more product IDs.
+- **Per-product reach** — how many stores stock each of the 4 (Pro Fit vs Elite-Rx).
+- **Line coverage** — how many stores carry 0 / 1 / 2 / 3 / 4 of the line (i.e. how
+  much of the lineup is actually selling through to shelves).
+- **By state**, **trend over time**, and a table of the stores stocking the most.
 
 ## Maintenance
 
-If every run suddenly returns blocked/errors, two values in
-`walmart_store_check.py` may need a refresh from your browser's Network tab
-(filter `nearByNodes`): `QUERY_HASH` (hex in the URL) and `PRODUCT_ID` (inside
-the variables). Walmart changes these only on redeploys — a 30-second copy-paste.
+If runs start failing, refresh `QUERY_HASH` and the `product_id`s from your
+browser's Network tab (filter `nearByNodes`) — Walmart changes these only on
+redeploys.

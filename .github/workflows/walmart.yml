@@ -26,12 +26,12 @@ jobs:
           DI_PROXY: ${{ secrets.DI_PROXY }}            # DataImpulse endpoint
           WALMART_COOKIE: ${{ secrets.WALMART_COOKIE }} # optional PX fallback
         run: |
-          python walmart_store_check.py --zips sample_zips.csv --out stores.csv --delay 1.5
+          python walmart_store_check.py --seeds sample_zips.csv --delay 0.4
 
       - name: Commit results
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          git add stores.csv history.csv state_summary.csv
+          git add store_products.csv product_summary.csv state_summary.csv line_coverage.csv history.csv
           git commit -m "weekly availability $(date -u +%Y-%m-%d)" || echo "no changes"
           git push

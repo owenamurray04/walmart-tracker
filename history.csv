@@ -1,2 +1,2 @@
-date,unique_stores,in_store,hit_rate,est_national,blocked_zips
-2026-06-29T18:00:00Z,1666,49,0.029,141,0
+date,stores_found,carrying_any,est_national_any,p_top_instock,p_bottom_instock,pf_top_instock,pf_bottom_instock
+2026-06-29T18:30:00Z,1666,193,555,55,55,141,151

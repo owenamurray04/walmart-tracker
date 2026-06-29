@@ -1,0 +1,21 @@
+store_id,store_name,city,state,postal,p_top,p_bottom,pf_top,pf_bottom,line_coverage,carries_any
+483,Prattville Supercenter,Prattville,AL,36066,1,1,1,1,4,1
+1746,Tempe W Elliot Rd Supercenter,Tempe,AZ,85284,1,1,1,1,4,1
+1536,St Petersburg Bay Pines Blvd Supercenter,St Petersburg,FL,33708,1,1,1,1,4,1
+941,Valrico Supercenter,Valrico,FL,33596,1,1,1,1,4,1
+361,Collinsville Crossing Blvd Supercenter,Collinsville,IL,62234,1,1,1,1,4,1
+1556,Orland Hills Supercenter,Orland Hills,IL,60487,1,1,1,1,4,1
+1842,Greensboro W Wendover Ave Supercenter,Greensboro,NC,27407,1,1,1,1,4,1
+1372,Raleigh Fayetteville Rd Supercenter,Raleigh,NC,27603,1,1,1,1,4,1
+598,Kearney Supercenter,Kearney,NE,68847,1,1,1,1,4,1
+1742,Turnersville Supercenter,Turnersville,NJ,08012,1,1,1,1,4,1
+1559,Las Vegas N Nellis Blvd Store,Las Vegas,NV,89110,1,1,1,1,4,1
+2098,Columbus Morse Rd Supercenter,Columbus,OH,43219,1,1,1,1,4,1
+1503,Centerville Supercenter,Dayton,OH,45459,1,1,1,1,4,1
+1463,Xenia Supercenter,Xenia,OH,45385,1,1,1,1,4,1
+937,Marietta Chastain Meadows Parkway Nw Supercenter,Marietta,GA,30066,1,1,0,1,3,1
+2814,Hialeah Nw 77th Ave Supercenter,Hialeah,FL,33016,1,1,0,1,3,1
+2884,Las Vegas Centennial Supercenter,Las Vegas,NV,89149,1,1,0,1,3,1
+3722,Kent Supercenter,Kent,OH,44240,1,1,1,0,3,1
+3783,Dayton York Commons Blvd Supercenter,Dayton,OH,45414,1,1,1,0,3,1
+1982,Appleton Mutual Way Supercenter,Appleton,WI,54913,1,1,0,1,3,1
