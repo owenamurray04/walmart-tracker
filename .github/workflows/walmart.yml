@@ -1,44 +1,67 @@
 name: Walmart store availability
 
-# Runs weekly and commits the results back to the repo.
+# Self-driving: discovers every store (looping until the count stops growing),
+# then checks all colorways across the full covering set, committing after each
+# step. Trigger it once and it runs the whole thing.
 on:
   schedule:
-    - cron: "0 13 * * 1"      # every Monday 13:00 UTC (~9am ET)
-  workflow_dispatch: {}        # lets you run it manually from the Actions tab
+    - cron: "0 13 * * 1"      # every Monday 13:00 UTC (skips discovery once it's done)
+  workflow_dispatch: {}        # run manually from the Actions tab
 
 permissions:
-  contents: write              # needed to commit results back
+  contents: write
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 355       # stays under GitHub's 6-hour ceiling
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - run: pip install patchright
       - run: python -m patchright install --with-deps chrome
       - run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      - name: Run availability check
+      - name: Discover every store, then check all colorways
         env:
-          DI_PROXY: ${{ secrets.DI_PROXY }}            # DataImpulse endpoint
-        run: |
-          xvfb-run --auto-servernum python -u walmart_store_check.py --seeds sample_zips.csv --delay 0.2
-
-      - name: Commit results
+          DI_PROXY: ${{ secrets.DI_PROXY }}
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          git add store_products.csv product_summary.csv state_summary.csv line_coverage.csv history.csv
-          git commit -m "weekly availability $(date -u +%Y-%m-%d)" || { echo "no changes"; exit 0; }
-          # pull anything that landed while we were crawling, then push (retry a few times)
-          for i in 1 2 3 4 5; do
-            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
-            echo "push attempt $i failed, retrying…"; sleep 5
-          done
-          echo "could not push after retries"; exit 1
+
+          commit () {
+            git add -A
+            git commit -m "$1 $(date -u +%H:%M)" >/dev/null 2>&1 || return 0
+            for i in 1 2 3 4 5; do
+              git pull --rebase --autostash origin main && git push origin HEAD:main && return 0
+              sleep 5
+            done
+          }
+          run () { xvfb-run --auto-servernum python -u walmart_store_check.py "$@" --seeds sample_zips.csv --delay 0.2 || true; }
+          count () { tail -n +2 all_stores.csv 2>/dev/null | wc -l | tr -d ' '; }
+
+          # --- Phase 1: discovery loop until the store count plateaus ---
+          if [ ! -f discovery_done ]; then
+            prev=$(count); prev=${prev:-0}
+            for pass in $(seq 1 8); do
+              echo "::group::discovery pass $pass"
+              run --mode discover --max-minutes 35
+              cur=$(count); cur=${cur:-0}
+              echo "discovery pass $pass: $cur stores (was $prev)"
+              commit "discovery pass $pass: $cur stores"
+              echo "::endgroup::"
+              if [ "$cur" -gt 1000 ] && [ "$((cur - prev))" -lt 20 ]; then
+                echo "store count plateaued at $cur — discovery complete"
+                touch discovery_done; commit "discovery complete: $cur stores"; break
+              fi
+              prev=$cur
+            done
+          fi
+
+          # --- Phase 2: full availability pass over every store ---
+          echo "::group::weekly availability (all colorways)"
+          run --mode weekly --max-minutes 70
+          commit "full availability update"
+          echo "::endgroup::"

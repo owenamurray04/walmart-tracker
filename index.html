@@ -87,8 +87,8 @@
       <div class="stats">
         <div class="stat"><div class="v" id="s-any">—</div><div class="k">Carrying ≥1 (sampled)</div></div>
         <div class="stat"><div class="v" id="s-scanned">—</div><div class="k">Stores checked</div></div>
-        <div class="stat"><div class="v" id="s-full">—</div><div class="k">Stocking all 4</div></div>
-        <div class="stat"><div class="v" id="s-prods">4</div><div class="k">Products tracked</div></div>
+        <div class="stat"><div class="v" id="s-full">—</div><div class="k">Stocking the full line</div></div>
+        <div class="stat"><div class="v" id="s-prods">—</div><div class="k">Colorways tracked</div></div>
       </div>
 
       <div class="hr"></div>
@@ -97,7 +97,7 @@
       <p class="insight" id="insight"></p>
 
       <div class="hr"></div>
-      <p class="eyebrow muted">How much of the 4-product line each store carries</p>
+      <p class="eyebrow muted">How many of the in-store colorways each store carries</p>
       <div id="covbars"></div>
 
       <div class="hr"></div>
@@ -114,9 +114,9 @@
       <div class="listhead"><span class="dot"></span><p class="eyebrow" style="margin:0" id="listhead">Top stores</p></div>
       <div class="list" id="list"></div>
       <div class="note" id="note">
-        Tracks the least-likely-to-be-sold-out color of each product: Elite-Rx top (navy) &amp; bottom (black),
-        Pro Fit top (royal blue) &amp; bottom (black). Other colors are online-only. Counts are a sampled floor;
-        the weekly crawl expands toward all ~4,788 U.S. stores.
+        Tracks every in-store colorway of the Doctor's Choice line — Elite-Rx &amp; Pro Fit tops and bottoms in the
+        colors Walmart actually shelves (online-exclusive colors like gray, wine and ciel blue are excluded).
+        Coverage accumulates toward all ~4,788 U.S. stores; availability is a sampled floor.
       </div>
     </div>
   </div>
@@ -137,6 +137,8 @@ let PROD=[], FILTER="all";
  const [hist,prod,cov,states,stores]=await Promise.all(
    [csv("history.csv"),csv("product_summary.csv"),csv("line_coverage.csv"),csv("state_summary.csv"),csv("store_products.csv")]);
  PROD=prod||[];
+ const N=PROD.length||1;
+ $("#s-prods").textContent=PROD.length||"—";
 
  if(hist&&hist.length){const h=hist[hist.length-1];
    $("#hero").innerHTML="~"+fmt(h.est_national_any);
@@ -159,20 +161,21 @@ let PROD=[], FILTER="all";
    const pf=PROD.filter(p=>/pro fit/i.test(p.label)).reduce((a,p)=>a+ +p.stores_in_stock,0);
    const el=PROD.filter(p=>/elite/i.test(p.label)).reduce((a,p)=>a+ +p.stores_in_stock,0);
    $("#insight").innerHTML=`The <b style="color:var(--gold)">Pro Fit</b> line is stocked about `+
-     `<b>${el?(pf/el).toFixed(1):'—'}×</b> more widely than <b>Elite-Rx</b>. Most carrying stores hold the `+
-     `Pro Fit top+bottom pair; full 4-product coverage is rare.`;
+     `<b>${el?(pf/el).toFixed(1):'—'}×</b> more widely than <b>Elite-Rx</b>. Most carrying stores hold just a `+
+     `couple of colorways; stocking all ${N} is rare.`;
  }
 
- // line coverage bars (1..4), plus "none" note
+ // line coverage bars (1..N), plus "none" note
  if(cov){const m=Object.fromEntries(cov.map(r=>[+r.products_in_stock,+r.store_count]));
-   const max=Math.max(m[1]||0,m[2]||0,m[3]||0,m[4]||0,1);
-   const lab={1:"1 product",2:"2 products",3:"3 products",4:"All 4"};
-   $("#covbars").innerHTML=[1,2,3,4].map(k=>
-     `<div class="barrow"><div class="lab">${lab[k]}</div>`+
+   const ks=Array.from({length:N},(_,i)=>i+1);            // 1..N
+   const max=Math.max(...ks.map(k=>m[k]||0),1);
+   $("#s-full").textContent=fmt(m[N]||0);
+   $("#covbars").innerHTML=ks.map(k=>
+     `<div class="barrow"><div class="lab">${k===N?('All '+N):(k+(k>1?' colorways':' colorway'))}</div>`+
      `<div class="track"><div class="fill" style="width:${((m[k]||0)/max*100).toFixed(1)}%"></div></div>`+
      `<div class="val">${fmt(m[k]||0)} stores</div></div>`).join("")+
      `<div class="val" style="width:auto;text-align:left;margin-top:6px;color:var(--faint)">`+
-     `${fmt(m[0]||0)} of the stores checked carry none of the four.</div>`;
+     `${fmt(m[0]||0)} of the stores checked carry none.</div>`;
  }
 
  const axis={x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
@@ -194,8 +197,8 @@ let PROD=[], FILTER="all";
    $("#listhead").textContent="Top stores · "+car.length;
    $("#list").innerHTML=car.map(r=>{const c=+r.line_coverage;
      return `<div class="item"><div class="top"><span class="nm">${r.store_name}</span>`+
-       `<span class="cov">${c}/4</span></div><div class="sub">${r.city}, ${r.state}</div>`+
-       `<div class="mini"><i style="width:${c/4*100}%"></i></div></div>`;}).join("");}
+       `<span class="cov">${c}/${N}</span></div><div class="sub">${r.city}, ${r.state}</div>`+
+       `<div class="mini"><i style="width:${c/N*100}%"></i></div></div>`;}).join("");}
 
  // pill filter
  document.querySelectorAll('.pill[data-f]').forEach(p=>p.addEventListener('click',()=>{

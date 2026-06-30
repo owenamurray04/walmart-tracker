@@ -1,58 +1,51 @@
 #!/usr/bin/env python3
 """
-Walmart Doctor's Choice availability — full-coverage, multi-product crawler
-===========================================================================
-Covers (essentially) every U.S. Walmart store and checks the 4 tracked
-Doctor's Choice products, then writes the data + analysis the dashboard uses.
+Walmart Doctor's Choice availability — full national coverage
+=============================================================
+Covers EVERY U.S. Walmart store, every run, by splitting the work into two phases.
 
-GETTING PAST THE BOT WALL (the two things that matter)
-------------------------------------------------------
-Walmart uses PerimeterX. To get data you need BOTH:
-  1. A real browser that runs Walmart's JS challenge to earn an access cookie.
-     -> we drive Chromium (Playwright), headful under a virtual display.
-  2. A STABLE IP for the whole session. DataImpulse rotates IPs every request
-     by default, which instantly invalidates that cookie. We pin one IP with a
-     sticky `sessid` in the proxy username (refreshed every ~25 min, since a
-     sticky IP lasts ~30 min), re-warming the cookie on each new IP.
+PHASE 1 — DISCOVERY  (python walmart_store_check.py --mode discover)
+  Crawls with ONE product (the nearest-50-stores list is identical regardless of
+  color, so this is ~11x faster than checking every colorway). It finds every
+  store and records which ZIP "sees" which stores, then computes a MINIMAL
+  COVERING SET — the few hundred ZIPs whose results blanket all stores with no
+  gaps. Writes:  all_stores.csv, zip_cov.json, coverage_zips.csv
+  Run it until the printed coverage reads ~4,788 / 4,788 (1-3 runs); it
+  accumulates, so each run only adds.
 
-HOW FULL COVERAGE WORKS (no store database needed)
---------------------------------------------------
-`nearByNodes` takes a ZIP and returns the 50 nearest stores — each tagged with a
-product's stock status AND its own ZIP. We crawl breadth-first: every store ZIP
-discovered becomes a new ZIP to query, fanning out until every store is found.
+PHASE 2 — WEEKLY  (python walmart_store_check.py --mode weekly)  [default]
+  Reads coverage_zips.csv and checks all 11 in-store colorways across that fixed
+  set — a bounded run that touches every store. Writes the dashboard data:
+  store_products.csv, product_summary.csv, state_summary.csv, line_coverage.csv,
+  history.csv
 
-SAFETY
-  If the crawl finds fewer than --min-stores (default 100) it writes NOTHING and
-  exits 1, so a blocked run can never overwrite good dashboard data.
+Getting past PerimeterX: real Chrome (patchright) headful under xvfb, through a
+DataImpulse sticky IP (one IP per session, re-warmed on rotation). See Session.
 
 USAGE
-  pip install playwright && playwright install --with-deps chromium
+  pip install patchright && patchright install --with-deps chrome
   export DI_PROXY="http://USER:PASS@gw.dataimpulse.com:823"
-  xvfb-run python walmart_store_check.py                 # full crawl (on CI)
-  python walmart_store_check.py --max-zips 120 --headless  # quick local test
+  xvfb-run python -u walmart_store_check.py --mode discover   # phase 1 (x1-3)
+  xvfb-run python -u walmart_store_check.py                   # phase 2 (weekly)
 """
 
-import argparse, csv, os, re, sys, time, secrets, tempfile, shutil
+import argparse, csv, os, re, sys, time, secrets, tempfile, shutil, random, json
 from collections import deque, defaultdict
 from datetime import datetime, timezone
 
-# patchright = stealth-patched Playwright (defeats PerimeterX/Cloudflare fingerprinting)
 try:
     from patchright.sync_api import sync_playwright
-    HAVE_PATCHRIGHT = True
 except ImportError:
     try:
         from playwright.sync_api import sync_playwright
-        HAVE_PATCHRIGHT = False
     except ImportError:
-        sys.exit("Run: pip install patchright && patchright install chrome")
+        sys.exit("Run: pip install patchright && patchright install --with-deps chrome")
 
 QUERY_HASH = "afe770a1a3a2856a44e153f01c7474896792e124bf562e142e0f8a89575f8f27"
 WARMUP_URL = "https://www.walmart.com/ip/15464001789"
 US_STORES = 4788
-SESSION_MINUTES = 24            # rotate sticky IP before the ~30-min limit
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+SESSION_MINUTES = 24
+ALL_STORES, ZIP_COV, COVER_ZIPS = "all_stores.csv", "zip_cov.json", "coverage_zips.csv"
 
 PAGE_JS = r"""
 async ({zip, state, products, hash}) => {
@@ -72,7 +65,7 @@ async ({zip, state, products, hash}) => {
     headers['x-o-correlation-id'] = Math.random().toString(36).slice(2);
     try {
       const ac = new AbortController();
-      const to = setTimeout(() => ac.abort(), 15000);   // never let a fetch hang
+      const to = setTimeout(() => ac.abort(), 15000);
       let r;
       try {
         r = await fetch("/orchestra/home/graphql/nearByNodes/" + hash +
@@ -98,9 +91,7 @@ async ({zip, state, products, hash}) => {
 
 def parse_creds(di):
     m = re.match(r"https?://(?:([^:]+):([^@]+)@)?(.+)", di or "")
-    if not m:
-        return None
-    return {"login": m.group(1), "pw": m.group(2), "hostport": m.group(3)}
+    return {"login": m.group(1), "pw": m.group(2), "hostport": m.group(3)} if m else None
 
 
 def proxy_for(creds, sessid):
@@ -108,21 +99,15 @@ def proxy_for(creds, sessid):
         return None
     p = {"server": "http://" + creds["hostport"]}
     if creds["login"]:
-        # __cr.us pins US IPs; sessid.X keeps ONE IP sticky for ~30 min
         p["username"] = f"{creds['login']}__cr.us;sessid.{sessid}"
         p["password"] = creds["pw"]
     return p
 
 
 class Session:
-    """A stealth browser bound to one sticky IP, warmed past PerimeterX.
-    Uses patchright's recommended max-stealth setup: real Chrome channel +
-    persistent context + no fixed viewport (don't override UA — patchright
-    keeps the real one)."""
     def __init__(self, pw, creds, headless):
         self.pw, self.creds, self.headless = pw, creds, headless
-        self.ctx = self.page = None
-        self.udd = None
+        self.ctx = self.page = self.udd = None
         self.started = 0
 
     def open(self):
@@ -130,25 +115,21 @@ class Session:
         self.udd = tempfile.mkdtemp(prefix="wmctx_")
         self.ctx = self.pw.chromium.launch_persistent_context(
             self.udd, channel="chrome", headless=self.headless,
-            proxy=proxy_for(self.creds, sessid), no_viewport=True,
-            args=["--no-sandbox"])
+            proxy=proxy_for(self.creds, sessid), no_viewport=True, args=["--no-sandbox"])
         self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.started = time.time()
-        # 1) prove the proxy itself works and show the exit IP/country
         ip = self._exit_ip()
         if not ip:
-            print(f"  session {sessid}: PROXY not reachable — likely DI_PROXY / sticky syntax / account")
+            print(f"  session {sessid}: PROXY not reachable")
             return False
         print(f"  session {sessid}: proxy OK, exit IP {ip}")
-        # 2) try to get past PerimeterX on Walmart
         return self._warm(sessid)
 
     def _exit_ip(self):
         try:
             self.page.goto("https://api.ipify.org/?format=json",
                            wait_until="domcontentloaded", timeout=25000)
-            import json as _json
-            return _json.loads(self.page.evaluate("document.body.innerText")).get("ip")
+            return json.loads(self.page.evaluate("document.body.innerText")).get("ip")
         except Exception as e:
             print(f"    proxy test failed: {str(e)[:140]}")
             return None
@@ -156,7 +137,7 @@ class Session:
     def _warm(self, sessid):
         try:
             self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=60000)
-            self.page.wait_for_timeout(5000)  # let PerimeterX JS run + settle
+            self.page.wait_for_timeout(5000)
             ok = self.page.evaluate(
                 "!!document.getElementById('__NEXT_DATA__') && /Doctor/i.test(document.title)")
             print(f"  session {sessid}: walmart warmup {'OK' if ok else 'blocked (PerimeterX)'}")
@@ -181,105 +162,190 @@ class Session:
                                             "products": js_products, "hash": QUERY_HASH})
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--seeds", default="sample_zips.csv")
-    ap.add_argument("--products", default="products_tracked.csv")
-    ap.add_argument("--max-zips", type=int, default=0)
-    ap.add_argument("--min-stores", type=int, default=100)
-    ap.add_argument("--max-minutes", type=int, default=90,
-                    help="hard time budget; commits whatever it has when reached")
-    ap.add_argument("--delay", type=float, default=0.2)
-    ap.add_argument("--headless", action="store_true", help="run headless (CI uses xvfb + headful)")
-    args = ap.parse_args()
+def crawl(sess, fresh, frontier, seen, js_products, t0, max_minutes, delay,
+          on_result, expand=True, max_cap=0):
+    """Shared crawl loop. on_result(zip, state, [store dicts]) handles each ZIP's
+    stores. If expand, newly-seen store ZIPs are queued. Returns when frontier
+    drains, time budget hits, or sessions can't recover."""
+    empties = n = 0
+    while frontier:
+        if max_minutes and (time.time() - t0) > max_minutes * 60:
+            print(f"  reached {max_minutes}-min budget — stopping"); break
+        if sess.expired():
+            print("  rotating sticky IP")
+            if not fresh():
+                print("  could not re-establish session — stopping"); break
+        z, st = frontier.popleft(); n += 1
+        try:
+            got = sess.query(z, st, js_products)
+        except Exception:
+            got = []
+        if not got:
+            empties += 1
+            if empties >= 10:
+                print("  empty streak — rotating")
+                if not fresh():
+                    print("  sessions keep failing — stopping"); break
+                empties = 0
+        else:
+            empties = 0
+            on_result(z, st, got)
+            if expand:
+                for s in got:
+                    nz = s.get("postal")
+                    cap_ok = (not max_cap) or (len(seen) < max_cap)
+                    if nz and nz not in seen and cap_ok:
+                        seen.add(nz); frontier.append((nz, s.get("state", "")))
+        if n % 50 == 0:
+            print(f"  zips {n}/{len(seen)} seen, {int(time.time()-t0)}s")
+        sess.page.wait_for_timeout(int(delay * 1000))
 
-    creds = parse_creds(os.environ.get("DI_PROXY", "").strip())
-    if not creds:
-        print("WARNING: DI_PROXY not set / unparseable — Walmart will block a cloud IP.")
 
-    products = list(csv.DictReader(open(args.products)))
-    pkeys = [p["key"] for p in products]
-    js_products = [{"key": p["key"], "product_id": p["product_id"]} for p in products]
-    print(f"Tracking {len(products)} products")
+# ---------- PHASE 1: discovery + covering-set ----------
+def discover(args, products):
+    js_products = [{"key": products[0]["key"], "product_id": products[0]["product_id"]}]
+    print(f"DISCOVERY using 1 product ({products[0]['label']})")
 
-    seen, frontier = set(), deque()
+    stores = {}                                  # id -> {id,name,city,state,postal}
+    if os.path.exists(ALL_STORES):
+        for r in csv.DictReader(open(ALL_STORES)):
+            stores[r["store_id"]] = {"id": r["store_id"], "name": r["store_name"],
+                "city": r["city"], "state": r["state"], "postal": r["postal"]}
+    zip_cov = {}
+    if os.path.exists(ZIP_COV):
+        zip_cov = {z: set(ids) for z, ids in json.load(open(ZIP_COV)).items()}
+    zip_state = {}
+    print(f"  loaded {len(stores)} stores, {len(zip_cov)} covered ZIPs from prior runs")
+
+    seen, seed_pairs = set(), []
     for row in csv.DictReader(open(args.seeds)):
         z, st = row["zip"].strip(), row.get("state", "").strip()
-        if z not in seen:
-            seen.add(z); frontier.append((z, st))
+        if z and z not in seen:
+            seen.add(z); seed_pairs.append((z, st)); zip_state[z] = st
+    for r in stores.values():
+        z, st = r["postal"], r["state"]
+        if z and z not in seen:
+            seen.add(z); seed_pairs.append((z, st)); zip_state.setdefault(z, st)
+    random.shuffle(seed_pairs)
+    frontier = deque(seed_pairs)
+
+    def on_result(z, st, got):
+        zip_state.setdefault(z, st)
+        zip_cov.setdefault(z, set())
+        for s in got:
+            zip_cov[z].add(s["id"])
+            stores[s["id"]] = {"id": s["id"], "name": s.get("name", ""),
+                "city": s.get("city", ""), "state": s.get("state", ""), "postal": s.get("postal", "")}
+
+    run_crawl(args, js_products, frontier, seen, on_result, expand=True)
+
+    # persist master data
+    with open(ALL_STORES, "w", newline="") as f:
+        w = csv.writer(f); w.writerow(["store_id", "store_name", "city", "state", "postal"])
+        for s in stores.values():
+            w.writerow([s["id"], s["name"], s["city"], s["state"], s["postal"]])
+    json.dump({z: sorted(ids) for z, ids in zip_cov.items()}, open(ZIP_COV, "w"))
+
+    # greedy minimal covering set over everything discovered so far
+    all_ids = set(stores)
+    pool = {z: set(ids) for z, ids in zip_cov.items()}
+    uncovered, chosen = set(all_ids), []
+    while uncovered:
+        best = max(pool, key=lambda z: len(pool[z] & uncovered), default=None)
+        if best is None or not (pool[best] & uncovered):
+            break
+        chosen.append(best); uncovered -= pool[best]
+    with open(COVER_ZIPS, "w", newline="") as f:
+        w = csv.writer(f); w.writerow(["zip", "state"])
+        for z in chosen:
+            w.writerow([z, zip_state.get(z, "")])
+
+    covered = len(all_ids) - len(uncovered)
+    print(f"\nDISCOVERY: {len(stores)} stores known; covering set = {len(chosen)} ZIPs "
+          f"covering {covered}/{len(all_ids)} of them.")
+    if len(stores) < US_STORES * 0.9:
+        print(f"  coverage still growing ({len(stores)}/~{US_STORES}). Run discover again to add more.")
+    else:
+        print(f"  looks complete (~{US_STORES}). You can switch to weekly mode now.")
+
+
+# ---------- PHASE 2: weekly availability over the covering set ----------
+def weekly(args, products):
+    if not os.path.exists(COVER_ZIPS):
+        sys.exit(f"{COVER_ZIPS} not found — run discovery first: --mode discover")
+    pkeys = [p["key"] for p in products]
+    js_products = [{"key": p["key"], "product_id": p["product_id"]} for p in products]
+    print(f"WEEKLY checking {len(products)} colorways over the covering set")
+
+    cover = [(r["zip"].strip(), r.get("state", "").strip())
+             for r in csv.DictReader(open(COVER_ZIPS)) if r["zip"].strip()]
 
     stores = {}
-    t0 = time.time()
+    if os.path.exists("store_products.csv"):
+        for r in csv.DictReader(open("store_products.csv")):
+            rec = {"store_id": r["store_id"], "store_name": r["store_name"],
+                   "city": r["city"], "state": r["state"], "postal": r["postal"]}
+            for k in pkeys:
+                if r.get(k, "") in ("0", "1"):
+                    rec[k] = int(r[k])
+            stores[r["store_id"]] = rec
 
+    seen = set(z for z, _ in cover)
+    frontier = deque(cover)
+
+    def on_result(z, st, got):
+        for s in got:
+            rec = stores.setdefault(s["id"], {"store_id": s["id"], "store_name": s.get("name", ""),
+                "city": s.get("city", ""), "state": s.get("state", ""), "postal": s.get("postal", "")})
+            for k in pkeys:
+                if k in s:
+                    rec[k] = s[k]
+
+    run_crawl(args, js_products, frontier, seen, on_result, expand=False)
+    write_outputs(stores, products, pkeys)
+
+
+def run_crawl(args, js_products, frontier, seen, on_result, expand):
+    creds = parse_creds(os.environ.get("DI_PROXY", "").strip())
+    if not creds:
+        print("WARNING: DI_PROXY not set — Walmart will block a cloud IP.")
+    t0 = time.time()
     with sync_playwright() as pw:
         sess = Session(pw, creds, args.headless)
 
-        def fresh_session():
-            for attempt in range(6):
+        def fresh():
+            for a in range(6):
                 if sess.ctx:
                     sess.close()
                 if sess.open():
                     return True
-                print(f"  attempt {attempt+1} failed, rotating IP…")
+                print(f"  attempt {a+1} failed, rotating IP…")
             return False
 
-        if not fresh_session():
-            print("\nERROR: could not get past the bot wall (warmup never succeeded). "
-                  "NOT overwriting existing data.")
+        if not fresh():
+            print("\nERROR: could not get past the bot wall. NOT writing anything.")
             sys.exit(1)
-
-        empties = 0; n_zip = 0
-        while frontier:
-            # hard time budget — always finish and commit within the window
-            if args.max_minutes and (time.time() - t0) > args.max_minutes * 60:
-                print(f"  reached {args.max_minutes}-min budget — stopping with "
-                      f"{len(stores)} stores so far")
-                break
-            if sess.expired():
-                print("  sticky IP window elapsed — rotating session")
-                if not fresh_session():
-                    print("  could not re-establish a session — stopping with what we have")
-                    break
-            z, st = frontier.popleft(); n_zip += 1
-            try:
-                got = sess.query(z, st, js_products)
-            except Exception:
-                got = []
-
-            if not got:
-                empties += 1
-                if empties >= 10:           # current IP likely flagged — rotate
-                    print("  empty streak — rotating session")
-                    if not fresh_session():
-                        print("  sessions keep getting blocked — stopping with what we have")
-                        break
-                    empties = 0
-            else:
-                empties = 0
-                for s in got:
-                    sid = s["id"]
-                    rec = stores.setdefault(sid, {"store_id": sid, "store_name": s.get("name", ""),
-                        "city": s.get("city", ""), "state": s.get("state", ""), "postal": s.get("postal", "")})
-                    for k in pkeys:
-                        if k in s:
-                            rec[k] = s[k]
-                    nz = s.get("postal")
-                    cap_ok = (not args.max_zips) or (len(seen) < args.max_zips)
-                    if nz and nz not in seen and cap_ok:
-                        seen.add(nz); frontier.append((nz, s.get("state", "")))
-
-            if n_zip % 50 == 0:
-                print(f"  zips {n_zip}/{len(seen)} seen, stores {len(stores)}, {int(time.time()-t0)}s")
-            sess.page.wait_for_timeout(int(args.delay * 1000))
-
+        crawl(sess, fresh, frontier, seen, js_products, t0,
+              args.max_minutes, args.delay, on_result, expand=expand)
         sess.close()
 
-    if len(stores) < args.min_stores:
-        print(f"\nERROR: only {len(stores)} stores found (< {args.min_stores}). "
-              "Treating as a block — NOT overwriting existing data.")
-        sys.exit(1)
 
-    write_outputs(stores, products, pkeys)
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", choices=["discover", "weekly"], default="weekly")
+    ap.add_argument("--seeds", default="sample_zips.csv")
+    ap.add_argument("--products", default="products_tracked.csv")
+    ap.add_argument("--max-minutes", type=int, default=80)
+    ap.add_argument("--min-stores", type=int, default=100)
+    ap.add_argument("--delay", type=float, default=0.2)
+    ap.add_argument("--headless", action="store_true")
+    args = ap.parse_args()
+
+    products = list(csv.DictReader(open(args.products)))
+    if args.mode == "discover":
+        discover(args, products)
+    else:
+        weekly(args, products)
 
 
 def write_outputs(stores, products, pkeys):
@@ -289,6 +355,9 @@ def write_outputs(stores, products, pkeys):
             r.setdefault(k, "")
         r["line_coverage"] = sum(1 for k in pkeys if r[k] == 1)
         r["carries_any"] = 1 if r["line_coverage"] > 0 else 0
+    if len(recs) < 100:
+        print(f"\nERROR: only {len(recs)} stores — treating as a block, not overwriting.")
+        sys.exit(1)
 
     cols = ["store_id", "store_name", "city", "state", "postal"] + pkeys + ["line_coverage", "carries_any"]
     with open("store_products.csv", "w", newline="") as f:
@@ -301,8 +370,7 @@ def write_outputs(stores, products, pkeys):
         w = csv.writer(f); w.writerow(["key", "label", "stores_in_stock", "in_stock_rate", "est_national"])
         for p in products:
             ins = sum(1 for r in recs if r.get(p["key"]) == 1)
-            rate = ins / total if total else 0
-            w.writerow([p["key"], p["label"], ins, f"{rate:.4f}", round(rate * US_STORES)])
+            w.writerow([p["key"], p["label"], ins, f"{ins/total:.4f}", round(ins/total*US_STORES)])
 
     by_state = defaultdict(lambda: [0, 0])
     for r in recs:
@@ -329,10 +397,9 @@ def write_outputs(stores, products, pkeys):
         if new:
             w.writerow(["date", "stores_found", "carrying_any", "est_national_any"]
                        + [p["key"] + "_instock" for p in products])
-        w.writerow([now, total, carries, round((carries / total if total else 0) * US_STORES)]
+        w.writerow([now, total, carries, round((carries/total if total else 0)*US_STORES)]
                    + [sum(1 for r in recs if r.get(p["key"]) == 1) for p in products])
-
-    print(f"\nstores found {total}, carry >=1 {carries}. wrote 5 files.")
+    print(f"\nWEEKLY: {total} stores, {carries} carry >=1 colorway. wrote 5 files.")
 
 
 if __name__ == "__main__":
