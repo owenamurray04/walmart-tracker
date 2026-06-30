@@ -144,20 +144,39 @@ class Session:
         except Exception:
             return False
 
-    def _warm(self, sessid):
-        # Load the page so PerimeterX's sensor runs, then PROVE the API works.
+    def _act_human(self):
+        """Generate real human telemetry so PerimeterX raises the trust score that
+        the store API requires — mouse movement, scrolling, dwell."""
         try:
-            self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=20000)
+            self.page.wait_for_timeout(random.randint(1500, 3000))
+            for _ in range(random.randint(4, 7)):
+                self.page.mouse.move(random.randint(80, 1200), random.randint(120, 800),
+                                     steps=random.randint(5, 15))
+                self.page.wait_for_timeout(random.randint(180, 650))
+            for _ in range(random.randint(2, 4)):
+                self.page.mouse.wheel(0, random.randint(400, 1300))
+                self.page.wait_for_timeout(random.randint(900, 2200))
+            self.page.mouse.wheel(0, -random.randint(200, 700))
+            self.page.wait_for_timeout(random.randint(1200, 2600))
         except Exception:
-            # even if nav is slow/partial, the cookie may still be set — try the API anyway
             pass
-        # Many IPs need a few extra seconds before PX grants API access — retry on
-        # the SAME IP instead of throwing a usable session away.
-        for wait in (3500, 3500, 4000):
-            self.page.wait_for_timeout(wait)
+
+    def _warm(self, sessid):
+        # Load the page so PerimeterX's sensor runs.
+        try:
+            self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=25000)
+        except Exception:
+            pass
+        # Behave like a shopper to build trust, THEN prove the API works — being
+        # patient, since the score climbs as the sensor keeps reporting.
+        self._act_human()
+        for i in range(6):
             if self._api_works():
-                print(f"  session {sessid}: API ready")
+                print(f"  session {sessid}: API ready (after warm-up)")
                 return True
+            self.page.wait_for_timeout(random.randint(2500, 4000))
+            if i == 2:
+                self._act_human()      # another burst of activity mid-wait
         print(f"  session {sessid}: warmed but API blocked")
         return False
 
@@ -336,12 +355,13 @@ def run_crawl(args, js_products, frontier, seen, on_result, expand):
         sess = Session(pw, creds, args.headless)
 
         def fresh():
-            for a in range(12):          # keep hunting — good IPs are worth the wait
+            for a in range(10):          # keep hunting — good IPs are worth the wait
                 if sess.ctx:
                     sess.close()
                 if sess.open():
                     return True
-            print("  12 IPs in a row failed warmup")
+                time.sleep(random.uniform(2, 5))   # don't rapid-fire — looks like an attack
+            print("  10 IPs in a row failed warmup")
             return False
 
         if not fresh():
