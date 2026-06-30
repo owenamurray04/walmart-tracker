@@ -134,7 +134,24 @@ class Session:
             args=["--no-sandbox"])
         self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.started = time.time()
+        # 1) prove the proxy itself works and show the exit IP/country
+        ip = self._exit_ip()
+        if not ip:
+            print(f"  session {sessid}: PROXY not reachable — likely DI_PROXY / sticky syntax / account")
+            return False
+        print(f"  session {sessid}: proxy OK, exit IP {ip}")
+        # 2) try to get past PerimeterX on Walmart
         return self._warm(sessid)
+
+    def _exit_ip(self):
+        try:
+            self.page.goto("https://api.ipify.org/?format=json",
+                           wait_until="domcontentloaded", timeout=25000)
+            import json as _json
+            return _json.loads(self.page.evaluate("document.body.innerText")).get("ip")
+        except Exception as e:
+            print(f"    proxy test failed: {str(e)[:140]}")
+            return None
 
     def _warm(self, sessid):
         try:
@@ -142,10 +159,10 @@ class Session:
             self.page.wait_for_timeout(5000)  # let PerimeterX JS run + settle
             ok = self.page.evaluate(
                 "!!document.getElementById('__NEXT_DATA__') && /Doctor/i.test(document.title)")
-            print(f"  session {sessid}: warmup {'OK' if ok else 'blocked'}")
+            print(f"  session {sessid}: walmart warmup {'OK' if ok else 'blocked (PerimeterX)'}")
             return bool(ok)
         except Exception as e:
-            print(f"  session {sessid}: warmup error {type(e).__name__}")
+            print(f"  session {sessid}: walmart warmup error {str(e)[:140]}")
             return False
 
     def close(self):
@@ -198,12 +215,12 @@ def main():
         sess = Session(pw, creds, args.headless)
 
         def fresh_session():
-            for attempt in range(4):
+            for attempt in range(6):
                 if sess.ctx:
                     sess.close()
                 if sess.open():
                     return True
-                print(f"  warmup attempt {attempt+1} failed, rotating IP…")
+                print(f"  attempt {attempt+1} failed, rotating IP…")
             return False
 
         if not fresh_session():
