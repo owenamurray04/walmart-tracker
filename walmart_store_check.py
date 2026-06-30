@@ -128,23 +128,38 @@ class Session:
     def _exit_ip(self):
         try:
             self.page.goto("https://api.ipify.org/?format=json",
-                           wait_until="domcontentloaded", timeout=25000)
+                           wait_until="domcontentloaded", timeout=10000)
             return json.loads(self.page.evaluate("document.body.innerText")).get("ip")
         except Exception as e:
-            print(f"    proxy test failed: {str(e)[:140]}")
+            print(f"    proxy test failed: {str(e)[:100]}")
             return None
 
-    def _warm(self, sessid):
+    def _api_works(self):
+        """One real nearByNodes call against a known-busy ZIP. The true test of a
+        session: not 'did the page load' but 'can we actually pull store data'."""
         try:
-            self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=60000)
-            self.page.wait_for_timeout(5000)
-            ok = self.page.evaluate(
-                "!!document.getElementById('__NEXT_DATA__') && /Doctor/i.test(document.title)")
-            print(f"  session {sessid}: walmart warmup {'OK' if ok else 'blocked (PerimeterX)'}")
-            return bool(ok)
-        except Exception as e:
-            print(f"  session {sessid}: walmart warmup error {str(e)[:140]}")
+            res = self.page.evaluate(PAGE_JS, {"zip": "60601", "state": "IL",
+                "products": [{"key": "_t", "product_id": "2HZGMGX9CH7B"}], "hash": QUERY_HASH})
+            return len(res) > 0
+        except Exception:
             return False
+
+    def _warm(self, sessid):
+        # Load the page so PerimeterX's sensor runs, then PROVE the API works.
+        try:
+            self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=20000)
+        except Exception:
+            # even if nav is slow/partial, the cookie may still be set — try the API anyway
+            pass
+        # Many IPs need a few extra seconds before PX grants API access — retry on
+        # the SAME IP instead of throwing a usable session away.
+        for wait in (3500, 3500, 4000):
+            self.page.wait_for_timeout(wait)
+            if self._api_works():
+                print(f"  session {sessid}: API ready")
+                return True
+        print(f"  session {sessid}: warmed but API blocked")
+        return False
 
     def close(self):
         try:
@@ -167,14 +182,16 @@ def crawl(sess, fresh, frontier, seen, js_products, t0, max_minutes, delay,
     """Shared crawl loop. on_result(zip, state, [store dicts]) handles each ZIP's
     stores. If expand, newly-seen store ZIPs are queued. Returns when frontier
     drains, time budget hits, or sessions can't recover."""
-    empties = n = 0
+    empties = n = ok = 0
+    retry = {}
     while frontier:
         if max_minutes and (time.time() - t0) > max_minutes * 60:
             print(f"  reached {max_minutes}-min budget — stopping"); break
         if sess.expired():
-            print("  rotating sticky IP")
+            print("  sticky IP window elapsed — rotating")
             if not fresh():
                 print("  could not re-establish session — stopping"); break
+            empties = 0
         z, st = frontier.popleft(); n += 1
         try:
             got = sess.query(z, st, js_products)
@@ -182,13 +199,17 @@ def crawl(sess, fresh, frontier, seen, js_products, t0, max_minutes, delay,
             got = []
         if not got:
             empties += 1
-            if empties >= 10:
-                print("  empty streak — rotating")
+            # never lose a ZIP to a transient block — requeue it for a healthy session
+            c = retry.get(z, 0)
+            if c < 4:
+                retry[z] = c + 1; frontier.append((z, st))
+            if empties >= 5:          # this session has gone bad — get a fresh IP
+                print(f"  {empties} blanks — rotating session")
                 if not fresh():
-                    print("  sessions keep failing — stopping"); break
+                    print("  sessions keep failing — stopping with what we have"); break
                 empties = 0
         else:
-            empties = 0
+            empties = 0; ok += 1
             on_result(z, st, got)
             if expand:
                 for s in got:
@@ -197,7 +218,7 @@ def crawl(sess, fresh, frontier, seen, js_products, t0, max_minutes, delay,
                     if nz and nz not in seen and cap_ok:
                         seen.add(nz); frontier.append((nz, s.get("state", "")))
         if n % 50 == 0:
-            print(f"  zips {n}/{len(seen)} seen, {int(time.time()-t0)}s")
+            print(f"  zips done {n}, ok {ok}, queue {len(frontier)}, seen {len(seen)}, {int(time.time()-t0)}s")
         sess.page.wait_for_timeout(int(delay * 1000))
 
 
@@ -279,6 +300,7 @@ def weekly(args, products):
 
     cover = [(r["zip"].strip(), r.get("state", "").strip())
              for r in csv.DictReader(open(COVER_ZIPS)) if r["zip"].strip()]
+    random.shuffle(cover)   # if a run is time-capped, rotate which ZIPs get covered
 
     stores = {}
     if os.path.exists("store_products.csv"):
@@ -314,12 +336,12 @@ def run_crawl(args, js_products, frontier, seen, on_result, expand):
         sess = Session(pw, creds, args.headless)
 
         def fresh():
-            for a in range(6):
+            for a in range(12):          # keep hunting — good IPs are worth the wait
                 if sess.ctx:
                     sess.close()
                 if sess.open():
                     return True
-                print(f"  attempt {a+1} failed, rotating IP…")
+            print("  12 IPs in a row failed warmup")
             return False
 
         if not fresh():

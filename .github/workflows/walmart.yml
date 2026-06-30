@@ -45,14 +45,16 @@ jobs:
           # --- Phase 1: discovery loop until the store count plateaus ---
           if [ ! -f discovery_done ]; then
             prev=$(count); prev=${prev:-0}
-            for pass in $(seq 1 8); do
+            for pass in $(seq 1 6); do
               echo "::group::discovery pass $pass"
               run --mode discover --max-minutes 35
               cur=$(count); cur=${cur:-0}
               echo "discovery pass $pass: $cur stores (was $prev)"
               commit "discovery pass $pass: $cur stores"
               echo "::endgroup::"
-              if [ "$cur" -gt 1000 ] && [ "$((cur - prev))" -lt 20 ]; then
+              # only call it done when we're genuinely near the full ~4,788 AND
+              # growth has flattened — never lock in partial coverage from a blocked pass
+              if [ "$cur" -gt 4000 ] && [ "$((cur - prev))" -lt 25 ]; then
                 echo "store count plateaued at $cur — discovery complete"
                 touch discovery_done; commit "discovery complete: $cur stores"; break
               fi
@@ -62,6 +64,6 @@ jobs:
 
           # --- Phase 2: full availability pass over every store ---
           echo "::group::weekly availability (all colorways)"
-          run --mode weekly --max-minutes 70
+          run --mode weekly --max-minutes 80
           commit "full availability update"
           echo "::endgroup::"
