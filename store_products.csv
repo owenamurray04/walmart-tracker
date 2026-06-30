@@ -1,21 +1,962 @@
 store_id,store_name,city,state,postal,p_top,p_bottom,pf_top,pf_bottom,line_coverage,carries_any
-483,Prattville Supercenter,Prattville,AL,36066,1,1,1,1,4,1
-1746,Tempe W Elliot Rd Supercenter,Tempe,AZ,85284,1,1,1,1,4,1
-1536,St Petersburg Bay Pines Blvd Supercenter,St Petersburg,FL,33708,1,1,1,1,4,1
-941,Valrico Supercenter,Valrico,FL,33596,1,1,1,1,4,1
-361,Collinsville Crossing Blvd Supercenter,Collinsville,IL,62234,1,1,1,1,4,1
 1556,Orland Hills Supercenter,Orland Hills,IL,60487,1,1,1,1,4,1
-1842,Greensboro W Wendover Ave Supercenter,Greensboro,NC,27407,1,1,1,1,4,1
-1372,Raleigh Fayetteville Rd Supercenter,Raleigh,NC,27603,1,1,1,1,4,1
-598,Kearney Supercenter,Kearney,NE,68847,1,1,1,1,4,1
 1742,Turnersville Supercenter,Turnersville,NJ,08012,1,1,1,1,4,1
-1559,Las Vegas N Nellis Blvd Store,Las Vegas,NV,89110,1,1,1,1,4,1
-2098,Columbus Morse Rd Supercenter,Columbus,OH,43219,1,1,1,1,4,1
-1503,Centerville Supercenter,Dayton,OH,45459,1,1,1,1,4,1
-1463,Xenia Supercenter,Xenia,OH,45385,1,1,1,1,4,1
-937,Marietta Chastain Meadows Parkway Nw Supercenter,Marietta,GA,30066,1,1,0,1,3,1
-2814,Hialeah Nw 77th Ave Supercenter,Hialeah,FL,33016,1,1,0,1,3,1
-2884,Las Vegas Centennial Supercenter,Las Vegas,NV,89149,1,1,0,1,3,1
+1559,Las Vegas N Nellis Blvd Store,Las Vegas,NV,89110,,1,1,1,3,1
+2098,Columbus Morse Rd Supercenter,Columbus,OH,43219,1,1,0,1,3,1
 3722,Kent Supercenter,Kent,OH,44240,1,1,1,0,3,1
-3783,Dayton York Commons Blvd Supercenter,Dayton,OH,45414,1,1,1,0,3,1
-1982,Appleton Mutual Way Supercenter,Appleton,WI,54913,1,1,0,1,3,1
+1736,Dover Supercenter,Dover,DE,19901,0,0,1,1,2,1
+528,Braden River Supercenter,Braden River,FL,34203,0,0,1,1,2,1
+1004,Bradenton Cortez Rd W Supercenter,Bradenton,FL,34210,0,0,1,1,2,1
+2081,Clearwater Us Hwy 19 N Supercenter,Clearwater,FL,33765,1,1,0,0,2,1
+1387,Coral Springs Turtle Creek Drive Supercenter,Coral Springs,FL,33067,1,1,0,0,2,1
+2814,Hialeah Nw 77th Ave Supercenter,Hialeah,FL,33016,1,1,0,0,2,1
+1082,Mandarin San Jose Blvd Supercenter,Jacksonville,FL,32223,0,0,1,1,2,1
+1083,Jacksonville Normandy Blvd Supercenter,Jacksonville,FL,32205,0,0,1,1,2,1
+1090,Jacksonville 103rd St Supercenter,Jacksonville,FL,32210,0,0,1,1,2,1
+1172,Jax Beach 13490 Beach Blvd Supercenter,Jacksonville,FL,32224,0,0,1,1,2,1
+5054,Jacksonville Atlantic Blvd Supercenter,Jacksonville,FL,32225,1,1,0,0,2,1
+6978,Jacksonville Collins Rd Supercenter,Jacksonville,FL,32244,1,1,0,0,2,1
+767,Lake City Supercenter,Lake City,FL,32055,1,1,,,2,1
+1225,Orange Park Blanding Blvd Supercenter,Orange Park,FL,32065,0,0,1,1,2,1
+1513,Palm Harbor Us Hwy 19 N Supercenter,Palm Harbor,FL,34684,0,0,1,1,2,1
+967,Spring Hill Commercial Way Supercenter,Spring Hill,FL,34606,0,0,1,1,2,1
+579,St Augustine Supercenter,St Augustine,FL,32086,0,0,1,1,2,1
+1536,St Petersburg Bay Pines Blvd Supercenter,St Petersburg,FL,33708,0,1,0,1,2,1
+1283,Starke Supercenter,Starke,FL,32091,0,0,1,1,2,1
+1501,Tampa N Dale Mabry Hwy Store,Tampa,FL,33618,0,0,1,1,2,1
+836,Saint Marys Supercenter,Saint Marys,GA,31558,0,0,1,1,2,1
+3883,Kapolei Store,Kapolei,HI,96707,,,1,1,2,1
+2508,Boise W Overland Rd Supercenter,Boise,ID,83709,1,1,0,0,2,1
+1938,Bedford Park Supercenter,Bedford Park,IL,60638,0,0,1,1,2,1
+1553,Bloomingdale Supercenter,Bloomingdale,IL,60108,1,1,0,0,2,1
+3004,Cicero Supercenter,Cicero,IL,60804,1,1,0,0,2,1
+2215,Darien Supercenter,Darien,IL,60561,1,1,0,0,2,1
+2204,Forest Park Supercenter,Forest Park,IL,60130,1,1,0,0,2,1
+2815,Rolling Meadows Store,Rolling Meadows,IL,60008,1,1,0,0,2,1
+1998,Skokie Supercenter,Skokie,IL,60076,1,1,0,0,2,1
+3891,Waukegan Supercenter,Waukegan,IL,60085,1,1,0,0,2,1
+484,Lawrence Iowa St Supercenter,Lawrence,KS,66046,,,1,1,2,1
+2131,Topeka Sw 37th St Supercenter,Topeka,KS,66611,,,1,1,2,1
+1906,Fairhaven Store,Fairhaven,MA,02719,,0,1,1,2,1
+2184,Seekonk Store,Seekonk,MA,02771,,0,1,1,2,1
+1968,Aberdeen Supercenter,Aberdeen,MD,21001,0,0,1,1,2,1
+3720,Arbutus Supercenter,Arbutus,MD,21227,0,0,1,1,2,1
+5129,Landover Hills Store,Landover Hills,MD,20784,1,1,0,0,2,1
+2045,Nottingham Supercenter,Nottingham,MD,21236,0,0,1,1,2,1
+1923,Comstock Park Supercenter,Comstock Park,MI,49321,,0,1,1,2,1
+1942,Holland Supercenter,Holland,MI,49424,,0,1,1,2,1
+1385,Gastonia E Franklin Blvd Supercenter,Gastonia,NC,28056,0,0,1,1,2,1
+1372,Raleigh Fayetteville Rd Supercenter,Raleigh,NC,27603,1,1,,,2,1
+2055,Concord Supercenter,Concord,NH,03301,,0,1,1,2,1
+5384,Bridgeton Store,Bridgeton,NJ,08302,0,0,1,1,2,1
+2041,Pennsville Store,Pennsville,NJ,08070,0,0,1,1,2,1
+2050,Henderson E Lake Mead Parkway Supercenter,Henderson,NV,89015,,0,1,1,2,1
+2884,Las Vegas Centennial Supercenter,Las Vegas,NV,89149,,1,0,1,2,1
+2073,Cleveland Brooklyn Supercenter,Cleveland,OH,44130,0,0,1,1,2,1
+4285,Cleveland Steelyard Supercenter,Cleveland,OH,44109,1,1,0,0,2,1
+1927,Macedonia Supercenter,Macedonia,OH,44056,0,0,1,1,2,1
+5082,Parma Supercenter,Parma,OH,44129,1,1,0,0,2,1
+2362,South Euclid Supercenter,South Euclid,OH,44121,1,1,0,0,2,1
+2966,Wadsworth Supercenter,Wadsworth,OH,44281,1,1,0,0,2,1
+544,Del City Supercenter,Del City,OK,73115,0,0,1,1,2,1
+564,W Reno Ave Supercenter,Oklahoma City,OK,73127,0,0,1,1,2,1
+1815,Fresno W Shaw Ave Supercenter,Fresno,CA,93722,,,1,,1,1
+2001,Fresno E Cesar Chavez Blvd Supercenter,Fresno,CA,93727,,,1,,1,1
+2460,Seaford Supercenter,Seaford,DE,19973,0,0,1,0,1,1
+718,Auburndale Supercenter,Auburndale,FL,33823,1,0,0,0,1,1
+2387,Brandon Causeway Blvd Supercenter,Brandon,FL,33511,0,1,0,0,1,1
+2963,Coral Springs Coral Ridge Drive Supercenter,Coral Springs,FL,33076,0,1,0,0,1,1
+1511,Miramar Supercenter,Miramar,FL,33025,0,0,0,1,1,1
+547,Plant City Supercenter,Plant City,FL,33566,0,0,0,1,1,1
+1960,Tampa 1505 N Dale Mabry Hwy Supercenter,Tampa,FL,33607,0,0,1,0,1,1
+941,Valrico Supercenter,Valrico,FL,33596,0,0,1,0,1,1
+3418,Wesley Chapel Supercenter,Wesley Chapel,FL,33543,0,1,0,0,1,1
+1541,West Palm Beach 9990 Belvedere Rd Supercenter,West Palm Beach,FL,33411,0,0,0,1,1,1
+968,Winter Haven 355 Cypress Gardens Blvd Supercenter,Winter Haven,FL,33880,0,0,1,0,1,1
+706,Zephyrhills Supercenter,Zephyrhills,FL,33541,0,0,0,1,1,1
+639,Brunswick Altama Connector Supercenter,Brunswick,GA,31525,,0,,1,1,1
+3150,Council Bluffs N 16th St Supercenter,Council Bluffs,IA,51501,1,,,,1,1
+361,Collinsville Crossing Blvd Supercenter,Collinsville,IL,62234,1,,,,1,1
+200,Jacksonville Supercenter,Jacksonville,IL,62650,,0,1,0,1,1
+343,Taylorville Supercenter,Taylorville,IL,62568,,0,0,1,1,1
+995,Franklin Supercenter,Franklin,IN,46131,0,0,,1,1,1
+1141,Greenfield Supercenter,Greenfield,IN,46140,0,0,,1,1,1
+1459,Indianapolis Us 31 S Supercenter,Indianapolis,IN,46227,0,0,,1,1,1
+1618,Merrillville Supercenter,Merrillville,IN,46410,0,0,0,1,1,1
+923,Noblesville Supercenter,Noblesville,IN,46060,0,0,,1,1,1
+486,Bonner Springs Supercenter,Bonner Springs,KS,66012,,,,1,1,1
+577,Olathe S Alden St Supercenter,Olathe,KS,66062,,,,1,1,1
+909,Chalmette Supercenter,Chalmette,LA,70043,0,0,1,,1,1
+541,Covington N Hwy 190 Supercenter,Covington,LA,70433,0,0,1,,1,1
+1353,Harahan Supercenter,Harahan,LA,70123,0,0,1,,1,1
+911,Marrero Supercenter,Marrero,LA,70072,0,0,1,,1,1
+2904,Brockton Store,Brockton,MA,02301,0,0,0,1,1,1
+2021,Raynham Paramount Drive Supercenter,Raynham,MA,02767,1,0,0,0,1,1
+1715,Easton Store,Easton,MD,21601,0,0,,1,1,1
+1939,Brunswick Supercenter,Brunswick,ME,04011,0,0,0,1,1,1
+1627,Dilworth Supercenter,Dilworth,MN,56529,0,,1,,1,1
+184,Blue Springs Ne Coronado Drive Supercenter,Blue Springs,MO,64014,,,,1,1,1
+1120,Gladstone Supercenter,Gladstone,MO,64119,,,,1,1,1
+319,Raymore Supercenter,Raymore,MO,64083,,,,1,1,1
+1094,Raytown Supercenter,Raytown,MO,64138,,,,1,1,1
+903,Jackson Supercenter,Jackson,MS,39204,,,,1,1,1
+365,Pearl Supercenter,Pearl,MS,39208,,,,1,1,1
+875,Ridgeland Supercenter,Ridgeland,MS,39157,,,,1,1,1
+1872,Helena Supercenter,Helena,MT,59601,,,0,1,1,1
+1581,Fargo 13th Ave N Supercenter,Fargo,ND,58103,0,,1,,1,1
+1796,Amherst Supercenter,Amherst,NH,03031,,0,1,0,1,1
+2651,Manville Supercenter,Manville,NJ,08835,0,1,0,,1,1
+2003,North Brunswick Supercenter,North Brunswick,NJ,08902,0,0,1,,1,1
+2633,Piscataway Store,Piscataway,NJ,08854,1,0,0,,1,1
+2593,Las Vegas E Serene Ave Supercenter,Las Vegas,NV,89123,,1,0,0,1,1
+3350,Las Vegas Boulder Hwy Supercenter,Las Vegas,NV,89122,,1,0,0,1,1
+5070,Las Vegas S Fort Apache Rd Supercenter,Las Vegas,NV,89148,,1,0,0,1,1
+5295,Farmingdale Supercenter,Farmingdale,NY,11735,0,,1,,1,1
+5293,Valley Stream Supercenter,Valley Stream,NY,11581,1,0,0,,1,1
+1707,East Liverpool Supercenter,East Liverpool,OH,43920,0,0,,1,1,1
+389,Edmond W I 35 Frontage Rd Supercenter,Edmond,OK,73034,0,0,0,1,1,1
+5381,Bethel Park Store,Bethel Park,PA,15102,0,0,,1,1,1
+1164,Columbia Harbison Blvd Supercenter,Columbia,SC,29212,0,0,,1,1,1
+881,Lexington Sunset Blvd Supercenter,Lexington,SC,29072,0,0,,1,1,1
+1535,Sioux Falls S Louise Ave Supercenter,Sioux Falls,SD,57106,0,,1,,1,1
+688,Nashville 5824 Nolensville Pike Supercenter,Nashville,TN,37211,0,0,1,,1,1
+2277,Clovis W Shaw Ave Supercenter,Clovis,CA,93612,,,0,,0,0
+5337,Clovis Herndon Ave Supercenter,Clovis,CA,93612,,,0,,0,0
+5633,Clovis Shaw Ave Neighborhood Market,Clovis,CA,93611,,,0,,0,0
+5394,Dinuba Supercenter,Dinuba,CA,93618,,,0,,0,0
+2689,Fresno N Cedar Ave Neighborhood Market,Fresno,CA,93703,,,0,,0,0
+2985,Fresno N Ingram Ave Supercenter,Fresno,CA,93650,,,0,,0,0
+5632,Fresno E Ashlan Ave Supercenter,Fresno,CA,93726,,,0,,0,0
+5634,Fresno N Willow Ave Neighborhood Market,Fresno,CA,93710,,,0,,0,0
+1645,Hanford Supercenter,Hanford,CA,93230,,,0,,0,0
+5701,Kerman Supercenter,Kerman,CA,93630,,,0,,0,0
+1583,Madera Store,Madera,CA,93637,,,0,,0,0
+4238,Sanger Supercenter,Sanger,CA,93657,,,0,,0,0
+1882,Selma Supercenter,Selma,CA,93662,,,0,,0,0
+5777,Brooklyn Supercenter,Brooklyn,CT,06234,,0,0,0,0,0
+2854,Lisbon Supercenter,Lisbon,CT,06351,,0,0,0,0,0
+1980,Putnam Supercenter,Putnam,CT,06260,,0,0,0,0,0
+3035,Washington Riggs Rd Ne Supercenter,Washington,DC,20011,0,0,0,0,0,0
+5968,Washington Georgia Ave Nw Supercenter,Washington,DC,20011,0,0,0,0,0,0
+5039,Camden Supercenter,Camden,DE,19934,0,0,0,0,0,0
+2791,Georgetown Supercenter,Georgetown,DE,19947,0,0,0,0,0,0
+3802,Middletown Supercenter,Middletown,DE,19709,0,0,0,0,0,0
+1741,Milford Supercenter,Milford,DE,19963,0,0,0,0,0,0
+2555,New Castle Store,New Castle,DE,19720,0,0,0,0,0,0
+2419,Rehoboth Beach Store,Rehoboth Beach,DE,19971,0,0,0,0,0,0
+5436,Wilmington Store,Wilmington,DE,19808,0,0,0,0,0,0
+2229,Apollo Beach Supercenter,Apollo Beach,FL,33572,0,0,0,0,0,0
+580,Bartow Supercenter,Bartow,FL,33830,0,0,0,0,0,0
+3858,Boca Raton Supercenter,Boca Raton,FL,33428,0,0,0,0,0,0
+2396,Boyton Beach Flavor Pict Rd Neighborhood Market,Boynton Beach,FL,33436,0,0,0,0,0,0
+2789,Boynton Beach Old Boynton Rd Supercenter,Boynton Beach,FL,33436,0,0,0,0,0,0
+3011,Boynton Beach 9840 S Military Trail Neighborhood Market,Boynton Beach,FL,33436,0,0,0,0,0,0
+5911,Boynton Beach S Federal Hwy Supercenter,Boynton Beach,FL,33435,0,0,0,0,0,0
+3474,Bradenton E Florida 64 Supercenter,Bradenton,FL,34208,0,0,0,0,0,0
+5727,Bradenton Ranch Lake Blvd Supercenter,Bradenton,FL,34202,,0,,,0,0
+7307,Bradenton 53rd Ave E Neighborhood Market,Bradenton,FL,34203,0,0,0,0,0,0
+3463,Brandon E Brandon Blvd Supercenter,Brandon,FL,33511,0,0,0,0,0,0
+5826,Brandon Lithia Pinecrest Rd Neighborhood Market,Brandon,FL,33511,0,0,0,0,0,0
+1213,Brooksville Cortez Blvd Supercenter,Brooksville,FL,34613,0,0,0,0,0,0
+3526,Brooksville Broad St Supercenter,Brooksville,FL,34601,0,0,0,0,0,0
+959,Bushnell Supercenter,Bushnell,FL,33513,0,0,0,,0,0
+4667,Clearwater N Highland Ave Neighborhood Market,Clearwater,FL,33755,0,0,0,0,0,0
+5670,Clearwater Gulf To Bay Blvd Neighborhood Market,Clearwater,FL,33765,0,0,0,0,0,0
+5299,Clermont Us 27 Supercenter,Clermont,FL,34714,0,0,0,,0,0
+1916,Coconut Creek Supercenter,Coconut Creek,FL,33073,0,0,0,0,0,0
+1845,Cooper City Supercenter,Cooper City,FL,33330,0,0,0,0,0,0
+4380,Coral Springs W Atlantic Blvd Neighborhood Market,Coral Springs,FL,33071,0,0,0,0,0,0
+4498,Coral Springs N University Drive Neighborhood Market,Coral Springs,FL,33067,0,0,0,0,0,0
+713,Dade City Store,Dade City,FL,33525,0,0,0,0,0,0
+4563,Dania Beach Neighborhood Market,Dania Beach,FL,33004,0,0,0,0,0,0
+2987,Davie Supercenter,Davie,FL,33328,0,0,0,0,0,0
+3104,Deerfield Beach Neighborhood Market,Deerfield Beach,FL,33442,0,0,0,0,0,0
+1589,Delray Beach S Military Trail Supercenter,Delray Beach,FL,33484,0,0,0,0,0,0
+2406,Delray Beach S Federal Hwy Neighborhood Market,Delray Beach,FL,33483,0,0,0,0,0,0
+2091,Doral Supercenter,Doral,FL,33126,0,0,0,0,0,0
+5876,Dunedin Neighborhood Market,Dunedin,FL,34698,0,0,0,0,0,0
+977,Fernandina Beach Store,Fernandina Beach,FL,32034,0,0,0,0,0,0
+2727,Florida City Supercenter,Florida City,FL,33034,0,0,0,0,0,0
+2946,Fort Lauderdale Supercenter,Fort Lauderdale,FL,33312,0,0,0,0,0,0
+5819,Fruit Cove Neighborhood Market,Fruit Cove,FL,32259,0,0,0,0,0,0
+5300,Gibsonton Supercenter,Gibsonton,FL,33534,0,0,0,0,0,0
+5758,Greenacres S Jog Rd Neighborhood Market,Greenacres,FL,33467,0,0,0,0,0,0
+1436,Greenacres Forest Hill Blvd Supercenter,Greenacres,FL,33415,0,0,0,0,0,0
+725,Haines City Supercenter,Haines City,FL,33844,0,0,,0,0,0
+1996,Hallandale Beach Supercenter,Hallandale Beach,FL,33009,0,0,0,0,0,0
+1590,Hialeah Nw 177th St Supercenter,Hialeah,FL,33015,0,0,0,0,0,0
+5945,Hialeah W 49th St Neighborhood Market,Hialeah,FL,33012,0,0,0,0,0,0
+5615,Hialeah Gardens Neighborhood Market,Hialeah Gardens,FL,33018,0,0,0,0,0,0
+3163,Hollywood S State Rd 7 Supercenter,Hollywood,FL,33023,0,0,0,0,0,0
+4826,Hollywood Stirling Rd Neighborhood Market,Hollywood,FL,33024,0,0,0,0,0,0
+3183,Homestead S Dixie Hwy Neighborhood Market,Homestead,FL,33033,0,0,0,0,0,0
+5671,Homestead Sw 288th St Supercenter,Homestead,FL,33033,0,0,0,0,0,0
+1029,Homosassa Supercenter,Homosassa,FL,34446,0,,0,0,0,0
+5266,Hudson Supercenter,Hudson,FL,34667,0,0,0,0,0,0
+1173,Southside 8808 Beach Blvd Supercenter,Jacksonville,FL,32216,0,0,0,0,0,0
+1219,Jacksonville Lem Turner Rd Supercenter,Jacksonville,FL,32218,0,0,0,0,0,0
+1444,Jacksonville Hutchinson Park Drive Supercenter,Jacksonville,FL,32225,0,0,0,0,0,0
+3309,Jacksonville Philips Hwy Supercenter,Jacksonville,FL,32207,0,0,0,0,0,0
+3702,Jacksonville City Square Drive Supercenter,Jacksonville,FL,32218,0,0,0,0,0,0
+4444,Jacksonville Shops Lane Supercenter,Jacksonville,FL,32258,0,0,0,0,0,0
+4561,Jacksonville Baymeadows Rd Neighborhood Market,Jacksonville,FL,32256,0,0,0,0,0,0
+4621,Jacksonville Supercenter,Jacksonville,FL,32222,0,0,0,0,0,0
+5005,Jacksonville Wilson Blvd Neighborhood Market,Jacksonville,FL,32210,0,0,0,0,0,0
+5816,Jacksonville San Pablo Rd S Neighborhood Market,Jacksonville,FL,32224,0,0,0,0,0,0
+5817,Jacksonville Merrill Rd Neighborhood Market,Jacksonville,FL,32277,0,0,0,0,0,0
+5818,Jacksonville Old Saint Augustine Rd Neighborhood Market,Jacksonville,FL,32257,0,0,0,0,0,0
+1680,Kendall Supercenter,Kendall,FL,33196,0,0,0,0,0,0
+859,Lake Wales Supercenter,Lake Wales,FL,33898,0,0,,0,0,0
+1398,Lake Worth Hypoluxo Rd Supercenter,Lake Worth,FL,33463,0,0,0,0,0,0
+5759,Lake Worth S Jog Rd Neighborhood Market,Lake Worth,FL,33467,0,0,0,0,0,0
+6967,Wellington Neighborhood Market,Lake Worth,FL,33449,0,0,0,0,0,0
+779,Lakeland Florida Ave S Supercenter,Lakeland,FL,33803,0,0,0,0,0,0
+1245,Lakeland Us Hwy 98 N Supercenter,Lakeland,FL,33809,0,0,0,0,0,0
+1712,Largo Missouri Ave N Supercenter,Largo,FL,33770,0,0,0,0,0,0
+3372,Largo Roosevelt Blvd Supercenter,Largo,FL,33760,0,0,0,0,0,0
+4141,Largo Ulmerton Rd Neighborhood Market,Largo,FL,33771,0,0,0,0,0,0
+5831,Largo Walsingham Rd Neighborhood Market,Largo,FL,33774,0,0,0,0,0,0
+3625,Lauderdale Lakes Supercenter,Lauderdale Lakes,FL,33313,0,0,0,0,0,0
+988,Lutz Supercenter,Lutz,FL,33549,0,0,0,0,0,0
+1205,Macclenny Supercenter,Macclenny,FL,32063,0,0,0,0,0,0
+5325,Margate Supercenter,Margate,FL,33063,0,0,0,0,0,0
+4140,Miami Sw 8th St Neighborhood Market,Miami,FL,33144,0,0,0,0,0,0
+4161,Miami W Flagler St Supercenter,Miami,FL,33174,0,0,0,0,0,0
+4303,Miami Nw 79th St Supercenter,Miami,FL,33147,0,0,0,0,0,0
+5719,Miami Sw 26th St Neighborhood Market,Miami,FL,33185,0,0,0,0,0,0
+5854,Miami Coral Way Supercenter,Miami,FL,33155,0,0,0,0,0,0
+5912,Miami S Dixie Hwy Supercenter,Miami,FL,33189,0,0,0,0,0,0
+6397,Miami Sw 127th Ave Supercenter,Miami,FL,33177,0,0,0,0,0,0
+2907,Miami Gardens Nw 167th St Neighborhood Market,Miami Gardens,FL,33055,0,0,0,0,0,0
+3311,Miami Gardens Nw 27th Ave Supercenter,Miami Gardens,FL,33056,0,0,0,0,0,0
+3397,Miami Gardens Nw 2nd Ave Supercenter,Miami Gardens,FL,33169,0,0,0,0,0,0
+3308,Middleburg Branan Field Rd Supercenter,Middleburg,FL,32068,0,0,0,0,0,0
+5820,Middleburg County Rd 220 Neighborhood Market,Middleburg,FL,32068,0,0,0,0,0,0
+5035,Mulberry Supercenter,Mulberry,FL,33860,0,0,0,0,0,0
+3935,Naranja Neighborhood Market,Naranja,FL,33032,0,0,0,0,0,0
+994,New Port Richey Florida 54 Supercenter,New Port Richey,FL,34655,0,0,0,0,0,0
+2391,New Port Richey Little Rd Neighborhood Market,New Port Richey,FL,34654,0,0,0,0,0,0
+1851,North Lauderdale Supercenter,North Lauderdale,FL,33068,0,0,0,0,0,0
+3235,North Miami Beach Supercenter,North Miami Beach,FL,33162,0,0,0,0,0,0
+2796,Oldsmar Supercenter,Oldsmar,FL,34677,0,0,0,0,0,0
+2920,Fleming Island County Rd 220 Supercenter,Orange Park,FL,32003,0,0,0,0,0,0
+551,Palatka Supercenter,Palatka,FL,32177,0,0,0,0,0,0
+3414,Palm Harbor E Lake Rd S Neighborhood Market,Palm Harbor,FL,34685,0,0,0,0,0,0
+5882,Palm Springs Supercenter,Palm Springs,FL,33461,0,0,0,0,0,0
+4441,Palm Springs Village Neighborhood Market,Palm Springs Village,FL,33406,0,0,0,0,0,0
+3370,Palmetto Supercenter,Palmetto,FL,34221,0,0,0,0,0,0
+3161,Pasadena Neighborhood Market,Pasadena,FL,33707,0,0,0,0,0,0
+2591,Pembroke Pines Sw 184th Ave Supercenter,Pembroke Pines,FL,33029,0,0,0,0,0,0
+5932,Pembroke Pines Pines Blvd Supercenter,Pembroke Pines,FL,33027,0,0,0,0,0,0
+1390,Pinellas Park Us Hwy 19 N Supercenter,Pinellas Park,FL,33781,0,0,0,0,0,0
+3013,Pinellas Park 66th St N Neighborhood Market,Pinellas Park,FL,33781,0,0,0,0,0,0
+4595,Plantation Neighborhood Market,Plantation,FL,33322,0,0,0,0,0,0
+2962,Pompano Beach W Atlantic Blvd Supercenter,Pompano Beach,FL,33069,0,0,0,0,0,0
+4617,Pompano Beach S Federal Hwy Neighborhood Market,Pompano Beach,FL,33062,0,0,0,0,0,0
+1517,Pompano Beach N Federal Hwy Supercenter,Pompano Beach,FL,33064,0,0,0,0,0,0
+1085,Port Richey Supercenter,Port Richey,FL,34668,0,0,0,0,0,0
+5622,Riverview Bloomingdale Ave Neighborhood Market,Riverview,FL,33578,0,0,0,0,0,0
+6968,Riverview Big Bend Rd Neighborhood Market,Riverview,FL,33578,0,0,0,0,0,0
+928,Saint Johns Supercenter,Saint Johns,FL,32259,0,0,0,0,0,0
+1171,Sarasota Lockwood Ridge Rd Supercenter,Sarasota,FL,34243,,0,,,0,0
+2392,Sarasota Bee Ridge Rd Neighborhood Market,Sarasota,FL,34239,,0,,,0,0
+2459,Sarasota Cattlemen Rd Supercenter,Sarasota,FL,34233,,0,,,0,0
+3066,Sarasota N Tamiami Trail Neighborhood Market,Sarasota,FL,34234,,0,,,0,0
+7298,Sarasota Palmer Crossing Circle Neighborhood Market,Sarasota,FL,34233,,0,,,0,0
+925,Seffner Store,Seffner,FL,33584,0,0,0,0,0,0
+6207,Spring Hill Spring Hill Drive Neighborhood Market,Spring Hill,FL,34609,0,0,0,0,0,0
+4690,St Petersburg 34th St Central N Supercenter,St Petersburg,FL,33713,0,0,0,0,0,0
+5218,St Petersburg 34th St S Supercenter,St Petersburg,FL,33711,0,0,0,0,0,0
+1349,Sunrise N University Drive Supercenter,Sunrise,FL,33351,0,0,0,0,0,0
+2151,Sunrise Sawgrass Mall Supercenter,Sunrise,FL,33323,0,0,0,0,0,0
+2930,Tamarac Neighborhood Market,Tamarac,FL,33321,0,0,0,0,0,0
+1482,Tampa W Waters Ave Store,Tampa,FL,33634,0,0,0,0,0,0
+2627,Tampa E Fletcher Ave Supercenter,Tampa,FL,33612,0,0,0,0,0,0
+2740,Tampa Bruce B Downs Blvd Supercenter,Tampa,FL,33647,0,0,0,0,0,0
+3197,Tampa N Nebraska Ave Supercenter,Tampa,FL,33613,0,0,0,0,0,0
+4681,Tampa W Gandy Blvd Supercenter,Tampa,FL,33611,0,0,0,0,0,0
+5036,Tampa Gunn Hwy Supercenter,Tampa,FL,33625,0,0,0,0,0,0
+5220,Tampa 8220 N Dale Mabry Hwy Supercenter,Tampa,FL,33614,0,0,0,0,0,0
+5221,Tampa N Florida Ave Neighborhood Market,Tampa,FL,33604,0,0,0,0,0,0
+5255,Tampa Elliot Drive Neighborhood Market,Tampa,FL,33615,0,0,0,0,0,0
+5654,Tampa W Hillsborough Ave Neighborhood Market,Tampa,FL,33614,0,0,0,0,0,0
+5760,Tampa W Kennedy Blvd Neighborhood Market,Tampa,FL,33606,0,0,0,0,0,0
+5964,Tampa E Hillsborough Ave Supercenter,Tampa,FL,33610,0,0,0,0,0,0
+6548,Tampa Gunn Hwy Neighborhood Market,Tampa,FL,33624,0,0,0,0,0,0
+3415,Tarpon Springs Supercenter,Tarpon Springs,FL,34689,0,0,0,0,0,0
+759,Wauchula Supercenter,Wauchula,FL,33873,0,0,,0,0,0
+4560,West Palm Beach Okeechobee Blvd Neighborhood Market,West Palm Beach,FL,33411,0,0,0,0,0,0
+5301,West Palm Beach 4375 Belvedere Rd Supercenter,West Palm Beach,FL,33406,0,0,0,0,0,0
+1203,Wimauma Supercenter,Wimauma,FL,33598,0,0,0,0,0,0
+3347,Winter Haven 7450 Cypress Gardens Blvd Supercenter,Winter Haven,FL,33884,0,0,,0,0,0
+5037,Yulee Supercenter,Yulee,FL,32097,0,0,0,0,0,0
+2840,Brunswick Glynn Plaza Neighborhood Market,Brunswick,GA,31520,,0,,0,0,0
+3478,Honolulu Store,Honolulu,HI,96814,,,0,0,0,0
+2126,Mililani Store,Mililani,HI,96789,,,0,0,0,0
+5274,Pearl City Store,Pearl City,HI,96782,,,0,0,0,0
+2314,Waipahu Store,Waipahu,HI,96797,,,0,0,0,0
+1965,Council Bluffs Manawa Centre Drive Supercenter,Council Bluffs,IA,51501,0,,,,0,0
+3094,Boise N Cole Rd Neighborhood Market,Boise,ID,83704,0,0,0,0,0,0
+2780,Caldwell Cleveland Blvd Supercenter,Caldwell,ID,83607,0,0,0,0,0,0
+4494,Caldwell E Ustick Rd Neighborhood Market,Caldwell,ID,83605,0,0,0,0,0,0
+2861,Garden City Supercenter,Garden City,ID,83714,0,0,0,0,0,0
+2862,Meridian E Fairview Ave Supercenter,Meridian,ID,83642,0,0,0,0,0,0
+3093,Meridian Water Park Supercenter,Meridian,ID,83642,0,0,0,0,0,0
+5841,Meridian N Ten Mile Rd Supercenter,Meridian,ID,83646,0,0,0,0,0,0
+2781,Nampa 12th Ave Rd Supercenter,Nampa,ID,83686,0,0,0,0,0,0
+3739,Nampa E Franklin Rd Supercenter,Nampa,ID,83687,0,0,0,0,0,0
+4180,Nampa S Middleton Rd Neighborhood Market,Nampa,ID,83651,0,0,0,0,0,0
+5442,Addison Supercenter,Addison,IL,60101,0,0,0,0,0,0
+4405,Aurora Supercenter,Aurora,IL,60502,0,0,0,0,0,0
+201,Belleville Supercenter,Belleville,IL,62221,0,,,,0,0
+1596,Bolingbrook Supercenter,Bolingbrook,IL,60440,0,0,0,0,0,0
+1779,Bridgeview Store,Bridgeview,IL,60455,0,0,0,0,0,0
+3110,Chicago S Ashland Ave Neighborhood Market,Chicago,IL,60620,0,0,0,0,0,0
+5402,Chicago W N Ave Supercenter,Chicago,IL,60639,0,0,0,0,0,0
+5617,Hermosa Chicago W Diversey Ave Supercenter,Chicago,IL,60639,0,0,0,0,0,0
+5965,Pullman Chicago S Doty Ave Supercenter,Chicago,IL,60628,0,0,0,0,0,0
+2425,Collinsville Beltline Rd Neighborhood Market,Collinsville,IL,62234,0,,,,0,0
+5486,Country Club Hills Supercenter,Country Club Hills,IL,60478,0,0,0,0,0,0
+3601,Crestwood Supercenter,Crestwood,IL,60418,0,0,0,0,0,0
+1897,Elk Grove Village Supercenter,Elk Grove Village,IL,60007,0,0,0,0,0,0
+5485,Evergreen Park Supercenter,Evergreen Park,IL,60805,0,0,0,0,0,0
+256,Glen Carbon Supercenter,Glen Carbon,IL,62034,0,,,,0,0
+1848,Glen Ellyn Supercenter,Glen Ellyn,IL,60137,0,0,0,0,0,0
+4695,Godfrey Supercenter,Godfrey,IL,62035,0,,,,0,0
+1761,Granite City Supercenter,Granite City,IL,62040,0,,,,0,0
+435,Highland Supercenter,Highland,IL,62249,0,,,,0,0
+1892,Hodgkins Supercenter,Hodgkins,IL,60525,0,0,0,0,0,0
+253,Jerseyville Supercenter,Jerseyville,IL,62052,0,,,,0,0
+1404,Lake Zurich Supercenter,Lake Zurich,IL,60047,0,0,0,0,0,0
+2817,Lansing Supercenter,Lansing,IL,60438,0,0,0,0,0,0
+199,Lincoln Supercenter,Lincoln,IL,62656,,0,0,0,0,0
+3790,Lockport Supercenter,Lockport,IL,60441,0,0,0,0,0,0
+1681,Mount Prospect Supercenter,Mount Prospect,IL,60056,0,0,0,0,0,0
+1401,Naperville Supercenter,Naperville,IL,60564,0,0,0,0,0,0
+4529,New Lenox Supercenter,New Lenox,IL,60451,0,0,0,0,0,0
+2816,Niles W Touhy Ave Store,Niles,IL,60714,0,0,0,0,0,0
+3725,Niles W Golf Rd Supercenter,Niles,IL,60714,0,0,0,0,0,0
+1933,Northlake Store,Northlake,IL,60164,0,0,0,0,0,0
+1418,O Fallon Supercenter,O Fallon,IL,62269,0,,,,0,0
+4049,Olympia Fields Supercenter,Olympia Fields,IL,60461,0,0,0,0,0,0
+5276,Palatine Store,Palatine,IL,60074,0,0,0,0,0,0
+1497,Richton Park Supercenter,Richton Park,IL,60471,0,0,0,0,0,0
+4531,Romeoville Supercenter,Romeoville,IL,60446,0,0,0,0,0,0
+1898,Saint Charles Supercenter,Saint Charles,IL,60174,0,0,0,0,0,0
+1602,Springfield Freedom Drive Supercenter,Springfield,IL,62704,,0,0,0,0,0
+3210,Springfield N Dirksen Parkway Supercenter,Springfield,IL,62702,,0,0,0,0,0
+3602,Springfield Lejune Drive Supercenter,Springfield,IL,62703,,0,0,0,0,0
+1420,Streamwood Supercenter,Streamwood,IL,60107,0,0,0,0,0,0
+1489,Vernon Hills Store,Vernon Hills,IL,60061,0,0,0,0,0,0
+1737,Villa Park Supercenter,Villa Park,IL,60181,0,0,0,0,0,0
+328,Waterloo Supercenter,Waterloo,IL,62298,0,,,,0,0
+1735,Wheeling Supercenter,Wheeling,IL,60090,0,0,0,0,0,0
+1071,Wood River Supercenter,Wood River,IL,62095,0,,,,0,0
+1728,Anderson Supercenter,Anderson,IN,46013,0,0,,0,0,0
+2786,Avon Supercenter,Avon,IN,46123,0,0,,0,0,0
+2788,Brownsburg Supercenter,Brownsburg,IN,46112,0,0,,0,0,0
+4417,Camby Supercenter,Camby,IN,46113,0,0,,0,0,0
+1601,Carmel Supercenter,Carmel,IN,46033,0,0,,0,0,0
+1476,Clarksville Supercenter,Clarksville,IN,47129,0,0,0,,0,0
+922,Corydon Supercenter,Corydon,IN,47112,0,0,0,,0,0
+6476,Danville Supercenter,Danville,IN,46122,0,0,,0,0,0
+1557,Fishers E 96th St Supercenter,Fishers,IN,46037,0,0,,0,0,0
+5767,Fishers Ambleside Drive Neighborhood Market,Fishers,IN,46038,0,0,,0,0,0
+3435,Greenwood County Line Rd Supercenter,Greenwood,IN,46143,0,0,,0,0,0
+5483,Greenwood S State Rd 135 Supercenter,Greenwood,IN,46143,0,0,,0,0,0
+2818,Hammond Cabela Drive Supercenter,Hammond,IN,46324,0,0,0,0,0,0
+4631,Hammond 5th Ave Supercenter,Hammond,IN,46320,0,0,0,0,0,0
+1518,Indianapolis W 86th St Supercenter,Indianapolis,IN,46268,0,0,,0,0,0
+1580,Indianapolis E Washington St Supercenter,Indianapolis,IN,46229,0,0,,0,0,0
+2787,Indianapolis N Keystone Ave Supercenter,Indianapolis,IN,46240,0,0,,0,0,0
+3529,Indianapolis Pendleton Pike Supercenter,Indianapolis,IN,46236,0,0,,0,0,0
+3781,Indianapolis Lafayette Rd Supercenter,Indianapolis,IN,46254,0,0,,0,0,0
+4053,Indianapolis Michigan Rd Neighborhood Market,Indianapolis,IN,46228,0,0,,0,0,0
+4054,Indianapolis Kentucky Ave Neighborhood Market,Indianapolis,IN,46221,0,0,,0,0,0
+5408,Indianapolis S Keystone Ave Neighborhood Market,Indianapolis,IN,46227,0,0,,0,0,0
+5443,Indianapolis Beech Grove Supercenter,Indianapolis,IN,46203,0,0,,0,0,0
+5804,Indianapolis W 10th St Neighborhood Market,Indianapolis,IN,46224,0,0,,0,0,0
+6390,Indianapolis E Fall Creek Parkway N Drive Neighborhood Market,Indianapolis,IN,46226,0,0,,0,0,0
+1275,Lebanon Supercenter,Lebanon,IN,46052,0,0,,0,0,0
+1356,Martinsville Supercenter,Martinsville,IN,46151,0,0,,0,0,0
+2691,New Albany Supercenter,New Albany,IN,47150,0,0,0,,0,0
+828,Plainfield E Main St Supercenter,Plainfield,IN,46168,0,0,,0,0,0
+6470,Plainfield W Main St Neighborhood Market,Plainfield,IN,46168,0,0,,0,0,0
+2544,Portage Supercenter,Portage,IN,46368,0,0,0,0,0,0
+7087,Salem Supercenter,Salem,IN,47167,0,0,0,,0,0
+1576,Schererville Store,Schererville,IN,46375,0,0,0,0,0,0
+1142,Scottsburg Supercenter,Scottsburg,IN,47170,0,0,0,,0,0
+884,Shelbyville Supercenter,Shelbyville,IN,46176,0,0,,0,0,0
+5307,Gardner Supercenter,Gardner,KS,66030,,,,0,0,0
+378,Holton Supercenter,Holton,KS,66436,,,0,0,0,0
+1151,Kansas City Parallel Parkway Legends Supercenter,Kansas City,KS,66109,,,,0,0,0
+6172,Kansas City Metropolitan Ave Neighborhood Market,Kansas City,KS,66106,,,,0,0,0
+5219,Lawrence Congressional Drive Supercenter,Lawrence,KS,66049,,,0,0,0,0
+26,Leavenworth Supercenter,Leavenworth,KS,66048,,,,0,0,0
+4198,Olathe W 151st St Neighborhood Market,Olathe,KS,66062,,,,0,0,0
+4475,Olathe W Supercenter,Olathe,KS,66061,,,,0,0,0
+1599,Overland Park 11701 Metcalf Ave Supercenter,Overland Park,KS,66210,,,,0,0,0
+1691,Overland Park 75th St Frontage Rd Store,Overland Park,KS,66204,,,,0,0,0
+3273,Overland Park 15700 Metcalf Ave Supercenter,Overland Park,KS,66223,,,,0,0,0
+5207,Overland Park Metcalf Ave Neighborhood Market,Overland Park,KS,66212,,,,0,0,0
+2490,Roeland Park Store,Roeland Park,KS,66205,,,,0,0,0
+2855,Shawnee W 65th St Supercenter,Shawnee,KS,66217,,,,0,0,0
+4611,Shawnee Silverheel St Supercenter,Shawnee,KS,66226,,,,0,0,0
+5308,Shawnee W 74th Terrace Neighborhood Market,Shawnee,KS,66203,,,,0,0,0
+1802,Topeka Sw Wanamaker Rd Supercenter,Topeka,KS,66604,,,0,0,0,0
+5441,Topeka Nw Rochester Rd Supercenter,Topeka,KS,66617,,,0,0,0,0
+6392,Topeka Se California Ave Supercenter,Topeka,KS,66605,,,0,0,0,0
+6585,Topeka Sw Macvicar Ave Neighborhood Market,Topeka,KS,66606,,,0,0,0,0
+998,Westwood Neighborhood Market,Westwood,KS,66205,,,,0,0,0
+7290,Crestwood Supercenter,Crestwood,KY,40014,0,0,0,,0,0
+5183,Jeffersontown Neighborhood Market,Jeffersontown,KY,40299,0,0,0,,0,0
+1053,La Grange Supercenter,La Grange,KY,40031,0,0,0,,0,0
+526,Louisville Westport Rd Supercenter,Louisville,KY,40241,0,0,0,,0,0
+589,Louisville Standiford Plaza Drive Supercenter,Louisville,KY,40229,0,0,0,,0,0
+1170,Louisville Dixie Hwy Supercenter,Louisville,KY,40272,0,0,0,,0,0
+3294,Louisville Cedar Springs Blvd Supercenter,Louisville,KY,40291,0,0,0,,0,0
+4524,Louisville Dixie Hwy Neighborhood Market,Louisville,KY,40216,0,0,0,,0,0
+5417,Louisville 175 Outer Loop Supercenter,Louisville,KY,40214,0,0,0,,0,0
+5418,Louisville Bashford Manor Lane Supercenter,Louisville,KY,40218,0,0,0,,0,0
+6931,Louisville 4840 Outer Loop Supercenter,Louisville,KY,40219,0,0,0,,0,0
+4450,Middletown Supercenter,Middletown,KY,40243,0,0,0,,0,0
+1165,Radcliff Walmart Way Supercenter,Radcliff,KY,40160,0,0,0,,0,0
+5135,Radcliff Gateway Crossings Blvd Neighborhood Market,Radcliff,KY,40160,0,0,0,,0,0
+5297,Saint Matthews Neighborhood Market,Saint Matthews,KY,40207,0,0,0,,0,0
+497,Shelbyville Supercenter,Shelbyville,KY,40065,0,0,0,,0,0
+4118,Shepherdsville Supercenter,Shepherdsville,KY,40165,0,0,0,,0,0
+2913,Boutte Supercenter,Boutte,LA,70039,0,0,0,,0,0
+5102,Gretna Neighborhood Market,Gretna,LA,70053,0,0,0,,0,0
+2706,Harvey Manhattan Blvd Supercenter,Harvey,LA,70058,0,0,0,,0,0
+5722,Harvey 3265 Manhattan Blvd Neighborhood Market,Harvey,LA,70058,0,0,0,,0,0
+1342,Kenner W Esplanade Ave Supercenter,Kenner,LA,70065,0,0,0,,0,0
+3703,Kenner 3520 Williams Blvd Neighborhood Market,Kenner,LA,70065,0,0,0,,0,0
+961,La Place Supercenter,La Place,LA,70068,0,0,0,,0,0
+5832,Mandeville Neighborhood Market,Mandeville,LA,70448,0,0,0,,0,0
+5081,Meraux Neighborhood Market,Meraux,LA,70075,0,0,0,,0,0
+989,Metairie Supercenter,Metairie,LA,70003,0,0,0,,0,0
+912,New Orleans Bullard Ave Supercenter,New Orleans,LA,70128,0,0,0,,0,0
+1163,New Orleans Behrman Place Supercenter,New Orleans,LA,70114,0,0,0,,0,0
+3167,New Orleans Chef Menteur Hwy Supercenter,New Orleans,LA,70126,0,0,0,,0,0
+5022,New Orleans Tchoupitoulas St Supercenter,New Orleans,LA,70130,0,0,0,,0,0
+761,Raceland Supercenter,Raceland,LA,70394,0,0,0,,0,0
+553,Slidell Natchez Drive Supercenter,Slidell,LA,70461,0,0,0,,0,0
+2665,Slidell Northshore Blvd Supercenter,Slidell,LA,70460,0,0,0,,0,0
+6577,Slidell 637 Robert Blvd Neighborhood Market,Slidell,LA,70458,0,0,0,,0,0
+6588,Slidell 3130 Pontchartrain Drive Neighborhood Market,Slidell,LA,70458,0,0,0,,0,0
+2227,Abington Store,Abington,MA,02351,0,0,0,0,0,0
+2122,Avon Supercenter,Avon,MA,02322,0,0,0,0,0,0
+1918,Bellingham Store,Bellingham,MA,02019,0,0,0,0,0,0
+2903,Chelmsford Store,Chelmsford,MA,01824,0,0,,,0,0
+2180,Danvers Store,Danvers,MA,01923,0,0,,,0,0
+3560,Fall River Supercenter,Fall River,MA,02721,,0,0,0,0,0
+2902,Framingham Store,Framingham,MA,01701,0,0,0,0,0,0
+2128,Halifax Supercenter,Halifax,MA,02338,0,0,0,0,0,0
+1970,Hudson Supercenter,Hudson,MA,01749,0,0,,,0,0
+2139,Lynn Store,Lynn,MA,01905,0,0,,,0,0
+3491,Methuen Store,Methuen,MA,01844,0,0,,,0,0
+2366,North Attleboro Supercenter,North Attleboro,MA,02760,0,0,0,0,0,0
+2157,North Dartmouth Supercenter,North Dartmouth,MA,02747,,0,0,0,0,0
+2012,North Oxford Supercenter,North Oxford,MA,01537,,0,0,0,0,0
+2660,North Reading Store,North Reading,MA,01864,0,0,,,0,0
+2158,Northborough Supercenter,Northborough,MA,01532,0,0,0,0,0,0
+2336,Plymouth Supercenter,Plymouth,MA,02360,0,0,,,0,0
+2341,Quincy Store,Quincy,MA,02169,0,0,,,0,0
+5448,Raynham Broadway Supercenter,Raynham,MA,02767,0,0,0,0,0,0
+2640,Salem Store,Salem,MA,01970,0,0,,,0,0
+3114,Saugus Supercenter,Saugus,MA,01906,0,0,,,0,0
+2953,Swansea Supercenter,Swansea,MA,02777,,0,0,0,0,0
+2222,Tewksbury Supercenter,Tewksbury,MA,01876,0,0,,,0,0
+2103,Walpole Supercenter,Walpole,MA,02081,0,0,0,0,0,0
+2095,Wareham Supercenter,Wareham,MA,02571,,0,0,0,0,0
+3200,Weymouth Store,Weymouth,MA,02188,0,0,,,0,0
+2629,Whitinsville Supercenter,Whitinsville,MA,01588,,0,0,0,0,0
+4387,Worcester Supercenter,Worcester,MA,01607,,0,0,0,0,0
+2009,Abingdon Store,Abingdon,MD,21009,0,0,0,0,0,0
+3481,Baltimore Carroll Island Rd Store,Baltimore,MD,21220,0,0,0,0,0,0
+3489,Baltimore Petrie Way Rd Supercenter,Baltimore,MD,21237,0,0,0,0,0,0
+1893,Bowie Store,Bowie,MD,20716,0,0,0,0,0,0
+2272,Cambridge Supercenter,Cambridge,MD,21613,0,0,,0,0,0
+2248,Catonsville Store,Catonsville,MD,21228,0,0,0,0,0,0
+2577,Cockeysville Supercenter,Cockeysville,MD,21030,0,0,0,0,0,0
+5228,Columbia Store,Columbia,MD,21045,0,0,0,0,0,0
+3843,Denton Supercenter,Denton,MD,21629,0,0,0,0,0,0
+2435,Dundalk Supercenter,Dundalk,MD,21222,0,0,0,0,0,0
+1860,Elkton Supercenter,Elkton,MD,21921,0,0,0,0,0,0
+2412,Ellicott City Supercenter,Ellicott City,MD,21043,0,0,0,0,0,0
+3780,Fallston Supercenter,Fallston,MD,21047,0,0,0,0,0,0
+2357,Germantown Supercenter,Germantown,MD,20876,0,0,0,0,0,0
+2279,Glen Burnie Supercenter,Glen Burnie,MD,21060,0,0,0,0,0,0
+2850,Hampstead Supercenter,Hampstead,MD,21074,0,0,0,0,0,0
+3490,Hanover Store,Hanover,MD,21076,0,0,0,0,0,0
+1985,Laurel Supercenter,Laurel,MD,20724,0,0,0,0,0,0
+2551,Mount Airy Store,Mount Airy,MD,21771,0,0,0,0,0,0
+5382,Pasadena Supercenter,Pasadena,MD,21122,0,0,0,0,0,0
+3804,Randallstown Supercenter,Randallstown,MD,21133,0,0,0,0,0,0
+1890,Salisbury Supercenter,Salisbury,MD,21801,0,0,,0,0,0
+1875,Severn Supercenter,Severn,MD,21144,0,0,0,0,0,0
+2436,Sykesville Supercenter,Sykesville,MD,21784,0,0,0,0,0,0
+1867,Westminster Store,Westminster,MD,21157,0,0,0,0,0,0
+1868,Auburn Supercenter,Auburn,ME,04210,0,0,0,0,0,0
+2153,Biddeford Supercenter,Biddeford,ME,04005,0,0,0,0,0,0
+2659,Falmouth Store,Falmouth,ME,04105,0,0,0,0,0,0
+1954,Sanford Supercenter,Sanford,ME,04073,0,0,0,0,0,0
+1788,Scarborough Supercenter,Scarborough,ME,04074,0,0,0,0,0,0
+2202,Windham Supercenter,Windham,ME,04062,0,0,0,0,0,0
+3476,Canton Ford Rd Supercenter,Canton,MI,48187,0,0,,,0,0
+5761,Canton Michigan Ave Supercenter,Canton,MI,48188,0,0,,,0,0
+2692,Chesterfield Supercenter,Chesterfield,MI,48051,0,0,,,0,0
+4660,Clinton Township Supercenter,Clinton Township,MI,48038,0,0,,,0,0
+2618,Commerce Supercenter,Commerce,MI,48390,0,0,,,0,0
+4383,Dearborn Supercenter,Dearborn,MI,48126,0,0,,,0,0
+5386,Grand Haven Supercenter,Grand Haven,MI,49417,,0,0,0,0,0
+2493,Grand Rapids Supercenter,Grand Rapids,MI,49546,,0,0,0,0,0
+2567,Grandville Supercenter,Grandville,MI,49418,,0,0,0,0,0
+3328,Greenville Supercenter,Greenville,MI,48838,,0,0,0,0,0
+2620,Hastings Supercenter,Hastings,MI,49058,,0,0,0,0,0
+5411,Ionia Supercenter,Ionia,MI,48846,,0,0,0,0,0
+2631,Livonia Plymouth Rd Supercenter,Livonia,MI,48150,0,0,,,0,0
+5844,Livonia 7 Mile Supercenter,Livonia,MI,48152,0,0,,,0,0
+1790,Monroe Supercenter,Monroe,MI,48162,0,0,,,0,0
+2238,Muskegon E Sherman Blvd Supercenter,Muskegon,MI,49444,,0,0,0,0,0
+3876,Muskegon Henry St Supercenter,Muskegon,MI,49441,,0,0,0,0,0
+5048,New Hudson Supercenter,New Hudson,MI,48165,0,0,,,0,0
+5893,Novi Supercenter,Novi,MI,48375,0,0,,,0,0
+2354,Rochester Hills Supercenter,Rochester Hills,MI,48309,0,0,,,0,0
+2959,Roseville Supercenter,Roseville,MI,48066,0,0,,,0,0
+3487,Shelby Township Supercenter,Shelby Township,MI,48315,0,0,,,0,0
+5842,Southgate Supercenter,Southgate,MI,48195,0,0,,,0,0
+2558,Sterling Heights Mound Rd Store,Sterling Heights,MI,48314,0,0,,,0,0
+2559,Sterling Heights Van Dyke Ave Supercenter,Sterling Heights,MI,48312,0,0,,,0,0
+2912,Taylor Supercenter,Taylor,MI,48180,0,0,,,0,0
+2873,Troy Supercenter,Troy,MI,48084,0,0,,,0,0
+2872,Van Buren Twp Supercenter,Van Buren Twp,MI,48111,0,0,,,0,0
+4424,Warren Supercenter,Warren,MI,48093,0,0,,,0,0
+2700,White Lake Supercenter,White Lake,MI,48386,0,0,,,0,0
+3336,Woodhaven Supercenter,Woodhaven,MI,48183,0,0,,,0,0
+3453,Wyoming Supercenter,Wyoming,MI,49548,,0,0,0,0,0
+1999,Andover Supercenter,Andover,MN,55304,0,0,,,0,0
+2642,Apple Valley Supercenter,Apple Valley,MN,55124,0,0,,,0,0
+3498,Blaine Ball Rd Ne Supercenter,Blaine,MN,55014,0,0,,,0,0
+5976,Blaine Ulysses St Ne Supercenter,Blaine,MN,55434,0,0,,,0,0
+2198,Bloomington Supercenter,Bloomington,MN,55420,0,0,,,0,0
+1864,Brooklyn Park Supercenter,Brooklyn Park,MN,55445,0,0,,,0,0
+1577,Buffalo Supercenter,Buffalo,MN,55313,0,0,,,0,0
+5977,Burnsville Supercenter,Burnsville,MN,55337,0,0,,,0,0
+2448,Cottage Grove Supercenter,Cottage Grove,MN,55016,0,0,,,0,0
+1786,Eagan Store,Eagan,MN,55123,0,0,,,0,0
+1855,Eden Prairie Supercenter,Eden Prairie,MN,55344,0,0,,,0,0
+3209,Elk River Supercenter,Elk River,MN,55330,0,0,,,0,0
+2274,Forest Lake Supercenter,Forest Lake,MN,55025,0,0,,,0,0
+1952,Fridley Supercenter,Fridley,MN,55432,0,0,,,0,0
+1472,Hastings Supercenter,Hastings,MN,55033,0,0,,,0,0
+5089,Inver Grove Heights Store,Inver Grove Heights,MN,55076,0,0,,,0,0
+5992,Lakeville Supercenter,Lakeville,MN,55044,0,0,,,0,0
+2882,Maple Grove Supercenter,Maple Grove,MN,55311,0,0,,,0,0
+3624,Monticello Supercenter,Monticello,MN,55362,0,0,,,0,0
+1861,Oak Park Heights Supercenter,Oak Park Heights,MN,55082,0,0,,,0,0
+3404,Roseville Supercenter,Roseville,MN,55113,0,0,,,0,0
+3364,Saint Paul Supercenter,Saint Paul,MN,55118,0,0,,,0,0
+3513,Shakopee Supercenter,Shakopee,MN,55379,0,0,,,0,0
+2087,Vadnais Heights Supercenter,Vadnais Heights,MN,55127,0,0,,,0,0
+2643,Woodbury Supercenter,Woodbury,MN,55129,0,0,,,0,0
+1514,Arnold Supercenter,Arnold,MO,63010,0,,,,0,0
+5149,Blue Springs N Missouri 7 Neighborhood Market,Blue Springs,MO,64014,,,,0,0,0
+1188,Bridgeton Supercenter,Bridgeton,MO,63044,0,,,,0,0
+2600,Chesterfield Supercenter,Chesterfield,MO,63005,0,,,,0,0
+295,Eureka Supercenter,Eureka,MO,63025,0,,,,0,0
+195,Excelsior Springs Supercenter,Excelsior Springs,MO,64024,,,,0,0,0
+805,Fenton Supercenter,Fenton,MO,63026,0,,,,0,0
+69,Festus Supercenter,Festus,MO,63028,0,,,,0,0
+5927,Florissant Supercenter,Florissant,MO,63033,0,,,,0,0
+96,Harrisonville Supercenter,Harrisonville,MO,64701,,,,0,0,0
+313,High Ridge Supercenter,High Ridge,MO,63049,0,,,,0,0
+1014,Independence S Bolger Rd Supercenter,Independence,MO,64055,,,,0,0,0
+6500,Independence S Noland Rd Neighborhood Market,Independence,MO,64055,,,,0,0,0
+234,Liberty Supercenter,Kansas City,MO,64158,,,,0,0,0
+2442,Kansas City Ne Antioch Rd Neighborhood Market,Kansas City,MO,64119,,,,0,0,0
+2857,Barry Rd Supercenter,Kansas City,MO,64154,,,,0,0,0
+2955,Kansas City W 133rd St Supercenter,Kansas City,MO,64145,,,,0,0,0
+4553,Kansas City E Us Hwy 40 Supercenter,Kansas City,MO,64133,,,,0,0,0
+2694,Kirkwood Supercenter,Kirkwood,MO,63122,0,,,,0,0
+5313,Lake Saint Louis Supercenter,Lake Saint Louis,MO,63367,0,,,,0,0
+573,Lees Summit Ne Sam Walton Lane Supercenter,Lees Summit,MO,64086,,,,0,0,0
+4590,Lees Summit Sw Market St Supercenter,Lees Summit,MO,64082,,,,0,0,0
+1177,Manchester Supercenter,Manchester,MO,63011,0,,,,0,0
+5150,Maplewood Supercenter,Maplewood,MO,63143,0,,,,0,0
+2616,O Fallon Supercenter,O Fallon,MO,63366,0,,,,0,0
+2856,Oak Grove Supercenter,Oak Grove,MO,64075,,,,0,0,0
+325,Richmond Supercenter,Richmond,MO,64085,,,,0,0,0
+1161,Saint Charles Supercenter,Saint Charles,MO,63303,0,,,,0,0
+1265,Ferguson Supercenter,Saint Louis,MO,63136,0,,,,0,0
+2213,Saint Louis Telegraph Rd Supercenter,Saint Louis,MO,63125,0,,,,0,0
+648,Saint Peters Jungermann Rd Supercenter,Saint Peters,MO,63304,0,,,,0,0
+5421,Saint Peters Sutters Mill Rd Neighborhood Market,Saint Peters,MO,63376,0,,,,0,0
+3061,Shrewsbury Supercenter,Shrewsbury,MO,63119,0,,,,0,0
+5427,St Peters Neighborhood Market,St. Peters,MO,63376,0,,,,0,0
+6469,Byram Supercenter,Byram,MS,39272,,,,0,0,0
+3059,Canton Supercenter,Canton,MS,39046,,,,0,0,0
+1710,Clinton Supercenter,Clinton,MS,39056,,,,0,0,0
+2755,Flowood Supercenter,Flowood,MS,39232,,,,0,0,0
+954,Hazlehurst Supercenter,Hazlehurst,MS,39083,,,,0,0,0
+2720,Madison Supercenter,Madison,MS,39110,,,,0,0,0
+2939,Richland Supercenter,Richland,MS,39218,,,,0,0,0
+3889,Apex Supercenter,Apex,NC,27502,0,0,,,0,0
+5085,Belmont Supercenter,Belmont,NC,28012,0,0,0,0,0,0
+2247,Cary Kildaire Farm Rd Supercenter,Cary,NC,27518,0,0,,,0,0
+2414,Cary N Harrison Ave Neighborhood Market,Cary,NC,27513,0,0,,,0,0
+4157,Cary N Carolina 55 Neighborhood Market,Cary,NC,27519,0,0,,,0,0
+3182,Chapel Hill Supercenter,Chapel Hill,NC,27517,0,0,,,0,0
+1452,Charlotte Pineville Matthews Rd Supercenter,Charlotte,NC,28226,0,0,0,0,0,0
+1464,Charlotte S Tryon St Supercenter,Charlotte,NC,28273,0,0,0,0,0,0
+1666,Charlotte E Independence Blvd Supercenter,Charlotte,NC,28205,0,0,0,0,0,0
+1821,Charlotte Albemarle Rd Store,Charlotte,NC,28227,0,0,0,0,0,0
+2134,Charlotte N Tryon St Supercenter,Charlotte,NC,28262,0,0,0,0,0,0
+3371,Charlotte Wilkinson Blvd Supercenter,Charlotte,NC,28208,0,0,0,0,0,0
+4148,Charlotte E Wt Harris Blvd Neighborhood Market,Charlotte,NC,28227,0,0,0,0,0,0
+4848,Charlotte Pineville Matthews Rd Neighborhood Market,Charlotte,NC,28226,0,0,0,0,0,0
+5063,Charlotte Galleria Blvd Supercenter,Charlotte,NC,28270,0,0,0,0,0,0
+5481,Charlotte Callabridge Court Supercenter,Charlotte,NC,28216,0,0,0,0,0,0
+6233,Charlotte N Tryon St Neighborhood Market,Charlotte,NC,28262,0,0,0,0,0,0
+4594,Cherryville Supercenter,Cherryville,NC,28021,0,0,0,0,0,0
+5046,Clayton Supercenter,Clayton,NC,27520,0,0,,,0,0
+1027,Concord Commons Supercenter,Concord,NC,28027,0,0,0,0,0,0
+4574,Concord Supercenter,Concord,NC,28027,0,0,0,0,0,0
+6586,Concord Concord Parkway S Neighborhood Market,Concord,NC,28027,0,0,0,0,0,0
+7004,Dallas Neighborhood Market,Dallas,NC,28034,0,0,0,0,0,0
+4274,Denver Supercenter,Denver,NC,28037,0,0,0,0,0,0
+1614,Durham Glenn School Rd Supercenter,Durham,NC,27704,0,0,,,0,0
+2137,Durham New Hope Commons Drive Supercenter,Durham,NC,27707,0,0,,,0,0
+1237,Erwin Supercenter,Erwin,NC,28339,0,0,,,0,0
+2836,Fuquay Varina Supercenter,Fuquay Varina,NC,27526,0,0,,,0,0
+5743,Garner Supercenter,Garner,NC,27529,0,0,,,0,0
+5298,Gastonia N Myrtle School Rd Supercenter,Gastonia,NC,28052,0,0,0,0,0,0
+7062,Gastonia S New Hope Rd Neighborhood Market,Gastonia,NC,28054,0,0,0,0,0,0
+1191,Hillsborough Supercenter,Hillsborough,NC,27278,0,0,,,0,0
+4458,Holly Springs Supercenter,Holly Springs,NC,27540,0,0,,,0,0
+5879,Huntersville Supercenter,Huntersville,NC,28078,0,0,0,0,0,0
+3700,Indian Trail Supercenter,Indian Trail,NC,28079,0,0,0,0,0,0
+2005,Kannapolis Supercenter,Kannapolis,NC,28083,0,0,0,0,0,0
+7146,Kings Mountain Neighborhood Market,Kings Mountain,NC,28086,0,0,0,0,0,0
+1816,Knightdale Store,Knightdale,NC,27545,0,0,,,0,0
+1209,Lincolnton Supercenter,Lincolnton,NC,28092,0,0,0,0,0,0
+5747,Locust Supercenter,Locust,NC,28097,0,0,0,0,0,0
+1953,Louisburg Supercenter,Louisburg,NC,27549,0,0,,,0,0
+877,Monroe Supercenter,Monroe,NC,28110,0,0,0,0,0,0
+1156,Mooresville Norman Station Blvd Supercenter,Mooresville,NC,28117,0,0,0,0,0,0
+4431,Mooresville E Iredell Ave Neighborhood Market,Mooresville,NC,28115,0,0,0,0,0,0
+4147,Morrisville Davis Drive Neighborhood Market,Morrisville,NC,27560,0,0,,,0,0
+4250,Morrisville Shiloh Glenn Drive Supercenter,Morrisville,NC,27560,0,0,,,0,0
+1579,Oxford Supercenter,Oxford,NC,27565,0,0,,,0,0
+1751,Raleigh Glenwood Ave Store,Raleigh,NC,27612,0,0,,,0,0
+2058,Raleigh New Hope Church Rd Supercenter,Raleigh,NC,27609,0,0,,,0,0
+4484,Raleigh Town Drive Supercenter,Raleigh,NC,27616,0,0,,,0,0
+5118,Raleigh Glenwood Ave Supercenter,Raleigh,NC,27617,0,0,,,0,0
+5292,Raleigh New Bern Ave Supercenter,Raleigh,NC,27610,0,0,,,0,0
+1321,Smithfield Supercenter,Smithfield,NC,27577,0,0,,,0,0
+5254,Wake Forest Supercenter,Wake Forest,NC,27587,0,0,,,0,0
+7180,Waxhaw Neighborhood Market,Waxhaw,NC,28173,0,0,0,0,0,0
+4499,Zebulon Supercenter,Zebulon,NC,27597,0,0,,,0,0
+4352,Fargo 55th Ave S Supercenter,Fargo,ND,58104,0,,0,,0,0
+2847,Bellevue Supercenter,Bellevue,NE,68123,0,,,,0,0
+3154,Bellevue Towne Centre Drive Neighborhood Market,Bellevue,NE,68123,0,,,,0,0
+4568,Blair Supercenter,Blair,NE,68008,0,,,,0,0
+776,Fremont Supercenter,Fremont,NE,68025,0,,,,0,0
+4600,Gretna Supercenter,Gretna,NE,68028,0,,,,0,0
+3173,La Vista Neighborhood Market,La Vista,NE,68128,0,,,,0,0
+1637,Irvington Supercenter,Omaha,NE,68134,0,,,,0,0
+3151,Omaha Ames Ave Supercenter,Omaha,NE,68104,0,,,,0,0
+3152,Omaha N 90th St Neighborhood Market,Omaha,NE,68134,0,,,,0,0
+3153,Omaha S 167th St Neighborhood Market,Omaha,NE,68135,0,,,,0,0
+3172,Omaha L St Neighborhood Market,Omaha,NE,68117,0,,,,0,0
+3267,Omaha Wright St Supercenter,Omaha,NE,68130,0,,,,0,0
+4138,Omaha Birch Drive Neighborhood Market,Omaha,NE,68164,0,,,,0,0
+4139,Omaha N Saddle Creek Rd Neighborhood Market,Omaha,NE,68131,0,,,,0,0
+4358,Omaha S 72nd St Supercenter,Omaha,NE,68124,0,,,,0,0
+5141,Omaha W Maple Rd Supercenter,Omaha,NE,68116,0,,,,0,0
+5361,Omaha L St Supercenter,Omaha,NE,68137,0,,,,0,0
+1671,Papillion Supercenter,Papillion,NE,68133,0,,,,0,0
+1753,Derry Supercenter,Derry,NH,03038,,0,0,0,0,0
+3535,Epping Supercenter,Epping,NH,03042,,0,0,0,0,0
+2639,Gilford Supercenter,Gilford,NH,03249,,0,0,0,0,0
+1698,Hooksett Supercenter,Hooksett,NH,03106,,0,0,0,0,0
+1785,Hudson Store,Hudson,NH,03051,0,0,0,0,0,0
+2399,Manchester Supercenter,Manchester,NH,03103,,0,0,0,0,0
+1930,Plaistow Store,Plaistow,NH,03865,0,0,0,0,0,0
+2330,Rochester Supercenter,Rochester,NH,03867,,0,0,0,0,0
+2142,Salem Supercenter,Salem,NH,03079,0,0,0,0,0,0
+1749,Somersworth Supercenter,Somersworth,NH,03878,,0,0,0,0,0
+2369,Tilton Supercenter,Tilton,NH,03276,,0,0,0,0,0
+5047,Audubon Store,Audubon,NJ,08106,0,0,0,0,0,0
+5867,Bayonne Supercenter,Bayonne,NJ,07002,0,0,0,,0,0
+5077,Boonton Store,Boonton,NJ,07005,0,0,0,,0,0
+2040,Burlington Supercenter,Burlington,NJ,08016,0,,,,0,0
+3598,Cedar Knolls Store,Cedar Knolls,NJ,07927,0,0,0,,0,0
+5340,Cherry Hill Store,Cherry Hill,NJ,08002,0,0,,0,0,0
+2871,Cinnaminson Supercenter,Cinnaminson,NJ,08077,0,,,,0,0
+3422,Deptford Supercenter,Deptford,NJ,08096,0,0,0,0,0,0
+3078,East Brunswick Supercenter,East Brunswick,NJ,08816,0,0,0,,0,0
+5201,Edison Store,Edison,NJ,08817,0,0,0,,0,0
+3212,Egg Hbr Twp Supercenter,Egg Hbr Twp,NJ,08234,,0,,0,0,0
+3291,Flanders Store,Flanders,NJ,07836,0,0,0,,0,0
+2090,Franklin Store,Franklin,NJ,07416,0,0,0,,0,0
+3236,Freehold Supercenter,Freehold,NJ,07728,0,0,0,,0,0
+5752,Garfield Supercenter,Garfield,NJ,07026,0,0,0,,0,0
+2518,Hamilton Marketplace Blvd Store,Hamilton,NJ,08691,0,,,,0,0
+5012,Nottingham Way Supercenter,Hamilton,NJ,08619,0,,,,0,0
+2254,Hammonton Store,Hammonton,NJ,08037,0,0,0,0,0,0
+5447,Kearny Supercenter,Kearny,NJ,07032,0,0,0,,0,0
+3912,Ledgewood Supercenter,Ledgewood,NJ,07852,0,0,0,,0,0
+3469,Linden Supercenter,Linden,NJ,07036,0,0,0,,0,0
+2841,Lumberton Store,Lumberton,NJ,08048,0,,,,0,0
+1869,Marlton Store,Marlton,NJ,08053,0,0,,0,0,0
+2108,Mays Landing Supercenter,Mays Landing,NJ,08330,,0,0,0,0,0
+2109,Millville Store,Millville,NJ,08332,0,0,0,0,0,0
+5944,Mount Laurel Supercenter,Mount Laurel,NJ,08054,0,0,,0,0,0
+3795,North Bergen Supercenter,North Bergen,NJ,07047,0,0,0,,0,0
+2825,Old Bridge Us 9 Store,Old Bridge,NJ,08857,0,0,0,,0,0
+4153,Old Bridge New Jersey 18 Supercenter,Old Bridge,NJ,08857,0,0,0,,0,0
+3337,Rio Grande Supercenter,Rio Grande,NJ,08242,0,0,,0,0,0
+3443,Riverdale Store,Riverdale,NJ,07457,0,0,0,,0,0
+5178,Rockaway Store,Rockaway,NJ,07866,0,0,0,,0,0
+3562,Saddle Brook Store,Saddle Brook,NJ,07663,0,0,0,,0,0
+3520,Secaucus Supercenter,Secaucus,NJ,07094,0,0,0,,0,0
+4456,Somerdale Supercenter,Somerdale,NJ,08083,0,0,0,0,0,0
+3159,Teterboro Supercenter,Teterboro,NJ,07608,0,0,0,,0,0
+3292,Union Store,Union,NJ,07083,0,0,0,,0,0
+3339,Vineland Supercenter,Vineland,NJ,08360,0,0,0,0,0,0
+5111,Watchung Store,Watchung,NJ,07069,0,0,0,,0,0
+1807,West Berlin Supercenter,West Berlin,NJ,08091,0,0,0,0,0,0
+3774,Williamstown Supercenter,Williamstown,NJ,08094,0,0,0,0,0,0
+5281,Woodbridge Store,Woodbridge,NJ,07095,0,0,0,,0,0
+5476,Woodbury Supercenter,Woodbury,NJ,08096,0,0,0,0,0,0
+2656,Espanola Supercenter,Espanola,NM,87532,0,,0,,0,0
+829,Santa Fe Cerrillos Rd Store,Santa Fe,NM,87507,0,,0,,0,0
+3423,Santa Fe Herrera Drive Supercenter,Santa Fe,NM,87507,0,,0,,0,0
+2838,Henderson Marks St Supercenter,Henderson,NV,89014,,0,0,0,0,0
+3354,Henderson American Pacific Drive Neighborhood Market,Henderson,NV,89074,,0,0,0,0,0
+1560,Las Vegas S Eern Ave Supercenter,Las Vegas,NV,89119,,0,0,0,0,0
+1584,Las Vegas Spring Mountain Rd Supercenter,Las Vegas,NV,89103,,0,0,0,0,0
+1838,Las Vegas N Rainbow Blvd Cheyenne Ave Store,Las Vegas,NV,89108,,0,0,0,0,0
+2483,Las Vegas Blue Diamond Rd Supercenter,Las Vegas,NV,89178,,0,0,0,0,0
+3351,Las Vegas N Decatur Blvd Supercenter,Las Vegas,NV,89131,,0,0,0,0,0
+3355,Las Vegas S Lamb Blvd Neighborhood Market,Las Vegas,NV,89104,,0,0,0,0,0
+3356,Las Vegas S Eern Ave Neighborhood Market,Las Vegas,NV,89123,,0,0,0,0,0
+3473,Las Vegas Charleston Blvd Decatur Blvd Supercenter,Las Vegas,NV,89102,,0,0,0,0,0
+3655,Las Vegas W Cheyenne Ave Neighborhood Market,Las Vegas,NV,89129,,0,0,0,0,0
+3788,Las Vegas W Charleston Blvd Neighborhood Market,Las Vegas,NV,89146,,0,0,0,0,0
+4356,Las Vegas Arroyo Crossing Parkway Supercenter,Las Vegas,NV,89113,,0,0,0,0,0
+4557,Las Vegas E Tropicana Ave Supercenter,Las Vegas,NV,89121,,0,0,0,0,0
+5258,Las Vegas W Craig Rd Neighborhood Market,Las Vegas,NV,89130,,0,0,0,0,0
+5259,Las Vegas W Lake Mead Blvd Neighborhood Market,Las Vegas,NV,89108,,0,0,0,0,0
+5269,Las Vegas E Silverado Ranch Blvd Neighborhood Market,Las Vegas,NV,89183,,0,0,0,0,0
+5423,Las Vegas E Lake Mead Blvd Neighborhood Market,Las Vegas,NV,89156,,0,0,0,0,0
+2592,North Las Vegas W Craig Rd Supercenter,North Las Vegas,NV,89032,,0,0,0,0,0
+3728,North Las Vegas W Lake Mead Blvd Supercenter,North Las Vegas,NV,89032,,0,0,0,0,0
+4339,North Las Vegas Losee Rd Neighborhood Market,North Las Vegas,NV,89081,,0,0,0,0,0
+5306,North Las Vegas Simmons St Neighborhood Market,North Las Vegas,NV,89031,,0,0,0,0,0
+2916,East Meadow Store,East Meadow,NY,11554,0,0,0,,0,0
+4184,Levittown Neighborhood Market,Levittown,NY,11756,0,0,0,,0,0
+2905,Suffern Store,Suffern,NY,10901,0,0,0,,0,0
+2583,Uniondale Store,Uniondale,NY,11553,0,0,0,,0,0
+3420,Westbury Store,Westbury,NY,11590,0,0,0,,0,0
+3250,Aurora Supercenter,Aurora,OH,44202,0,0,0,0,0,0
+5066,Avon Supercenter,Avon,OH,44011,0,0,0,0,0,0
+5184,Canal Winchester Supercenter,Canal Winchester,OH,43110,0,0,0,0,0,0
+3293,Chardon Supercenter,Chardon,OH,44024,0,0,0,0,0,0
+1427,Circleville Supercenter,Circleville,OH,43113,0,0,0,0,0,0
+2426,Columbus Westpointe Plaza Drive Supercenter,Columbus,OH,43228,0,0,0,0,0,0
+3812,Columbus Bethel Rd Supercenter,Columbus,OH,43220,0,0,0,0,0,0
+5185,Columbus Georgesville Rd Supercenter,Columbus,OH,43228,0,0,0,0,0,0
+1990,Delaware Store,Delaware,OH,43015,0,0,0,0,0,0
+2471,Dublin Britton Parkway Supercenter,Dublin,OH,43016,0,0,0,0,0,0
+2774,Dublin Sawmill Rd Supercenter,Dublin,OH,43016,0,0,0,0,0,0
+1863,Eastlake Supercenter,Eastlake,OH,44095,0,0,0,0,0,0
+4255,Elyria Supercenter,Elyria,OH,44035,0,0,0,0,0,0
+1895,Fairlawn Store,Fairlawn,OH,44333,0,0,0,0,0,0
+5466,Grove City Supercenter,Grove City,OH,43123,0,0,0,0,0,0
+1594,Heath Supercenter,Heath,OH,43056,0,0,0,0,0,0
+3792,Lancaster Supercenter,Lancaster,OH,43130,0,0,0,0,0,0
+2725,Lewis Center Supercenter,Lewis Center,OH,43035,0,0,0,0,0,0
+5203,London Supercenter,London,OH,43140,0,0,0,0,0,0
+1839,Lorain Supercenter,Lorain,OH,44053,0,0,0,0,0,0
+1595,Marysville Supercenter,Marysville,OH,43040,0,0,0,0,0,0
+1894,Medina Supercenter,Medina,OH,44256,0,0,0,0,0,0
+1857,Mentor Store,Mentor,OH,44060,0,0,0,0,0,0
+5387,Middlefield Supercenter,Middlefield,OH,44062,0,0,0,0,0,0
+3580,Newark Supercenter,Newark,OH,43055,0,0,0,0,0,0
+2316,North Olmsted Supercenter,North Olmsted,OH,44070,0,0,0,0,0,0
+5309,Oberlin Supercenter,Oberlin,OH,44074,0,0,0,0,0,0
+2506,Ravenna Supercenter,Ravenna,OH,44266,0,0,0,0,0,0
+2726,Reynoldsburg Supercenter,Reynoldsburg,OH,43068,0,0,0,0,0,0
+2323,Stow Supercenter,Stow,OH,44224,0,0,0,0,0,0
+2313,Streetsboro Supercenter,Streetsboro,OH,44241,0,0,0,0,0,0
+2266,Strongsville Supercenter,Strongsville,OH,44136,0,0,0,0,0,0
+5857,Westerville Supercenter,Westerville,OH,43081,0,0,0,0,0,0
+3447,Whitehall Supercenter,Whitehall,OH,43213,0,0,0,0,0,0
+4195,Choctaw Supercenter,Choctaw,OK,73020,0,0,0,0,0,0
+2803,Edmond W Danforth Rd Supercenter,Edmond,OK,73003,0,0,0,0,0,0
+2876,Edmond E 2nd St Neighborhood Market,Edmond,OK,73034,0,0,0,0,0,0
+3275,Edmond Nw 164th St Neighborhood Market,Edmond,OK,73013,0,0,0,0,0,0
+227,El Reno Supercenter,El Reno,OK,73036,0,0,0,0,0,0
+108,Guthrie Supercenter,Guthrie,OK,73044,0,0,0,0,0,0
+132,Kingfisher Supercenter,Kingfisher,OK,73750,0,0,0,0,0,0
+5863,Midwest City Neighborhood Market,Midwest City,OK,73110,0,0,0,0,0,0
+277,Moore Sw 19th St Supercenter,Moore,OK,73160,0,0,0,0,0,0
+2393,Moore Se 4th St Neighborhood Market,Moore,OK,73160,0,0,0,0,0,0
+517,Mustang Supercenter,Mustang,OK,73064,0,0,0,0,0,0
+1056,Newcastle Supercenter,Newcastle,OK,73065,0,0,0,0,0,0
+212,Norman N Interstate Drive Supercenter,Norman,OK,73069,0,0,0,0,0,0
+2734,Norman 12th Ave Ne Supercenter,Norman,OK,73071,0,0,0,0,0,0
+5805,Norman W Rock Creek Rd Neighborhood Market,Norman,OK,73072,0,0,0,0,0,0
+7294,Norman Classen Blvd Supercenter,Norman,OK,73071,0,0,0,0,0,0
+7308,Norman Classen Blvd Neighborhood Market,Norman,OK,73071,0,0,0,0,0,0
+622,Oklahoma City Nw Expressway Supercenter,Oklahoma City,OK,73132,0,0,0,0,0,0
+743,Oklahoma City E Interstate 240 Service Rd Supercenter,Oklahoma City,OK,73149,0,0,0,0,0,0
+1626,Oklahoma City Penn And Memorial Supercenter,Oklahoma City,OK,73134,0,0,0,0,0,0
+2394,Oklahoma City Sw 59th St Neighborhood Market,Oklahoma City,OK,73119,0,0,0,0,0,0
+2804,Oklahoma City Belle Isle Blvd Supercenter,Oklahoma City,OK,73118,0,0,0,0,0,0
+2877,Oklahoma City N Rockwell Ave Neighborhood Market,Oklahoma City,OK,73162,0,0,0,0,0,0
+2878,Oklahoma City Sw 104th St Neighborhood Market,Oklahoma City,OK,73139,0,0,0,0,0,0
+3202,Oklahoma City S Sooner Rd Neighborhood Market,Oklahoma City,OK,73135,0,0,0,0,0,0
+3327,Oklahoma City Sw 134th St Neighborhood Market,Oklahoma City,OK,73170,0,0,0,0,0,0
+3430,Midwest City Supercenter,Oklahoma City,OK,73141,0,0,0,0,0,0
+3615,Oklahoma City Nw 23rd St Neighborhood Market,Oklahoma City,OK,73107,0,0,0,0,0,0
+5314,Oklahoma City S Western Ave Neighborhood Market,Oklahoma City,OK,73109,0,0,0,0,0,0
+5323,Oklahoma City S Santa Fe Ave Neighborhood Market,Oklahoma City,OK,73170,0,0,0,0,0,0
+7326,Oklahoma City Sw 104th St Supercenter,Oklahoma City,OK,73159,0,0,0,0,0,0
+139,Purcell Supercenter,Purcell,OK,73080,0,0,0,0,0,0
+103,Shawnee Supercenter,Shawnee,OK,74804,0,0,0,0,0,0
+5286,The Village Neighborhood Market,The Village,OK,73120,0,0,0,0,0,0
+2875,Warr Acres Neighborhood Market,Warr Acres,OK,73132,0,0,0,0,0,0
+221,Yukon Garth Brooks Blvd Supercenter,Yukon,OK,73099,0,0,0,0,0,0
+3637,Yukon E Main St Neighborhood Market,Yukon,OK,73099,0,0,0,0,0,0
+3050,Beaverton Sw Murray Blvd Neighborhood Market,Beaverton,OR,97008,0,0,0,0,0,0
+5993,Beaverton Nw Cornell Rd Neighborhood Market,Beaverton,OR,97006,0,0,0,0,0,0
+4221,Cornelius Supercenter,Cornelius,OR,97113,0,0,0,0,0,0
+3178,Gresham E Powell Blvd Neighborhood Market,Gresham,OR,97080,0,0,0,0,0,0
+5627,Gresham W Powell Blvd Neighborhood Market,Gresham,OR,97030,0,0,0,0,0,0
+5440,Happy Valley Store,Happy Valley,OR,97086,0,0,0,0,0,0
+2590,Hillsboro Neighborhood Market,Hillsboro,OR,97006,0,0,0,0,0,0
+1843,Mcminnville Store,Mcminnville,OR,97128,0,0,0,0,0,0
+3144,Milwaukie Neighborhood Market,Milwaukie,OR,97267,0,0,0,0,0,0
+2422,Saint Helens Store,Saint Helens,OR,97051,0,0,0,0,0,0
+4176,Sherwood Supercenter,Sherwood,OR,97140,0,0,0,0,0,0
+5935,Tigard Supercenter,Tigard,OR,97223,0,0,0,0,0,0
+5994,West Linn Neighborhood Market,West Linn,OR,97068,0,0,0,0,0,0
+2927,Wood Village Supercenter,Wood Village,OR,97060,0,0,0,0,0,0
+1793,Woodburn Supercenter,Woodburn,OR,97071,0,0,0,0,0,0
+4643,Baden Supercenter,Baden,PA,15005,0,0,,0,0,0
+3223,Beaver Falls Supercenter,Beaver Falls,PA,15010,0,0,,0,0,0
+2420,Belle Vernon Supercenter,Belle Vernon,PA,15012,0,0,,0,0,0
+5131,Bensalem Store,Bensalem,PA,19053,0,,,,0,0
+3252,Boothwyn Store,Boothwyn,PA,19061,0,0,0,0,0,0
+1885,Butler Supercenter,Butler,PA,16001,0,0,,0,0,0
+5040,Carnegie Store,Carnegie,PA,15106,0,0,,0,0,0
+1770,Cranberry Township Supercenter,Cranberry Township,PA,16066,0,0,,0,0,0
+3228,Delmont Supercenter,Delmont,PA,15626,0,0,,0,0,0
+2830,Eddystone Store,Eddystone,PA,19022,0,0,0,0,0,0
+2167,Exton Store,Exton,PA,19341,0,,,,0,0
+2603,Gibsonia Store,Gibsonia,PA,15044,0,0,,0,0,0
+5495,Glenolden Store,Glenolden,PA,19036,0,0,0,0,0,0
+2059,Greensburg Supercenter,Greensburg,PA,15601,0,0,,0,0,0
+2236,Harleysville Store,Harleysville,PA,19438,0,,,,0,0
+2445,Hatfield Supercenter,Hatfield,PA,19440,0,,,,0,0
+3541,Kennett Square Supercenter,Kennett Square,PA,19348,0,,,,0,0
+4687,King Of Prussia Supercenter,King Of Prussia,PA,19406,0,,,,0,0
+1820,Kittanning Supercenter,Kittanning,PA,16201,0,0,,0,0,0
+2502,Latrobe Supercenter,Latrobe,PA,15650,0,0,,0,0,0
+2068,Levittown Supercenter,Levittown,PA,19055,0,,,,0,0
+1883,Monaca Supercenter,Monaca,PA,15061,0,0,,0,0,0
+4644,Moon Township Supercenter,Moon Township,PA,15108,0,0,,0,0,0
+2611,Mount Pleasant Supercenter,Mount Pleasant,PA,15666,0,0,,0,0,0
+3738,Natrona Heights Supercenter,Natrona Heights,PA,15065,0,0,,0,0,0
+3475,Norristown Supercenter,Norristown,PA,19403,0,,,,0,0
+5241,North Huntingdon Supercenter,North Huntingdon,PA,15642,0,0,,0,0,0
+2588,North Versailles Supercenter,North Versailles,PA,15137,0,0,,0,0,0
+2141,Philadelphia S Christopher Columbus Blvd Supercenter,Philadelphia,PA,19148,0,0,,0,0,0
+2650,Philadelphia Mills Cntr Supercenter,Philadelphia,PA,19154,0,,,,0,0
+5103,Philadelphia Adams Ave Store,Philadelphia,PA,19124,0,,,,0,0
+5130,Philadelphia Grant Ave Store,Philadelphia,PA,19114,0,,,,0,0
+5891,Philadelphia Aramingo Ave Supercenter,Philadelphia,PA,19137,0,,,,0,0
+2300,Pittsburgh Supercenter,Pittsburgh,PA,15275,0,0,,0,0,0
+2263,Pottstown Supercenter,Pottstown,PA,19464,0,,,,0,0
+2519,Shrewsbury Supercenter,Shrewsbury,PA,17361,0,0,0,0,0,0
+5881,Springfield Supercenter,Springfield,PA,19064,0,,,,0,0
+3838,Tarentum Supercenter,Tarentum,PA,15084,0,0,,0,0,0
+2096,Warminster Supercenter,Warminster,PA,18974,0,,,,0,0
+5649,Warrington Supercenter,Warrington,PA,18976,0,,,,0,0
+1739,Washington Supercenter,Washington,PA,15301,0,0,,0,0,0
+4501,West Brownsville Supercenter,West Brownsville,PA,15417,0,0,,0,0,0
+2281,West Mifflin Supercenter,West Mifflin,PA,15122,0,0,,0,0,0
+3564,Willow Grove Supercenter,Willow Grove,PA,19090,0,,,,0,0
+5229,Wyncote Store,Wyncote,PA,19095,0,,,,0,0
+2283,Coventry Supercenter,Coventry,RI,02816,,0,0,0,0,0
+1873,Cranston Supercenter,Cranston,RI,02921,,0,0,0,0,0
+2885,Newport Store,Newport,RI,02840,,0,0,0,0,0
+2261,North Kingstown Supercenter,North Kingstown,RI,02852,,0,0,0,0,0
+2225,North Smithfield Supercenter,North Smithfield,RI,02896,0,0,0,0,0,0
+3301,Providence Store,Providence,RI,02904,,0,0,0,0,0
+2373,Warwick Post Rd Store,Warwick,RI,02888,,0,0,0,0,0
+2747,Warwick Bald Hill Rd Store,Warwick,RI,02886,,0,0,0,0,0
+634,Camden Supercenter,Camden,SC,29020,0,0,,0,0,0
+5378,Cayce Neighborhood Market,Cayce,SC,29033,0,0,,0,0,0
+1286,Columbia Garners Ferry Rd Supercenter,Columbia,SC,29209,0,0,,0,0,0
+1339,Columbia Two Notch Rd Supercenter,Columbia,SC,29223,0,0,,0,0,0
+2214,Columbia Forest Drive Supercenter,Columbia,SC,29206,0,0,,0,0,0
+4506,Columbia Killian Rd Supercenter,Columbia,SC,29203,0,0,,0,0,0
+5291,Columbia Old Barnwell Rd Neighborhood Market,Columbia,SC,29170,0,0,,0,0,0
+3359,Fort Mill Neighborhood Market,Fort Mill,SC,29715,0,0,0,0,0,0
+4237,Indian Land Supercenter,Indian Land,SC,29707,0,0,0,0,0,0
+4440,Irmo Supercenter,Irmo,SC,29063,0,0,,0,0,0
+5745,Lake Wylie Supercenter,Lake Wylie,SC,29710,0,0,0,0,0,0
+1030,Lancaster Supercenter,Lancaster,SC,29720,0,0,0,0,0,0
+4420,Leesville Supercenter,Leesville,SC,29070,0,0,,0,0,0
+4521,Lexington S Lake Drive Supercenter,Lexington,SC,29073,0,0,,0,0,0
+616,Orangeburg N Rd Supercenter,Orangeburg,SC,29118,0,0,,0,0,0
+585,Rock Hill Dave Lyle Blvd Supercenter,Rock Hill,SC,29730,0,0,0,0,0,0
+4593,Rock Hill Old York Rd Supercenter,Rock Hill,SC,29732,0,0,0,0,0,0
+6962,Rock Hill Cherry Rd Neighborhood Market,Rock Hill,SC,29730,0,0,0,0,0,0
+3733,Tega Cay Supercenter,Tega Cay,SC,29708,0,0,0,0,0,0
+1183,West Columbia Supercenter,West Columbia,SC,29169,0,0,,0,0,0
+1144,York Supercenter,York,SC,29745,0,0,0,0,0,0
+2443,Sioux Falls S Minnesota Ave Supercenter,Sioux Falls,SD,57108,0,,0,,0,0
+3237,Sioux Falls E Arrowhead Parkway Supercenter,Sioux Falls,SD,57110,0,,0,,0,0
+4865,Sioux Falls W 60th St N Supercenter,Sioux Falls,SD,57107,0,,0,,0,0
+5058,Antioch Supercenter,Antioch,TN,37013,0,0,0,,0,0
+1226,Ashland City Supercenter,Ashland City,TN,37015,0,0,0,,0,0
+264,Dickson Supercenter,Dickson,TN,37055,0,0,0,,0,0
+3137,Fairview Supercenter,Fairview,TN,37062,0,0,0,,0,0
+272,Franklin Supercenter,Franklin,TN,37067,0,0,0,,0,0
+674,Gallatin Supercenter,Gallatin,TN,37066,0,0,0,,0,0
+1376,Hendersonville Supercenter,Hendersonville,TN,37075,0,0,0,,0,0
+710,Hermitage Supercenter,Hermitage,TN,37076,0,0,0,,0,0
+7020,La Vergne Supercenter,La Vergne,TN,37086,0,0,0,,0,0
+671,Lebanon Supercenter,Lebanon,TN,37087,0,0,0,,0,0
+695,Rivergate Gallatin Pike N Supercenter,Madison,TN,37115,0,0,0,,0,0
+5107,Madison Gallatin Pike N Neighborhood Market,Madison,TN,37115,0,0,0,,0,0
+4482,Mount Juliet Supercenter,Mount Juliet,TN,37122,0,0,0,,0,0
+416,Murfreesboro Joe B Jackson Parkway Supercenter,Murfreesboro,TN,37127,0,0,0,,0,0
+682,Murfreesboro Old Fort Parkway Supercenter,Murfreesboro,TN,37129,0,0,0,,0,0
+2757,Murfreesboro Memorial Blvd Supercenter,Murfreesboro,TN,37129,0,0,0,,0,0
+5057,Murfreesboro S Rutherford Blvd Supercenter,Murfreesboro,TN,37130,0,0,0,,0,0
+5148,Murfreesboro Fortress Blvd Neighborhood Market,Murfreesboro,TN,37128,0,0,0,,0,0
+5182,Mufreesboro New Salem Hwy Cason Ln Neighborhood Market,Murfreesboro,TN,37128,0,0,0,,0,0
+659,Nashville Charlotte Pike Supercenter,Nashville,TN,37209,0,0,0,,0,0
+3717,Nashville 4040 Nolensville Pike Harding Place Supercenter,Nashville,TN,37211,0,0,0,,0,0
+4435,Nashville Dickerson Pike Supercenter,Nashville,TN,37207,0,0,0,,0,0
+5119,Nashville Edmondson Pike Neighborhood Market,Nashville,TN,37211,0,0,0,,0,0
+5616,Nashville Powell Ave 100 Oaks Supercenter,Nashville,TN,37204,0,0,0,,0,0
+406,Smyrna Supercenter,Smyrna,TN,37167,0,0,0,,0,0
+3017,Spring Hill Supercenter,Spring Hill,TN,37174,0,0,0,,0,0
+304,Springfield Supercenter,Springfield,TN,37172,0,0,0,,0,0
+4483,White House Supercenter,White House,TN,37188,0,0,0,,0,0
+5929,Battle Ground Supercenter,Battle Ground,WA,98604,0,0,0,0,0,0
+2550,Vancouver Ne 104th Ave Supercenter,Vancouver,WA,98664,0,0,0,0,0,0
+2947,Vancouver Ne Hwy 99 Store,Vancouver,WA,98665,0,0,0,0,0,0
+3145,Vancouver Grand Blvd Neighborhood Market,Vancouver,WA,98661,0,0,0,0,0,0
+5461,Vancouver Ne Fourth Plain Blvd Supercenter,Vancouver,WA,98682,0,0,0,0,0,0
+5462,Vancouver Se 192nd Ave Supercenter,Vancouver,WA,98683,0,0,0,0,0,0
+3742,Woodland Supercenter,Woodland,WA,98674,0,0,0,0,0,0
+1365,Hudson Store,Hudson,WI,54016,0,0,,,0,0
+1948,Weirton Supercenter,Weirton,WV,26062,0,0,,0,0,0
