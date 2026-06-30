@@ -105,24 +105,30 @@ def proxy_for(creds, sessid):
 
 
 class Session:
-    def __init__(self, pw, creds, headless):
-        self.pw, self.creds, self.headless = pw, creds, headless
+    def __init__(self, pw, creds, headless, channel="chrome"):
+        self.pw, self.creds, self.headless, self.channel = pw, creds, headless, channel
         self.ctx = self.page = self.udd = None
         self.started = 0
 
     def open(self):
         sessid = secrets.token_hex(4)
-        self.udd = tempfile.mkdtemp(prefix="wmctx_")
-        self.ctx = self.pw.chromium.launch_persistent_context(
-            self.udd, channel="chrome", headless=self.headless,
-            proxy=proxy_for(self.creds, sessid), no_viewport=True, args=["--no-sandbox"])
+        self.udd = tempfile.mkdtemp(prefix="wmctx_")   # throwaway profile, isolated
+        # vary the fingerprint every session so there's no fixed signature
+        tz = random.choice(["America/New_York", "America/Chicago", "America/Denver",
+                            "America/Los_Angeles", "America/Phoenix", "America/Detroit"])
+        kw = dict(headless=self.headless, proxy=proxy_for(self.creds, sessid),
+                  no_viewport=True, locale="en-US", timezone_id=tz,
+                  color_scheme=random.choice(["light", "dark", "no-preference"]),
+                  args=["--no-sandbox"])    # patchright handles the automation-flag stripping
+        if self.channel:                    # "chrome" = real Chrome; None = standalone Chromium
+            kw["channel"] = self.channel
+        self.ctx = self.pw.chromium.launch_persistent_context(self.udd, **kw)
         self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.started = time.time()
         ip = self._exit_ip()
         if not ip:
-            print(f"  session {sessid}: PROXY not reachable")
-            return False
-        print(f"  session {sessid}: proxy OK, exit IP {ip}")
+            print(f"  session {sessid}: proxy not reachable"); return False
+        print(f"  session {sessid}: proxy OK ({ip}, {tz.split('/')[-1]})")
         return self._warm(sessid)
 
     def _exit_ip(self):
@@ -135,48 +141,72 @@ class Session:
             return None
 
     def _api_works(self):
-        """One real nearByNodes call against a known-busy ZIP. The true test of a
+        """One real nearByNodes call against a random busy ZIP. The true test of a
         session: not 'did the page load' but 'can we actually pull store data'."""
         try:
-            res = self.page.evaluate(PAGE_JS, {"zip": "60601", "state": "IL",
+            z, st = random.choice([("60601", "IL"), ("75201", "TX"), ("30303", "GA"),
+                                   ("33101", "FL"), ("85004", "AZ"), ("98101", "WA"),
+                                   ("19102", "PA"), ("80202", "CO")])
+            res = self.page.evaluate(PAGE_JS, {"zip": z, "state": st,
                 "products": [{"key": "_t", "product_id": "2HZGMGX9CH7B"}], "hash": QUERY_HASH})
             return len(res) > 0
         except Exception:
             return False
 
     def _act_human(self):
-        """Generate real human telemetry so PerimeterX raises the trust score that
-        the store API requires — mouse movement, scrolling, dwell."""
+        """Generate genuinely random human telemetry — no two sessions alike — so
+        PerimeterX raises the trust score the store API requires and can't learn a
+        fixed pattern. Mixes mouse paths, scrolls, key presses, hovers, dwell."""
         try:
-            self.page.wait_for_timeout(random.randint(1500, 3000))
-            for _ in range(random.randint(4, 7)):
-                self.page.mouse.move(random.randint(80, 1200), random.randint(120, 800),
-                                     steps=random.randint(5, 15))
-                self.page.wait_for_timeout(random.randint(180, 650))
-            for _ in range(random.randint(2, 4)):
-                self.page.mouse.wheel(0, random.randint(400, 1300))
-                self.page.wait_for_timeout(random.randint(900, 2200))
-            self.page.mouse.wheel(0, -random.randint(200, 700))
-            self.page.wait_for_timeout(random.randint(1200, 2600))
+            w, h = 1280, 800
+            for _ in range(random.randint(5, 12)):
+                roll = random.random()
+                if roll < 0.45:                              # natural mouse drift
+                    self.page.mouse.move(random.randint(15, w - 15), random.randint(70, h - 15),
+                                         steps=random.randint(6, 28))
+                elif roll < 0.78:                            # scroll down (mostly) / up
+                    self.page.mouse.wheel(0, random.randint(220, 1500) * random.choice([1, 1, 1, 1, -1]))
+                elif roll < 0.90:                            # keyboard scroll
+                    try:
+                        self.page.keyboard.press(random.choice(["PageDown", "ArrowDown", "End", "Home"]))
+                    except Exception:
+                        pass
+                else:                                        # tiny jitter / pause (reading)
+                    self.page.mouse.move(random.randint(400, 900), random.randint(300, 600),
+                                         steps=random.randint(2, 6))
+                self.page.wait_for_timeout(random.randint(220, 1900))
+            if random.random() < 0.55:                       # occasional longer read
+                self.page.wait_for_timeout(random.randint(1800, 6000))
         except Exception:
             pass
 
     def _warm(self, sessid):
-        # Load the page so PerimeterX's sensor runs.
+        # Randomize the arrival path so the navigation pattern isn't fixed: sometimes
+        # land on the homepage and browse in, sometimes go straight to a product.
         try:
-            self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=25000)
+            path = random.random()
+            if path < 0.5:
+                self.page.goto("https://www.walmart.com/", wait_until="domcontentloaded", timeout=25000)
+                self._act_human()
+                self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=25000)
+            elif path < 0.8:
+                self.page.goto("https://www.walmart.com/cp/scrubs/1101516", wait_until="domcontentloaded", timeout=25000)
+                self._act_human()
+                self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=25000)
+            else:
+                self.page.goto(WARMUP_URL, wait_until="domcontentloaded", timeout=25000)
         except Exception:
             pass
-        # Behave like a shopper to build trust, THEN prove the API works — being
-        # patient, since the score climbs as the sensor keeps reporting.
+        # Behave like a shopper to build trust, THEN prove the API works — patiently,
+        # re-acting human between attempts, since the score climbs as the sensor reports.
         self._act_human()
-        for i in range(6):
+        for i in range(random.randint(6, 9)):
             if self._api_works():
-                print(f"  session {sessid}: API ready (after warm-up)")
+                print(f"  session {sessid}: API ready ✓")
                 return True
-            self.page.wait_for_timeout(random.randint(2500, 4000))
-            if i == 2:
-                self._act_human()      # another burst of activity mid-wait
+            self.page.wait_for_timeout(random.randint(2500, 5500))
+            if random.random() < 0.5:
+                self._act_human()
         print(f"  session {sessid}: warmed but API blocked")
         return False
 
@@ -352,7 +382,7 @@ def run_crawl(args, js_products, frontier, seen, on_result, expand):
         print("WARNING: DI_PROXY not set — Walmart will block a cloud IP.")
     t0 = time.time()
     with sync_playwright() as pw:
-        sess = Session(pw, creds, args.headless)
+        sess = Session(pw, creds, args.headless, channel=(None if args.bundled else "chrome"))
 
         def fresh():
             for a in range(10):          # keep hunting — good IPs are worth the wait
@@ -381,6 +411,8 @@ def main():
     ap.add_argument("--min-stores", type=int, default=100)
     ap.add_argument("--delay", type=float, default=0.2)
     ap.add_argument("--headless", action="store_true")
+    ap.add_argument("--bundled", action="store_true",
+                    help="use a standalone Chromium instead of system Chrome (full isolation)")
     args = ap.parse_args()
 
     products = list(csv.DictReader(open(args.products)))

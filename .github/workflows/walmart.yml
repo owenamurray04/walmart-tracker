@@ -4,9 +4,11 @@ name: Walmart store availability
 # then checks all colorways across the full covering set, committing after each
 # step. Trigger it once and it runs the whole thing.
 on:
-  schedule:
-    - cron: "0 13 * * 1"      # every Monday 13:00 UTC (skips discovery once it's done)
-  workflow_dispatch: {}        # run manually from the Actions tab
+  # Cloud scraping is disabled — we now run on Owen's Mac (real fingerprint) via
+  # "Run on My Mac.command". Left here only for optional manual cloud attempts.
+  # schedule:
+  #   - cron: "0 13 * * 1"
+  workflow_dispatch: {}        # run manually from the Actions tab if ever wanted
 
 permissions:
   contents: write
@@ -27,6 +29,7 @@ jobs:
       - name: Discover every store, then check all colorways
         env:
           DI_PROXY: ${{ secrets.DI_PROXY }}
+          GH_PAT: ${{ secrets.PAT }}        # optional: enables auto-relaunch until it breaks through
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
@@ -45,7 +48,7 @@ jobs:
           # --- Phase 1: discovery loop until the store count plateaus ---
           if [ ! -f discovery_done ]; then
             prev=$(count); prev=${prev:-0}
-            for pass in $(seq 1 6); do
+            for pass in $(seq 1 4); do
               echo "::group::discovery pass $pass"
               run --mode discover --max-minutes 35
               cur=$(count); cur=${cur:-0}
@@ -64,6 +67,17 @@ jobs:
 
           # --- Phase 2: full availability pass over every store ---
           echo "::group::weekly availability (all colorways)"
-          run --mode weekly --max-minutes 80
+          run --mode weekly --max-minutes 70
           commit "full availability update"
           echo "::endgroup::"
+
+          # --- Keep relaunching itself (with a cooldown) until discovery breaks
+          #     through, up to 100 attempts. Needs a PAT secret named PAT. ---
+          n=$(cat attempts.txt 2>/dev/null || echo 0); n=$((n+1)); echo "$n" > attempts.txt
+          commit "attempt $n"
+          if [ ! -f discovery_done ] && [ "$n" -lt 100 ] && [ -n "$GH_PAT" ]; then
+            echo "not through yet — cooling down, then relaunching (attempt $n/100)"
+            sleep 180
+            GH_TOKEN="$GH_PAT" gh workflow run walmart.yml \
+              && echo "relaunched" || echo "self-dispatch failed (check PAT)"
+          fi
