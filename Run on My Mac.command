@@ -25,7 +25,7 @@ fi
 if ! python3 -c "import patchright" 2>/dev/null; then
   echo "  First run: installing the browser engine (one-time, ~1-2 min)…"
   python3 -m pip install --quiet patchright 2>/dev/null || pip3 install --quiet patchright
-  python3 -m patchright install chromium
+  python3 -m patchright install chrome
 fi
 
 count () { tail -n +2 all_stores.csv 2>/dev/null | wc -l | tr -d ' '; }
@@ -35,7 +35,7 @@ commit () {
   git pull --rebase --autostash -q origin main 2>/dev/null
   git push -q origin HEAD:main 2>/dev/null && echo "    ↳ pushed — dashboard will refresh"
 }
-run () { python3 -u walmart_store_check.py "$@" --seeds sample_zips.csv --bundled --delay 0.2; }
+run () { python3 -u walmart_store_check.py "$@" --seeds sample_zips.csv --delay 0.2; }
 
 # --- Phase 1: discover every store (loops until the count stops growing) ---
 if [ ! -f discovery_done ]; then
