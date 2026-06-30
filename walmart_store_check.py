@@ -71,9 +71,14 @@ async ({zip, state, products, hash}) => {
       disableNodeAddressPostalCode:false,enableWICStoreSelector:false};
     headers['x-o-correlation-id'] = Math.random().toString(36).slice(2);
     try {
-      const r = await fetch("/orchestra/home/graphql/nearByNodes/" + hash +
-        "?variables=" + encodeURIComponent(JSON.stringify(v)),
-        {headers, credentials:'include'});
+      const ac = new AbortController();
+      const to = setTimeout(() => ac.abort(), 15000);   // never let a fetch hang
+      let r;
+      try {
+        r = await fetch("/orchestra/home/graphql/nearByNodes/" + hash +
+          "?variables=" + encodeURIComponent(JSON.stringify(v)),
+          {headers, credentials:'include', signal: ac.signal});
+      } finally { clearTimeout(to); }
       if (!(r.headers.get('content-type')||'').includes('application/json')) continue;
       const j = await r.json();
       const nodes = (j.data && j.data.nearByNodes && j.data.nearByNodes.nodes) || [];
@@ -165,6 +170,8 @@ def main():
     ap.add_argument("--products", default="products_tracked.csv")
     ap.add_argument("--max-zips", type=int, default=0)
     ap.add_argument("--min-stores", type=int, default=100)
+    ap.add_argument("--max-minutes", type=int, default=90,
+                    help="hard time budget; commits whatever it has when reached")
     ap.add_argument("--delay", type=float, default=0.2)
     ap.add_argument("--headless", action="store_true", help="run headless (CI uses xvfb + headful)")
     args = ap.parse_args()
@@ -206,9 +213,16 @@ def main():
 
         empties = 0; n_zip = 0
         while frontier:
+            # hard time budget — always finish and commit within the window
+            if args.max_minutes and (time.time() - t0) > args.max_minutes * 60:
+                print(f"  reached {args.max_minutes}-min budget — stopping with "
+                      f"{len(stores)} stores so far")
+                break
             if sess.expired():
                 print("  sticky IP window elapsed — rotating session")
-                fresh_session()
+                if not fresh_session():
+                    print("  could not re-establish a session — stopping with what we have")
+                    break
             z, st = frontier.popleft(); n_zip += 1
             try:
                 got = sess.query(z, st, js_products)
@@ -219,7 +233,10 @@ def main():
                 empties += 1
                 if empties >= 10:           # current IP likely flagged — rotate
                     print("  empty streak — rotating session")
-                    fresh_session(); empties = 0
+                    if not fresh_session():
+                        print("  sessions keep getting blocked — stopping with what we have")
+                        break
+                    empties = 0
             else:
                 empties = 0
                 for s in got:

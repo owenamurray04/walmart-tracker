@@ -12,6 +12,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +28,7 @@ jobs:
         env:
           DI_PROXY: ${{ secrets.DI_PROXY }}            # DataImpulse endpoint
         run: |
-          xvfb-run --auto-servernum python walmart_store_check.py --seeds sample_zips.csv --delay 0.2
+          xvfb-run --auto-servernum python -u walmart_store_check.py --seeds sample_zips.csv --delay 0.2
 
       - name: Commit results
         run: |
