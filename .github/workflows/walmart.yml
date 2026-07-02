@@ -1,14 +1,30 @@
-name: Walmart store availability
+name: Walmart weekly availability
 
-# Self-driving: discovers every store (looping until the count stops growing),
-# then checks all colorways across the full covering set, committing after each
-# step. Trigger it once and it runs the whole thing.
+# Checks every product across every store in the map, via Bright Data Web
+# Unlocker (plain HTTP — runs fine on cloud runners, no browser needed).
+#
+# - Runs every Monday 13:00 UTC, or trigger manually from the Actions tab
+#   (where you can override the budget or product list).
+# - Resumable: progress checkpoints are committed even if the run fails or
+#   times out, so re-running never re-bills completed calls.
+# - Requires one repo secret: BRD_PROXY (Settings → Secrets → Actions):
+#   http://brd-customer-XXX-zone-walmart_unlocker:PASS@brd.superproxy.io:33335
+#
+# Store-map refreshes (new/closed stores) are separate and cheap — run
+# gapfill_stores.py locally every month or two.
+
 on:
-  # Cloud scraping is disabled — we now run on Owen's Mac (real fingerprint) via
-  # "Run on My Mac.command". Left here only for optional manual cloud attempts.
+  # Manual-only for now. To go back to autopilot, uncomment:
   # schedule:
   #   - cron: "0 13 * * 1"
-  workflow_dispatch: {}        # run manually from the Actions tab if ever wanted
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: "Max billed calls (1000 = $1.50)"
+        default: "12500"
+      products:
+        description: "Product list CSV"
+        default: "products.csv"
 
 permissions:
   contents: write
@@ -16,68 +32,33 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 355       # stays under GitHub's 6-hour ceiling
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install patchright
-      - run: python -m patchright install --with-deps chrome
-      - run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      - name: Discover every store, then check all colorways
+      - run: pip install requests
+
+      - name: Sweep all products across all stores
         env:
-          DI_PROXY: ${{ secrets.DI_PROXY }}
-          GH_PAT: ${{ secrets.PAT }}        # optional: enables auto-relaunch until it breaks through
+          BRD_PROXY: ${{ secrets.BRD_PROXY }}
+        run: |
+          python -u weekly_check.py \
+            --budget  "${{ github.event.inputs.budget   || '12500' }}" \
+            --products "${{ github.event.inputs.products || 'products.csv' }}"
+
+      - name: Commit results (even on failure/timeout, to save the checkpoint)
+        if: always()
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-
-          commit () {
-            git add -A
-            git commit -m "$1 $(date -u +%H:%M)" >/dev/null 2>&1 || return 0
-            for i in 1 2 3 4 5; do
-              git pull --rebase --autostash origin main && git push origin HEAD:main && return 0
-              sleep 5
-            done
-          }
-          run () { xvfb-run --auto-servernum python -u walmart_store_check.py "$@" --seeds sample_zips.csv --delay 0.2 || true; }
-          count () { tail -n +2 all_stores.csv 2>/dev/null | wc -l | tr -d ' '; }
-
-          # --- Phase 1: discovery loop until the store count plateaus ---
-          if [ ! -f discovery_done ]; then
-            prev=$(count); prev=${prev:-0}
-            for pass in $(seq 1 4); do
-              echo "::group::discovery pass $pass"
-              run --mode discover --max-minutes 35
-              cur=$(count); cur=${cur:-0}
-              echo "discovery pass $pass: $cur stores (was $prev)"
-              commit "discovery pass $pass: $cur stores"
-              echo "::endgroup::"
-              # only call it done when we're genuinely near the full ~4,788 AND
-              # growth has flattened — never lock in partial coverage from a blocked pass
-              if [ "$cur" -gt 4000 ] && [ "$((cur - prev))" -lt 25 ]; then
-                echo "store count plateaued at $cur — discovery complete"
-                touch discovery_done; commit "discovery complete: $cur stores"; break
-              fi
-              prev=$cur
-            done
-          fi
-
-          # --- Phase 2: full availability pass over every store ---
-          echo "::group::weekly availability (all colorways)"
-          run --mode weekly --max-minutes 70
-          commit "full availability update"
-          echo "::endgroup::"
-
-          # --- Keep relaunching itself (with a cooldown) until discovery breaks
-          #     through, up to 100 attempts. Needs a PAT secret named PAT. ---
-          n=$(cat attempts.txt 2>/dev/null || echo 0); n=$((n+1)); echo "$n" > attempts.txt
-          commit "attempt $n"
-          if [ ! -f discovery_done ] && [ "$n" -lt 100 ] && [ -n "$GH_PAT" ]; then
-            echo "not through yet — cooling down, then relaunching (attempt $n/100)"
-            sleep 180
-            GH_TOKEN="$GH_PAT" gh workflow run walmart.yml \
-              && echo "relaunched" || echo "self-dispatch failed (check PAT)"
-          fi
+          git add -A
+          git commit -m "availability $(date -u '+%Y-%m-%d %H:%M')" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
