@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Run: pip install requests")
 
 QUERY_HASH = "afe770a1a3a2856a44e153f01c7474896792e124bf562e142e0f8a89575f8f27"
-US_STORES = 4788
+US_STORES = 4614   # Walmart corporate footprint, Apr 30 2026 (SC 3569 + discount 351 + NHM 673 + small 21)
 BASE = "https://www.walmart.com/orchestra/home/graphql/nearByNodes/"
 CORE = ["et_nvy", "eb_blk", "pt_roy", "pb_blk"]   # the 4 products the README tracks
 ALL_STORES, ZIP_COV, COVER_ZIPS = "all_stores.csv", "zip_cov.json", "coverage_zips.csv"
