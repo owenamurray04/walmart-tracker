@@ -1,0 +1,46 @@
+name: "2 · Store map refresh — run every month or two (~$9-13)"
+
+# Rebuilds the national Walmart store map: finds newly opened stores,
+# removes closed ones. The weekly product check reads this map, so run
+# this occasionally to keep it honest. Safe to re-run — a stopped run
+# resumes from its checkpoint and never re-bills finished calls, and the
+# live map is only replaced when the rebuild fully completes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: "Max billed calls (1000 = $1.50)"
+        default: "8500"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+
+      - name: Rebuild the store map
+        env:
+          BRD_PROXY: ${{ secrets.BRD_PROXY }}
+        run: python -u refresh_map.py --budget "${{ github.event.inputs.budget || '8500' }}"
+
+      - name: Commit results (even on partial run, to save the checkpoint)
+        if: always()
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git commit -m "store map refresh $(date -u '+%Y-%m-%d %H:%M')" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1

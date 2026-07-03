@@ -1,80 +1,81 @@
-# Walmart availability tracker — Doctor's Choice scrubs
+# Doctor's Choice × Walmart — store-level availability tracker
 
-Tracks how widely the **Doctor's Choice** scrub line is stocked across U.S.
-Walmart stores, refreshes weekly on autopilot, and publishes a live **dashboard**
-to share with John.
+Tracks which of Walmart's ~4,614 US stores stock the **Doctor's Choice** scrub
+line (all 18 colorways), publishes a live dashboard, and accumulates the
+true-carriage picture week over week.
 
-**Latest read (Jun 29 2026, sampled):** of 1,666 stores checked, **193 stock at
-least one of the 4 tracked products → ~555 stores nationwide**. The **Pro Fit**
-line (royal-blue top / black bottom) is stocked ~3× more widely than **Elite-Rx**
-(navy top / black bottom). Only 14 stores carry all four.
+**Dashboard:** https://owenamurray04.github.io/walmart-tracker/
 
-## What it tracks & why
+**Everything runs from GitHub — nothing local.** Go to the **Actions tab**,
+pick a workflow, press **Run workflow**:
 
-The brand has 4 core products, each sold in several colors — but most colors
-(gray, pink bottoms, wine, ciel blue) are **online-only and never stocked in
-stores**. So we track the one **least-likely-to-be-sold-out color** of each, found
-by measuring in-stock rates across colors:
+| Actions-tab button | What it does | When | Cost |
+|---|---|---|---|
+| **1 · Weekly product check** | Checks the 11 in-store colorways at every mapped store, updates all dashboard data. | Weekly | ~$10.30 (set "Product list CSV" input to `products.csv` for a full 18-colorway audit, ~$16.80) |
+| **2 · Store map refresh** | Rebuilds the store map — adds newly opened Walmarts, drops closed ones. | Every 1–2 months | ~$9–13 |
+| pages build and deployment | GitHub's own site publisher — runs automatically after data commits. Never needs manual runs unless it fails (then: Re-run jobs). | automatic | free |
 
-| Product | Color tracked | `product_id` |
-|---|---|---|
-| Elite-Rx Top | Navy | 4ETHFRENRPHZ |
-| Elite-Rx Bottom | Black | 13FORGOSKCZT |
-| Pro Fit Top | Royal Blue | 1ZIJ3VQCTHCY |
-| Pro Fit Bottom | Black | 17IWT6UXSUNY |
+Both scrape workflows are **safe to re-run**: they checkpoint progress and
+resume without re-billing anything already fetched. A crashed or
+budget-capped run costs nothing extra.
 
-(`products.csv` lists all 18 color-variants discovered, for reference.)
+To make the weekly check fully automatic (no button pressing), edit
+`.github/workflows/walmart.yml` on github.com and uncomment the two
+`schedule:` lines near the top.
 
-## How full coverage works (no store database needed)
+## Setup (already done — for reference)
 
-Walmart's `nearByNodes` API takes a ZIP and returns the 50 nearest stores — each
-tagged with a product's stock status **and its own ZIP**. The scraper crawls:
-start from seed ZIPs, and every store ZIP discovered becomes a new ZIP to query.
-This breadth-first crawl fans out across the country until it has found every
-store — bootstrapping nationwide coverage from the API itself. It checks all 4
-products at each ZIP.
+- Repo secret `BRD_PROXY` (Settings → Secrets and variables → Actions):
+  the Bright Data Web Unlocker proxy URL,
+  `http://brd-customer-…-zone-…:PASS@brd.superproxy.io:33335`.
+  Billing is ~$1.50 per 1,000 *successful* calls; failures are free.
+- GitHub Pages: Settings → Pages → Deploy from branch `main`, `/ (root)`.
 
-## Run it
+## What the files are
 
-1. **Double-click `Upload to GitHub.command`** → creates a public repo, pushes
-   everything, turns on the dashboard (GitHub Pages).
-2. **Add your proxy secret** (the script prints the link):
-   Settings → Secrets and variables → Actions → `DI_PROXY` =
-   `http://USER:PASS@gw.dataimpulse.com:823`.
-3. **Run it once** from the Actions tab; then it runs every Monday.
-4. **Copy the dashboard link for John**: `https://<you>.github.io/<repo>/`.
-
-## Cost & runtime
-
-Each call is ~30 KB of JSON. A full national crawl is ~4,000 store-ZIPs × 4
-products ≈ 16k calls ≈ ~0.5 GB → **~$0.50/run** of DataImpulse bandwidth; runtime
-~1–2 h (well within the Actions 6 h limit). GitHub compute + Pages are free on a
-public repo.
-
-## Files
-
-| File | Purpose |
+| File | Role |
 |---|---|
-| `Upload to GitHub.command` | Double-click → publish/update everything. |
-| `index.html` | Dashboard (Pages). |
-| `walmart_store_check.py` | The crawler. |
-| `products_tracked.csv` | The 4 products tracked weekly. |
-| `products.csv` | All 18 color-variants (reference). |
-| `sample_zips.csv` | 78 seed ZIPs to start the crawl. |
-| `store_products.csv` | Per-store stock of each product (refreshed each run). |
-| `product_summary.csv` / `state_summary.csv` / `line_coverage.csv` | Analysis rollups. |
-| `history.csv` | One row per week → the trend. |
-| `.github/workflows/walmart.yml` | Weekly run + commits results. |
+| `index.html` | The dashboard (GitHub Pages serves it). |
+| `weekly_check.py` | Script behind workflow 1 — availability sweep over the covering ZIP set. |
+| `refresh_map.py` | Script behind workflow 2 — rebuilds the store map. |
+| `walmart_unlocker.py` | Shared library (HTTP fetch, budget cap, covering-set math). Original one-shot builder. |
+| `gapfill_stores.py` | Legacy local gap-fill that built the initial map. Superseded by workflow 2. |
+| `products_instore.csv` | The 11 shelved colorways — the weekly default. `products.csv` = all 18 incl. online-only (occasional audit). `products_tracked.csv` = legacy list with short keys. |
+| `all_stores.csv` / `zip_cov.json` | The store map: 4,592 stores + which ZIP query reveals which stores. |
+| `gap_zips.csv` | Rural seed ZIPs used by map refreshes to reach isolated stores. |
+| `store_products.csv` | This week's per-store, per-product stock (the big output). |
+| `ever_carried.csv` | Union across all runs — stores *ever* seen stocking each item. True carriage. |
+| `carry_log.csv` | Per-run list of carrying stores → powers the adds/drops momentum stats. |
+| `history.csv` / `product_history.csv` | Run-over-run trend data (dashboard ignores pre-July sampled runs). |
+| `product_summary.csv`, `state_summary.csv`, `line_coverage.csv` | Per-product / per-state / depth rollups. |
+| `states-10m.json` | US map geometry for the dashboard (self-hosted; auto-downloaded by workflow 1 if missing). |
+| `*.command` files | **Legacy** Mac helpers from initial development. Not needed anymore. |
 
-## Analysis on the dashboard
+## Reading the numbers honestly
 
-- **Per-product reach** — how many stores stock each of the 4 (Pro Fit vs Elite-Rx).
-- **Line coverage** — how many stores carry 0 / 1 / 2 / 3 / 4 of the line (i.e. how
-  much of the lineup is actually selling through to shelves).
-- **By state**, **trend over time**, and a table of the stores stocking the most.
+- Data source is Walmart's own store-pickup inventory — when it says a store
+  has an item, precision is ~95–100%.
+- A carrying store that's **sold out on check day shows as not stocking** —
+  weekly counts are a floor. `ever_carried.csv` (the dashboard's headline
+  number) converges on true carriage as weekly runs accumulate.
+- "Online-only" colorways (gray, pink bottoms, ciel blue, wine) were checked
+  at every store and found in ~0 — they're not part of the in-store line.
+- Denominator: Walmart operates 4,614 US stores (corporate, Apr 2026);
+  the map covers 4,592 (99.5%). Only ~3,920 (Supercenters + discount) are
+  apparel formats.
 
-## Maintenance
+## If something breaks
 
-If runs start failing, refresh `QUERY_HASH` and the `product_id`s from your
-browser's Network tab (filter `nearByNodes`) — Walmart changes these only on
-redeploys.
+- **Run fails immediately with "Set BRD_PROXY"** → the repo secret is
+  missing/renamed. Re-add it.
+- **Run completes but found ~0 of everything** → Walmart redeployed and
+  rotated their API's `QUERY_HASH`. Open any store page on walmart.com with
+  browser dev tools → Network → filter `nearByNodes` → copy the long hash
+  from the request URL → edit the `QUERY_HASH` line in `walmart_unlocker.py`
+  directly on github.com. Happens a few times a year at most.
+- **Green run but the site shows old data** → GitHub Pages deploy hiccup.
+  Actions tab → the failed "pages build and deployment" → Re-run jobs.
+  If deploys fail repeatedly: Settings → Pages → set Source to None, save,
+  set back to `main` / root — this resets the deployment pipeline.
+- **Bright Data balance** — check at brightdata.com; the free tier
+  (5K calls/month) offsets ~$7.50 monthly.

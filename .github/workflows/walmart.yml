@@ -1,4 +1,4 @@
-name: Walmart weekly availability
+name: "1 · Weekly product check — the main scraper (~$10/run)"
 
 # Checks every product across every store in the map, via Bright Data Web
 # Unlocker (plain HTTP — runs fine on cloud runners, no browser needed).
@@ -21,10 +21,10 @@ on:
     inputs:
       budget:
         description: "Max billed calls (1000 = $1.50)"
-        default: "12500"
+        default: "7500"
       products:
-        description: "Product list CSV"
-        default: "products.csv"
+        description: "Product list CSV (products_instore.csv = the 11 shelved colorways; products.csv = all 18 incl. online-only)"
+        default: "products_instore.csv"
 
 permissions:
   contents: write
@@ -54,8 +54,8 @@ jobs:
           BRD_PROXY: ${{ secrets.BRD_PROXY }}
         run: |
           python -u weekly_check.py \
-            --budget  "${{ github.event.inputs.budget   || '12500' }}" \
-            --products "${{ github.event.inputs.products || 'products.csv' }}"
+            --budget  "${{ github.event.inputs.budget   || '7500' }}" \
+            --products "${{ github.event.inputs.products || 'products_instore.csv' }}"
 
       - name: Commit results (even on failure/timeout, to save the checkpoint)
         if: always()

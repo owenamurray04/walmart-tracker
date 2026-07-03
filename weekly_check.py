@@ -55,7 +55,7 @@ def load_products(path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=int, default=12500)
-    ap.add_argument("--products", default="products.csv")
+    ap.add_argument("--products", default="products_instore.csv")
     ap.add_argument("--workers", type=int, default=24)
     ap.add_argument("--timeout", type=int, default=45)
     ap.add_argument("--wave", type=int, default=120)
