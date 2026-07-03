@@ -174,9 +174,12 @@ PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Te
 VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
 
 (async function(){
- const [hist,prod,states,stores,ever,log,cov]=await Promise.all([
+ let [hist,prod,states,stores,ever,log,cov]=await Promise.all([
    csv("history.csv"),csv("product_summary.csv"),csv("state_summary.csv"),
    csv("store_products.csv"),csv("ever_carried.csv"),csv("carry_log.csv"),csv("line_coverage.csv")]);
+ // only full-coverage runs count — early sampled crawls (bad scraper era)
+ // faked a growth trend that was really just coverage improving
+ if(hist)hist=hist.filter(h=>+h.stores_found>=4000);
 
  const PROD=(prod||[]).map(p=>({...p,n:+p.stores_in_stock,pf:/pro fit/i.test(p.label)}));
  const inStore=PROD.filter(p=>p.n>=IN_STORE_MIN).sort((a,b)=>b.n-a.n);
