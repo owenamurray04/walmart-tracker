@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <style>
   :root{
     --ink:#0c0f14;--panel:#151b23;--panel2:#1b222c;--line:#27303c;
@@ -17,19 +19,16 @@
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1280px;margin:0 auto;padding:22px 22px 70px}
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 22px 60px}
 
-  /* header */
-  .bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px}
   .title{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.5px;margin:0}
   .title b{color:var(--gold)}
+  .badge{font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--gold-soft);
+         border:1px solid var(--gold);border-radius:999px;padding:2px 11px}
   .asof{margin-left:auto;color:var(--muted);font-family:var(--mono);font-size:13px;display:flex;align-items:center;gap:7px}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up)}
-  .subbar{color:var(--muted);font-size:14px;margin:0 0 20px}
-  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--gold-soft);
-         border:1px solid var(--gold);border-radius:999px;padding:2px 11px;margin-left:8px;vertical-align:1px}
 
-  /* KPI row */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px 16px}
   .kpi.hot{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-soft),var(--panel) 65%)}
@@ -38,69 +37,53 @@
   .kpi .k{font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--faint);margin-top:6px}
   .kpi .s{color:var(--muted);font-size:12.5px;margin-top:4px}
 
-  /* layout */
-  .grid{display:grid;grid-template-columns:1.8fr 1fr;gap:18px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:18px}
   .eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);margin:0 0 4px}
-  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
-  .hr{height:1px;background:var(--line);margin:22px 0}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+  .grid .card{margin-bottom:18px}
 
-  /* brand duel */
-  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin:4px 0 2px}
+  /* map */
+  #usmap svg{width:100%;height:auto;display:block}
+  #usmap path{stroke:var(--ink);stroke-width:1;transition:opacity .15s}
+  #usmap path:hover{opacity:.75}
+  .legend{display:flex;align-items:center;gap:10px;margin-top:10px;color:var(--muted);font-family:var(--mono);font-size:11.5px}
+  .legend .ramp{flex:none;width:160px;height:8px;border-radius:5px;
+    background:linear-gradient(90deg,var(--empty),rgba(231,178,74,.4),var(--gold))}
+
+  /* duel */
+  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
   .duel .side{text-align:center}
-  .duel .nm{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
-  .duel .big{font-family:var(--mono);font-weight:600;font-size:44px;letter-spacing:-1.5px;line-height:1.1}
-  .duel .side:first-child .big{color:var(--gold)}
-  .duel .side:last-child .big{color:var(--grey)}
-  .duel .vs{font-family:var(--mono);color:var(--faint);font-size:13px}
-  .duelbar{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--empty);margin-top:14px}
+  .duel .nm{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+  .duel .big{font-family:var(--mono);font-weight:600;font-size:40px;letter-spacing:-1.5px;line-height:1.1}
+  .duel .vs{font-family:var(--mono);color:var(--faint);font-size:12.5px}
+  .duel .sm{color:var(--muted);font-size:12px;margin-top:2px}
+  .duelbar{display:flex;height:11px;border-radius:7px;overflow:hidden;background:var(--empty);margin-top:14px}
   .duelbar>i{display:block;height:100%}
-  .duel .sm{color:var(--muted);font-size:12.5px;margin-top:3px}
 
   /* bars */
   .barrow{display:flex;align-items:center;gap:14px;margin:10px 0}
-  .barrow .lab{width:190px;font-size:14px;color:var(--text);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barrow .lab{width:185px;font-size:14px;color:var(--text);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .track{flex:1;height:9px;background:var(--empty);border-radius:6px;overflow:hidden}
   .fill{height:100%;border-radius:6px;background:var(--gold)}
   .fill.grey{background:var(--grey)}
-  .barrow .val{width:150px;text-align:right;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none}
-  .chips{margin-top:14px}
-  .chip{display:inline-block;font-size:12.5px;color:var(--faint);background:var(--panel2);border:1px solid var(--line);
-        border-radius:999px;padding:4px 12px;margin:3px 4px 0 0;text-decoration:line-through}
-  .chipnote{color:var(--faint);font-size:12px;margin:8px 0 0}
-
-  /* state table */
-  .strow{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-  .strow:last-child{border-bottom:none}
-  .strow .st{width:34px;font-family:var(--mono);color:var(--text);flex:none}
-  .strow .cnt{width:120px;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none;text-align:right}
-  .strow .pct{width:52px;font-family:var(--mono);font-size:12.5px;color:var(--gold);flex:none;text-align:right}
-  .statebox{max-height:420px;overflow:auto;margin:0 -6px;padding:0 6px}
+  .barrow .val{width:145px;text-align:right;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none}
+  .mutedline{color:var(--faint);font-size:12.5px;margin:14px 0 0}
 
   /* finder */
-  .listcard{display:flex;flex-direction:column;max-height:none}
   .search{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);
-          font-family:var(--body);font-size:14px;padding:11px 14px;outline:none;margin-bottom:12px}
+          font-family:var(--body);font-size:14px;padding:11px 14px;outline:none;margin-bottom:10px}
   .search:focus{border-color:var(--gold)}
-  .list{overflow:auto;max-height:560px;margin:0 -6px;padding:0 6px}
-  .item{padding:12px 0;border-bottom:1px solid var(--line)}
+  .count{color:var(--faint);font-family:var(--mono);font-size:12px;margin-bottom:6px}
+  .list{overflow:auto;max-height:520px;margin:0 -6px;padding:0 6px}
+  .item{padding:11px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:none}
   .item .top{display:flex;justify-content:space-between;gap:10px}
   .item .nm{font-weight:600;font-size:14px;color:var(--text)}
   .item .cov{font-family:var(--mono);font-size:13px;color:var(--gold);flex:none}
-  .item .subln{color:var(--muted);font-size:12.5px;margin:1px 0 7px}
-  .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;border-radius:5px;padding:1px 7px;margin-right:5px}
-  .tag.pf{color:var(--gold);background:var(--gold-soft)}
-  .tag.er{color:var(--grey);background:rgba(127,139,156,.14)}
-  .mini{height:6px;background:var(--empty);border-radius:4px;overflow:hidden}
-  .mini>i{display:block;height:100%;background:var(--gold);border-radius:4px}
-  .count{color:var(--faint);font-family:var(--mono);font-size:12px;margin:4px 0 8px}
+  .item .subln{color:var(--muted);font-size:12.5px}
 
-  .insight{color:var(--text);font-size:14.5px;margin:16px 0 0;padding:13px 15px;background:var(--panel2);
-           border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:11px}
-  .note{color:var(--muted);font-size:12.5px;margin-top:16px;padding:13px 15px;background:var(--panel2);
-        border:1px solid var(--line);border-radius:11px}
-  .note b{color:var(--text)}
-  .foot{color:var(--faint);font-size:12px;margin-top:14px}
+  .foot{color:var(--faint);font-size:12px;margin-top:6px;line-height:1.7}
   @media(max-width:980px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -112,82 +95,61 @@
     <span class="badge" id="coverage">—</span>
     <div class="asof"><span class="dot"></span><span id="asof">loading…</span></div>
   </div>
-  <p class="subbar">Store-level distribution intelligence · every U.S. Walmart, every colorway, refreshed from Walmart's own pickup inventory.</p>
 
   <div class="kpis">
-    <div class="kpi hot"><div class="v" id="k-ever">—</div><div class="k">Stores ever seen stocking</div><div class="s">true carriage floor — grows each run</div></div>
+    <div class="kpi hot"><div class="v" id="k-ever">—</div><div class="k">Stores ever seen stocking</div><div class="s">true carriage — grows each run</div></div>
     <div class="kpi"><div class="v" id="k-now">—</div><div class="k">In stock this week</div><div class="s" id="k-now-s">—</div></div>
-    <div class="kpi"><div class="v" id="k-set">—</div><div class="k">Stock the full Pro Fit set</div><div class="s">all 4 Pro Fit colorways at once</div></div>
+    <div class="kpi"><div class="v" id="k-set">—</div><div class="k">Full Pro Fit set</div><div class="s">all 4 colorways at once</div></div>
     <div class="kpi"><div class="v" id="k-best">—</div><div class="k">Deepest state</div><div class="s" id="k-best-s">—</div></div>
   </div>
 
+  <div class="card">
+    <p class="eyebrow">Where the line lives</p>
+    <p class="sub">share of each state's Walmart stores with ≥1 item in stock this week — hover any state for the counts</p>
+    <div id="usmap"></div>
+    <div class="legend"><span>0%</span><div class="ramp"></div><span id="legmax">—</span><span style="margin-left:auto" id="mapnote"></span></div>
+  </div>
+
   <div class="grid">
-    <!-- LEFT -->
     <div>
       <div class="card">
-        <p class="eyebrow">Pro Fit vs Elite-Rx</p>
-        <p class="sub">stores with at least one colorway of each line in stock this week</p>
-        <div class="duel">
-          <div class="side"><div class="nm" style="color:var(--gold)">Pro Fit</div><div class="big" id="d-pf">—</div><div class="sm">stores</div></div>
-          <div class="vs" id="d-ratio">—</div>
-          <div class="side"><div class="nm" style="color:var(--grey)">Elite-Rx</div><div class="big" id="d-er">—</div><div class="sm">stores</div></div>
-        </div>
-        <div class="duelbar" id="d-bar"></div>
-        <p class="insight" id="insight"></p>
-      </div>
-
-      <div class="card">
-        <p class="eyebrow">Where the line lives</p>
-        <p class="sub">share of each state's stores stocking ≥1 item this week · darker gold = deeper penetration</p>
-        <div id="usmap"></div>
-      </div>
-
-      <div class="card">
-        <p class="eyebrow">What Walmart actually shelves</p>
-        <p class="sub">stores with each colorway in stock this week · sorted by reach</p>
+        <p class="eyebrow">The in-store line</p>
+        <p class="sub">stores with each colorway in stock this week · "ever" = seen in any run</p>
         <div id="prodbars"></div>
-        <div class="chips" id="onlineonly"></div>
-        <p class="chipnote" id="chipnote"></p>
-      </div>
-
-      <div class="card">
-        <p class="eyebrow">Depth per carrying store</p>
-        <p class="sub">of the stores stocking anything, how many colorways they hold</p>
-        <div><canvas id="depth" height="110"></canvas></div>
+        <p class="mutedline" id="onlineonly"></p>
       </div>
 
       <div class="card">
         <p class="eyebrow">Reach over time</p>
-        <p class="sub">% of checked stores with ≥1 item in stock, per run (early runs sampled fewer stores)</p>
-        <div><canvas id="trend" height="110"></canvas></div>
+        <p class="sub">% of checked stores stocking ≥1 item, per run</p>
+        <div><canvas id="trend" height="105"></canvas></div>
       </div>
     </div>
 
-    <!-- RIGHT -->
     <div>
       <div class="card">
-        <p class="eyebrow">State penetration</p>
-        <p class="sub">carrying stores / all stores in state</p>
-        <div class="statebox" id="states"></div>
+        <p class="eyebrow">Pro Fit vs Elite-Rx</p>
+        <div class="duel">
+          <div class="side"><div class="nm" style="color:var(--gold)">Pro Fit</div><div class="big" style="color:var(--gold)" id="d-pf">—</div><div class="sm">stores</div></div>
+          <div class="vs" id="d-ratio">—</div>
+          <div class="side"><div class="nm" style="color:var(--grey)">Elite-Rx</div><div class="big" style="color:var(--grey)" id="d-er">—</div><div class="sm">stores</div></div>
+        </div>
+        <div class="duelbar" id="d-bar"></div>
       </div>
 
-      <div class="card listcard">
+      <div class="card">
         <p class="eyebrow">Store finder</p>
-        <p class="sub">every store stocking the line this week</p>
-        <input class="search" id="q" placeholder="Search city, state, or store name…">
+        <input class="search" id="q" placeholder="Search city, state, or store…">
         <div class="count" id="listcount"></div>
         <div class="list" id="list"></div>
       </div>
-
-      <div class="note">
-        <b>How to read this.</b> Data comes from Walmart's store-pickup inventory, checked for all
-        <span id="n-tracked">—</span> colorways at all <span id="n-stores">—</span> U.S. Walmart stores
-        (of 4,614 total). A store showing "in stock" is near-certain to carry the item. The reverse isn't:
-        a carrying store can be sold out on check day — so weekly counts are a <b>floor</b>, and the
-        "ever seen stocking" number is the best estimate of true carriage. It rises as weekly runs accumulate.
-      </div>
-      <div class="foot">Refreshed via GitHub Actions · Bright Data Web Unlocker · nearByNodes pickup API</div>
     </div>
+  </div>
+
+  <div class="foot">
+    Source: Walmart store-pickup inventory, all colorways × <span id="n-stores">—</span> of 4,614 U.S. stores.
+    Weekly "in stock" is a floor (sold-out carriers don't count that week); <b style="color:var(--muted)">ever seen stocking</b> is the true-carriage estimate and rises as runs accumulate.
+    Auto-refreshed via GitHub Actions.
   </div>
 </div>
 
@@ -199,112 +161,93 @@ function parse(t){const rows=[];let i=0,f="",row=[],q=false;const push=()=>{row.
  while(i<t.length){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c=='"')q=true;else if(c==',')push();else if(c=='\n')end();else if(c=='\r'){}else f+=c;}i++;}
  if(f.length||row.length)end();const h=rows.shift()||[];return rows.filter(r=>r.length>1||r[0]).map(r=>Object.fromEntries(h.map((k,j)=>[k,(r[j]??"").trim()])));}
 const fmt=n=>(+n).toLocaleString();
-const IN_STORE_MIN=10;   // colorways below this many stores are treated as online-only
+const IN_STORE_MIN=10;
+const FIPS={"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC","12":"FL",
+"13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD",
+"25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM",
+"36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD","47":"TN",
+"48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"};
 
 (async function(){
- const [hist,prod,cov,states,stores,ever]=await Promise.all([
-   csv("history.csv"),csv("product_summary.csv"),csv("line_coverage.csv"),
-   csv("state_summary.csv"),csv("store_products.csv"),csv("ever_carried.csv")]);
+ const [hist,prod,states,stores,ever]=await Promise.all([
+   csv("history.csv"),csv("product_summary.csv"),csv("state_summary.csv"),
+   csv("store_products.csv"),csv("ever_carried.csv")]);
 
  const PROD=(prod||[]).map(p=>({...p,n:+p.stores_in_stock,pf:/pro fit/i.test(p.label)}));
  const inStore=PROD.filter(p=>p.n>=IN_STORE_MIN).sort((a,b)=>b.n-a.n);
  const online=PROD.filter(p=>p.n<IN_STORE_MIN);
  const inKeys=new Set(inStore.map(p=>p.key));
 
- // ---- header / KPIs ----
  const last=hist&&hist.length?hist[hist.length-1]:null;
  const checked=last?+last.stores_found:0;
  if(last){
    $("#asof").textContent="updated "+(last.date||"").slice(0,10);
-   $("#coverage").textContent=fmt(checked)+" of 4,614 stores checked · "+(checked/4614*100).toFixed(1)+"%";
+   $("#coverage").textContent=fmt(checked)+" of 4,614 stores · "+(checked/4614*100).toFixed(1)+"% coverage";
    $("#k-now").textContent=fmt(last.carrying_any);
-   $("#k-now-s").textContent=(100*last.carrying_any/checked).toFixed(1)+"% of stores checked · ~"+fmt(last.est_national_any)+" nationwide";
+   $("#k-now-s").textContent=(100*last.carrying_any/checked).toFixed(1)+"% of checked · ~"+fmt(last.est_national_any)+" nationwide";
  }
- $("#n-tracked").textContent=PROD.length;
  $("#n-stores").textContent=fmt(checked);
 
- // ever carried: rows with any "1"
- let everN=0;
- if(ever&&ever.length){everN=ever.filter(r=>Object.entries(r).some(([k,v])=>k!=="store_id"&&v==="1")).length;}
+ let everN=0,everByKey={};
+ if(ever&&ever.length){
+   everN=ever.filter(r=>Object.entries(r).some(([k,v])=>k!=="store_id"&&v==="1")).length;
+   for(const r of ever)for(const[k,v]of Object.entries(r))if(k!=="store_id"&&v==="1")everByKey[k]=(everByKey[k]||0)+1;
+ }
  $("#k-ever").textContent=everN?fmt(everN):(last?fmt(last.carrying_any):"—");
 
- // brand split + full-set count from store_products
- let pfAny=0,erAny=0,fullSet=0;
+ // brand split + full set + carrying list
+ let pfAny=0,erAny=0,fullSet=0;const carrying=[];
  const pfKeys=PROD.filter(p=>p.pf&&inKeys.has(p.key)).map(p=>p.key);
  const erKeys=PROD.filter(p=>!p.pf&&inKeys.has(p.key)).map(p=>p.key);
- const carrying=[];
- if(stores){for(const r of stores){
-   const pf=pfKeys.some(k=>r[k]==="1"), er=erKeys.some(k=>r[k]==="1");
-   if(pf)pfAny++; if(er)erAny++;
+ if(stores)for(const r of stores){
+   const pf=pfKeys.some(k=>r[k]==="1"),er=erKeys.some(k=>r[k]==="1");
+   if(pf)pfAny++;if(er)erAny++;
    if(pfKeys.length&&pfKeys.every(k=>r[k]==="1"))fullSet++;
    if(r.carries_any==="1")carrying.push({r,pf,er,c:+r.line_coverage});
- }}
+ }
  $("#k-set").textContent=fmt(fullSet);
- $("#d-pf").textContent=fmt(pfAny); $("#d-er").textContent=fmt(erAny);
- $("#d-ratio").textContent=erAny?("~"+(pfAny/erAny).toFixed(1)+"× wider"):"—";
+ $("#d-pf").textContent=fmt(pfAny);$("#d-er").textContent=fmt(erAny);
+ $("#d-ratio").textContent=erAny?("~"+(pfAny/erAny).toFixed(1)+"×"):"—";
  $("#d-bar").innerHTML=`<i style="width:${100*pfAny/Math.max(pfAny+erAny,1)}%;background:var(--gold)"></i><i style="flex:1;background:var(--grey)"></i>`;
- $("#insight").innerHTML=`Walmart is treating <b style="color:var(--gold)">Pro Fit</b> as the anchor: `+
-   `${fmt(fullSet)} stores shelve the complete 4-piece set, while Elite-Rx rides along in a smaller premium slot. `+
-   `If sell-through talks happen, Pro Fit royal/black is the story.`;
 
- // ---- product bars: in-store sorted, online-only as struck chips ----
+ // product bars
  const max=Math.max(...inStore.map(p=>p.n),1);
- const everByKey={};
- if(ever&&ever.length){for(const r of ever){for(const[k,v]of Object.entries(r)){if(k!=="store_id"&&v==="1")everByKey[k]=(everByKey[k]||0)+1;}}}
  $("#prodbars").innerHTML=inStore.map(p=>
    `<div class="barrow"><div class="lab">${p.label}</div>`+
    `<div class="track"><div class="fill ${p.pf?'':'grey'}" style="width:${(p.n/max*100).toFixed(1)}%"></div></div>`+
    `<div class="val">${fmt(p.n)} now${everByKey[p.key]?` · ${fmt(everByKey[p.key])} ever`:''}</div></div>`).join("");
- $("#onlineonly").innerHTML=online.map(p=>`<span class="chip">${p.label}</span>`).join("");
- const strayN=online.reduce((a,p)=>a+p.n,0);
- $("#chipnote").textContent=online.length?
-   `Effectively online-only: checked at every store, ${strayN?`only ${strayN} stray unit${strayN>1?'s':''} found nationwide — almost certainly customer returns re-shelved into local inventory, `:''}vs. hundreds of stores for the real in-store line.`:"";
-
- // ---- US tile map: penetration by state ----
- if(states){
-   const GRID={AK:[0,0],ME:[11,0],VT:[10,1],NH:[11,1],
-     WA:[1,2],ID:[2,2],MT:[3,2],ND:[4,2],MN:[5,2],WI:[6,2],MI:[8,2],NY:[9,2],MA:[10,2],RI:[11,2],
-     OR:[1,3],NV:[2,3],WY:[3,3],SD:[4,3],IA:[5,3],IL:[6,3],IN:[7,3],OH:[8,3],PA:[9,3],NJ:[10,3],CT:[11,3],
-     CA:[1,4],UT:[2,4],CO:[3,4],NE:[4,4],MO:[5,4],KY:[6,4],WV:[7,4],VA:[8,4],MD:[9,4],DE:[10,4],
-     AZ:[2,5],NM:[3,5],KS:[4,5],AR:[5,5],TN:[6,5],NC:[7,5],SC:[8,5],DC:[9,5],
-     OK:[4,6],LA:[5,6],MS:[6,6],AL:[7,6],GA:[8,6],
-     HI:[0,7],TX:[4,7],FL:[9,7],PR:[11,7]};
-   const pen={}; let maxP=0.01;
-   for(const r of states){const n=+r.stores,c=+r.carrying_any,p=n?c/n:0;
-     pen[r.state]={n,c,p}; if(n>=5&&p>maxP)maxP=p;}
-   const S=52,PAD=3;
-   let svg=`<svg viewBox="0 0 ${12*S} ${8*S}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">`;
-   for(const[st,[gx,gy]]of Object.entries(GRID)){
-     const d=pen[st], p=d?d.p:0, t=Math.min(p/maxP,1), hot=t>.55;
-     const fill=d&&d.c>0?`rgba(231,178,74,${(.15+.85*t).toFixed(2)})`:CSS('--empty');
-     svg+=`<g><title>${st}: ${d?`${d.c} of ${d.n} stores stocking (${(p*100).toFixed(0)}%)`:'no stores mapped'}</title>`+
-       `<rect x="${gx*S+PAD}" y="${gy*S+PAD}" width="${S-2*PAD}" height="${S-2*PAD}" rx="8" fill="${fill}"/>`+
-       `<text x="${gx*S+S/2}" y="${gy*S+S/2-2}" text-anchor="middle" font-family="Archivo,sans-serif" font-weight="700" font-size="13" fill="${hot?'#0c0f14':CSS('--text')}">${st}</text>`+
-       `<text x="${gx*S+S/2}" y="${gy*S+S/2+13}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="${hot?'#0c0f14':CSS('--muted')}">${d&&d.c>0?(p*100).toFixed(0)+'%':'–'}</text></g>`;
-   }
-   svg+=`</svg>`;
-   $("#usmap").innerHTML=svg;
+ if(online.length){
+   const stray=online.reduce((a,p)=>a+p.n,0);
+   $("#onlineonly").textContent=`Online-only (not shelved in stores): ${online.map(p=>p.label.replace(/(Elite-Rx|Pro Fit) /,"")).join(", ")}`+
+     (stray?` — ${stray} stray unit${stray>1?'s':''} nationwide, likely customer returns.`:".");
  }
 
- // ---- trend axis defaults ----
+ // ---- real US map (Albers USA choropleth) ----
+ const pen={};let maxP=.01;
+ if(states)for(const r of states){const n=+r.stores,c=+r.carrying_any,p=n?c/n:0;
+   pen[r.state]={n,c,p};if(n>=5&&p>maxP)maxP=p;}
+ const bestRows=(states||[]).map(r=>({st:r.state,n:+r.stores,c:+r.carrying_any,p:+r.stores?+r.carrying_any/+r.stores:0}))
+   .filter(r=>r.n>=20).sort((a,b)=>b.p-a.p);
+ if(bestRows[0]){$("#k-best").textContent=bestRows[0].st;
+   $("#k-best-s").textContent=`${(bestRows[0].p*100).toFixed(0)}% of its ${bestRows[0].n} stores`;}
+ $("#legmax").textContent=(maxP*100).toFixed(0)+"%";
+ try{
+   const topo=await (await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")).json();
+   const feats=topojson.feature(topo,topo.objects.states).features;
+   const path=d3.geoPath();
+   const svg=d3.create("svg").attr("viewBox","0 0 975 610");
+   svg.selectAll("path").data(feats).join("path")
+     .attr("d",path)
+     .attr("fill",f=>{const st=FIPS[f.id],d=st&&pen[st];
+       return d&&d.c>0?`rgba(231,178,74,${(.12+.88*Math.min(d.p/maxP,1)).toFixed(2)})`:CSS('--empty');})
+     .append("title").text(f=>{const st=FIPS[f.id],d=st&&pen[st];
+       return d?`${st} — ${d.c} of ${d.n} stores stocking (${(d.p*100).toFixed(0)}%)`:(st||"")+" — no stores mapped";});
+   $("#usmap").appendChild(svg.node());
+   const pr=pen["PR"];if(pr&&pr.n)$("#mapnote").textContent=`+ PR: ${pr.c} of ${pr.n} (not shown)`;
+ }catch(e){$("#usmap").innerHTML='<p class="sub">map unavailable offline</p>';}
+
+ // trend
  Chart.defaults.font.family="Inter";
- const axis={x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
-             y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),callback:v=>v+"%"},border:{display:false},beginAtZero:true}};
-
- // ---- depth: line graph (1..max nonzero colorways) ----
- if(cov){
-   const m=Object.fromEntries(cov.map(r=>[+r.products_in_stock,+r.store_count]));
-   const maxK=Math.max(...Object.keys(m).map(Number).filter(k=>k>0&&m[k]>0));
-   const ks=Array.from({length:maxK},(_,i)=>i+1);
-   new Chart($("#depth"),{type:"line",
-     data:{labels:ks.map(k=>k+(k>1?" colorways":" colorway")),
-       datasets:[{data:ks.map(k=>m[k]||0),borderColor:CSS('--gold'),
-         backgroundColor:CSS('--gold-soft'),fill:true,tension:.3,
-         pointRadius:4,pointBackgroundColor:CSS('--gold')}]},
-     options:{plugins:{legend:{display:false}},
-       scales:{x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
-               y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),precision:0},border:{display:false},beginAtZero:true}}}});
- }
  if(hist&&hist.length){
    new Chart($("#trend"),{type:"line",
      data:{labels:hist.map(h=>(h.date||"").slice(5,10)),
@@ -313,33 +256,18 @@ const IN_STORE_MIN=10;   // colorways below this many stores are treated as onli
          pointRadius:4,pointBackgroundColor:CSS('--gold')}]},
      options:{plugins:{legend:{display:false},tooltip:{callbacks:{
        label:c=>{const h=hist[c.dataIndex];return ` ${c.parsed.y}% — ${fmt(h.carrying_any)} of ${fmt(h.stores_found)} checked`;}}}},
-       scales:axis}});
+       scales:{x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
+               y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),callback:v=>v+"%"},border:{display:false},beginAtZero:true}}}});
  }
 
- // ---- state penetration table ----
- if(states){
-   const rows=states.map(r=>({st:r.state,n:+r.stores,c:+r.carrying_any,p:+r.stores?+r.carrying_any/+r.stores:0}))
-                    .filter(r=>r.n>0).sort((a,b)=>b.p-a.p);
-   const best=rows.filter(r=>r.n>=20)[0];
-   if(best){$("#k-best").textContent=best.st;
-     $("#k-best-s").textContent=`${(best.p*100).toFixed(0)}% of its ${best.n} stores carry the line`;}
-   const mx=Math.max(...rows.map(r=>r.p),.01);
-   $("#states").innerHTML=rows.map(r=>
-     `<div class="strow"><div class="st">${r.st}</div>`+
-     `<div class="track"><div class="fill" style="width:${(r.p/mx*100).toFixed(1)}%"></div></div>`+
-     `<div class="cnt">${fmt(r.c)} / ${fmt(r.n)}</div><div class="pct">${(r.p*100).toFixed(0)}%</div></div>`).join("");
- }
-
- // ---- store finder ----
+ // store finder
  const N=inStore.length||1;
- carrying.sort((a,b)=>b.c-a.c||(a.r.state<b.r.state?-1:1));
+ carrying.sort((a,b)=>b.c-a.c);
  function render(list){
    $("#listcount").textContent=`${fmt(list.length)} store${list.length!==1?'s':''}`+(list.length>200?" · showing 200":"");
-   $("#list").innerHTML=list.slice(0,200).map(({r,pf,er,c})=>
+   $("#list").innerHTML=list.slice(0,200).map(({r,c})=>
      `<div class="item"><div class="top"><span class="nm">${r.store_name}</span><span class="cov">${c}/${N}</span></div>`+
-     `<div class="subln">${r.city}, ${r.state} ${r.postal}</div>`+
-     `<div style="margin-bottom:7px">${pf?'<span class="tag pf">PRO FIT</span>':''}${er?'<span class="tag er">ELITE-RX</span>':''}</div>`+
-     `<div class="mini"><i style="width:${c/N*100}%"></i></div></div>`).join("");
+     `<div class="subln">${r.city}, ${r.state} ${r.postal}</div></div>`).join("");
  }
  render(carrying);
  $("#q").addEventListener("input",e=>{
