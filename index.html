@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Doctor's Choice Scrubs — Walmart In-Store Reach</title>
+<title>Doctor's Choice × Walmart — In-Store Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -17,110 +17,172 @@
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1240px;margin:0 auto;padding:22px 22px 70px}
-  /* top bar */
-  .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-  .pill{font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted);background:var(--panel);
-        border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
-  .pill.on{color:var(--gold);border-color:var(--gold);background:var(--gold-soft)}
-  .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+  .wrap{max-width:1280px;margin:0 auto;padding:22px 22px 70px}
+
+  /* header */
+  .bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .title{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.5px;margin:0}
+  .title b{color:var(--gold)}
   .asof{margin-left:auto;color:var(--muted);font-family:var(--mono);font-size:13px;display:flex;align-items:center;gap:7px}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up)}
+  .subbar{color:var(--muted);font-size:14px;margin:0 0 20px}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--gold-soft);
+         border:1px solid var(--gold);border-radius:999px;padding:2px 11px;margin-left:8px;vertical-align:1px}
+
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px 16px}
+  .kpi.hot{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-soft),var(--panel) 65%)}
+  .kpi .v{font-family:var(--mono);font-weight:600;font-size:40px;letter-spacing:-1.5px;line-height:1.05}
+  .kpi.hot .v{color:var(--gold)}
+  .kpi .k{font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--faint);margin-top:6px}
+  .kpi .s{color:var(--muted);font-size:12.5px;margin-top:4px}
+
   /* layout */
-  .grid{display:grid;grid-template-columns:1.85fr 1fr;gap:18px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
-  .eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
-  .eyebrow.muted{color:var(--faint)}
-  .hero{font-family:var(--mono);font-weight:600;font-size:92px;letter-spacing:-3px;color:var(--gold);line-height:.95;margin:0}
-  .hero small{font-size:30px;letter-spacing:-1px;color:var(--gold);opacity:.8}
-  .herosub{color:var(--text);font-size:16px;margin:10px 0 0}
-  .stats{display:flex;gap:38px;flex-wrap:wrap;margin:26px 0 4px}
-  .stat .v{font-family:var(--mono);font-weight:600;font-size:26px;color:var(--text)}
-  .stat .k{font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--faint);margin-top:3px}
-  .hr{height:1px;background:var(--line);margin:24px 0}
+  .grid{display:grid;grid-template-columns:1.8fr 1fr;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:18px}
+  .eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .hr{height:1px;background:var(--line);margin:22px 0}
+
+  /* brand duel */
+  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin:4px 0 2px}
+  .duel .side{text-align:center}
+  .duel .nm{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+  .duel .big{font-family:var(--mono);font-weight:600;font-size:44px;letter-spacing:-1.5px;line-height:1.1}
+  .duel .side:first-child .big{color:var(--gold)}
+  .duel .side:last-child .big{color:var(--grey)}
+  .duel .vs{font-family:var(--mono);color:var(--faint);font-size:13px}
+  .duelbar{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--empty);margin-top:14px}
+  .duelbar>i{display:block;height:100%}
+  .duel .sm{color:var(--muted);font-size:12.5px;margin-top:3px}
+
   /* bars */
-  .barrow{display:flex;align-items:center;gap:14px;margin:11px 0}
-  .barrow .lab{width:150px;font-size:14px;color:var(--text);flex:none}
+  .barrow{display:flex;align-items:center;gap:14px;margin:10px 0}
+  .barrow .lab{width:190px;font-size:14px;color:var(--text);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .track{flex:1;height:9px;background:var(--empty);border-radius:6px;overflow:hidden}
   .fill{height:100%;border-radius:6px;background:var(--gold)}
   .fill.grey{background:var(--grey)}
-  .barrow .val{width:88px;text-align:right;font-family:var(--mono);font-size:13px;color:var(--muted);flex:none}
-  .chartbox{margin-top:8px}
-  /* right list */
-  .listcard{display:flex;flex-direction:column;max-height:760px}
-  .listhead{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-  .list{overflow:auto;margin:-4px -6px;padding:0 6px}
-  .item{padding:13px 0;border-bottom:1px solid var(--line)}
+  .barrow .val{width:150px;text-align:right;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none}
+  .chips{margin-top:14px}
+  .chip{display:inline-block;font-size:12.5px;color:var(--faint);background:var(--panel2);border:1px solid var(--line);
+        border-radius:999px;padding:4px 12px;margin:3px 4px 0 0;text-decoration:line-through}
+  .chipnote{color:var(--faint);font-size:12px;margin:8px 0 0}
+
+  /* state table */
+  .strow{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .strow:last-child{border-bottom:none}
+  .strow .st{width:34px;font-family:var(--mono);color:var(--text);flex:none}
+  .strow .cnt{width:120px;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none;text-align:right}
+  .strow .pct{width:52px;font-family:var(--mono);font-size:12.5px;color:var(--gold);flex:none;text-align:right}
+  .statebox{max-height:420px;overflow:auto;margin:0 -6px;padding:0 6px}
+
+  /* finder */
+  .listcard{display:flex;flex-direction:column;max-height:none}
+  .search{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);
+          font-family:var(--body);font-size:14px;padding:11px 14px;outline:none;margin-bottom:12px}
+  .search:focus{border-color:var(--gold)}
+  .list{overflow:auto;max-height:560px;margin:0 -6px;padding:0 6px}
+  .item{padding:12px 0;border-bottom:1px solid var(--line)}
   .item .top{display:flex;justify-content:space-between;gap:10px}
-  .item .nm{font-weight:600;font-size:14.5px;color:var(--text)}
+  .item .nm{font-weight:600;font-size:14px;color:var(--text)}
   .item .cov{font-family:var(--mono);font-size:13px;color:var(--gold);flex:none}
-  .item .sub{color:var(--muted);font-size:13px;margin:1px 0 8px}
+  .item .subln{color:var(--muted);font-size:12.5px;margin:1px 0 7px}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;border-radius:5px;padding:1px 7px;margin-right:5px}
+  .tag.pf{color:var(--gold);background:var(--gold-soft)}
+  .tag.er{color:var(--grey);background:rgba(127,139,156,.14)}
   .mini{height:6px;background:var(--empty);border-radius:4px;overflow:hidden}
-  .mini > i{display:block;height:100%;background:var(--gold);border-radius:4px}
-  .insight{color:var(--text);font-size:14.5px;margin:0 0 18px;padding:13px 15px;background:var(--panel2);
+  .mini>i{display:block;height:100%;background:var(--gold);border-radius:4px}
+  .count{color:var(--faint);font-family:var(--mono);font-size:12px;margin:4px 0 8px}
+
+  .insight{color:var(--text);font-size:14.5px;margin:16px 0 0;padding:13px 15px;background:var(--panel2);
            border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:11px}
-  .note{color:var(--muted);font-size:12.5px;margin-top:18px;padding:13px 15px;background:var(--panel2);
+  .note{color:var(--muted);font-size:12.5px;margin-top:16px;padding:13px 15px;background:var(--panel2);
         border:1px solid var(--line);border-radius:11px}
-  .foot{color:var(--faint);font-size:12px;margin-top:18px}
-  a{color:var(--gold)}
-  @media(max-width:880px){.grid{grid-template-columns:1fr}.hero{font-size:72px}}
+  .note b{color:var(--text)}
+  .foot{color:var(--faint);font-size:12px;margin-top:14px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <div class="bar">
-    <div class="pill on" data-f="all">All</div>
-    <div class="pill" data-f="Elite-Rx">Elite-Rx</div>
-    <div class="pill" data-f="Pro Fit">Pro Fit</div>
-    <div class="sep"></div>
-    <div class="pill on" style="cursor:default">Doctor's Choice · Walmart US</div>
+    <h1 class="title">Doctor's Choice <b>×</b> Walmart</h1>
+    <span class="badge" id="coverage">—</span>
     <div class="asof"><span class="dot"></span><span id="asof">loading…</span></div>
+  </div>
+  <p class="subbar">Store-level distribution intelligence · every U.S. Walmart, every colorway, refreshed from Walmart's own pickup inventory.</p>
+
+  <div class="kpis">
+    <div class="kpi hot"><div class="v" id="k-ever">—</div><div class="k">Stores ever seen stocking</div><div class="s">true carriage floor — grows each run</div></div>
+    <div class="kpi"><div class="v" id="k-now">—</div><div class="k">In stock this week</div><div class="s" id="k-now-s">—</div></div>
+    <div class="kpi"><div class="v" id="k-set">—</div><div class="k">Stock the full Pro Fit set</div><div class="s">all 4 Pro Fit colorways at once</div></div>
+    <div class="kpi"><div class="v" id="k-best">—</div><div class="k">Deepest state</div><div class="s" id="k-best-s">—</div></div>
   </div>
 
   <div class="grid">
     <!-- LEFT -->
-    <div class="card">
-      <p class="eyebrow">Doctor's Choice in-store reach · nationwide</p>
-      <h1 class="hero" id="hero">—</h1>
-      <p class="herosub">estimated U.S. Walmart stores stocking at least one tracked product</p>
-
-      <div class="stats">
-        <div class="stat"><div class="v" id="s-any">—</div><div class="k">Carrying ≥1 (sampled)</div></div>
-        <div class="stat"><div class="v" id="s-scanned">—</div><div class="k">Stores checked</div></div>
-        <div class="stat"><div class="v" id="s-full">—</div><div class="k">Stocking the full line</div></div>
-        <div class="stat"><div class="v" id="s-prods">—</div><div class="k">Colorways tracked</div></div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">Pro Fit vs Elite-Rx</p>
+        <p class="sub">stores with at least one colorway of each line in stock this week</p>
+        <div class="duel">
+          <div class="side"><div class="nm" style="color:var(--gold)">Pro Fit</div><div class="big" id="d-pf">—</div><div class="sm">stores</div></div>
+          <div class="vs" id="d-ratio">—</div>
+          <div class="side"><div class="nm" style="color:var(--grey)">Elite-Rx</div><div class="big" id="d-er">—</div><div class="sm">stores</div></div>
+        </div>
+        <div class="duelbar" id="d-bar"></div>
+        <p class="insight" id="insight"></p>
       </div>
 
-      <div class="hr"></div>
-      <p class="eyebrow muted">Stores stocking each product</p>
-      <div id="prodbars"></div>
-      <p class="insight" id="insight"></p>
+      <div class="card">
+        <p class="eyebrow">What Walmart actually shelves</p>
+        <p class="sub">stores with each colorway in stock this week · sorted by reach</p>
+        <div id="prodbars"></div>
+        <div class="chips" id="onlineonly"></div>
+        <p class="chipnote" id="chipnote"></p>
+      </div>
 
-      <div class="hr"></div>
-      <p class="eyebrow muted">How many of the in-store colorways each store carries</p>
-      <div id="covbars"></div>
+      <div class="card">
+        <p class="eyebrow">Depth per carrying store</p>
+        <p class="sub">of the stores stocking anything, how many colorways they hold</p>
+        <div id="covbars"></div>
+      </div>
 
-      <div class="hr"></div>
-      <p class="eyebrow muted">Estimated national reach over time</p>
-      <div class="chartbox"><canvas id="trend" height="120"></canvas></div>
-
-      <div class="hr"></div>
-      <p class="eyebrow muted">Stores carrying the line, by state</p>
-      <div class="chartbox"><canvas id="states" height="130"></canvas></div>
+      <div class="card">
+        <p class="eyebrow">Reach over time</p>
+        <p class="sub">% of checked stores with ≥1 item in stock, per run (early runs sampled fewer stores)</p>
+        <div><canvas id="trend" height="110"></canvas></div>
+      </div>
     </div>
 
     <!-- RIGHT -->
-    <div class="card listcard">
-      <div class="listhead"><span class="dot"></span><p class="eyebrow" style="margin:0" id="listhead">Top stores</p></div>
-      <div class="list" id="list"></div>
-      <div class="note" id="note">
-        Tracks every in-store colorway of the Doctor's Choice line — Elite-Rx &amp; Pro Fit tops and bottoms in the
-        colors Walmart actually shelves (online-exclusive colors like gray, wine and ciel blue are excluded).
-        Coverage accumulates toward all ~4,788 U.S. stores; availability is a sampled floor.
+    <div>
+      <div class="card">
+        <p class="eyebrow">State penetration</p>
+        <p class="sub">carrying stores / all stores in state</p>
+        <div class="statebox" id="states"></div>
       </div>
+
+      <div class="card listcard">
+        <p class="eyebrow">Store finder</p>
+        <p class="sub">every store stocking the line this week</p>
+        <input class="search" id="q" placeholder="Search city, state, or store name…">
+        <div class="count" id="listcount"></div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <div class="note">
+        <b>How to read this.</b> Data comes from Walmart's store-pickup inventory, checked for all
+        <span id="n-tracked">—</span> colorways at all <span id="n-stores">—</span> U.S. Walmart stores
+        (of 4,614 total). A store showing "in stock" is near-certain to carry the item. The reverse isn't:
+        a carrying store can be sold out on check day — so weekly counts are a <b>floor</b>, and the
+        "ever seen stocking" number is the best estimate of true carriage. It rises as weekly runs accumulate.
+      </div>
+      <div class="foot">Refreshed via GitHub Actions · Bright Data Web Unlocker · nearByNodes pickup API</div>
     </div>
   </div>
-  <div class="foot">Auto-updated weekly via GitHub Actions.</div>
 </div>
 
 <script>
@@ -131,79 +193,124 @@ function parse(t){const rows=[];let i=0,f="",row=[],q=false;const push=()=>{row.
  while(i<t.length){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c=='"')q=true;else if(c==',')push();else if(c=='\n')end();else if(c=='\r'){}else f+=c;}i++;}
  if(f.length||row.length)end();const h=rows.shift()||[];return rows.filter(r=>r.length>1||r[0]).map(r=>Object.fromEntries(h.map((k,j)=>[k,(r[j]??"").trim()])));}
 const fmt=n=>(+n).toLocaleString();
-let PROD=[], FILTER="all";
+const IN_STORE_MIN=10;   // colorways below this many stores are treated as online-only
 
 (async function(){
- const [hist,prod,cov,states,stores]=await Promise.all(
-   [csv("history.csv"),csv("product_summary.csv"),csv("line_coverage.csv"),csv("state_summary.csv"),csv("store_products.csv")]);
- PROD=prod||[];
- const N=PROD.length||1;
- $("#s-prods").textContent=PROD.length||"—";
+ const [hist,prod,cov,states,stores,ever]=await Promise.all([
+   csv("history.csv"),csv("product_summary.csv"),csv("line_coverage.csv"),
+   csv("state_summary.csv"),csv("store_products.csv"),csv("ever_carried.csv")]);
 
- if(hist&&hist.length){const h=hist[hist.length-1];
-   $("#hero").innerHTML="~"+fmt(h.est_national_any);
-   $("#s-any").textContent=fmt(h.carrying_any);
-   $("#s-scanned").textContent=fmt(h.stores_found);
-   $("#asof").textContent="as of "+(h.date||"").slice(0,10);}
+ const PROD=(prod||[]).map(p=>({...p,n:+p.stores_in_stock,pf:/pro fit/i.test(p.label)}));
+ const inStore=PROD.filter(p=>p.n>=IN_STORE_MIN).sort((a,b)=>b.n-a.n);
+ const online=PROD.filter(p=>p.n<IN_STORE_MIN);
+ const inKeys=new Set(inStore.map(p=>p.key));
 
- // per-product bars (gold = Pro Fit, grey = Elite-Rx)
- function renderProd(){
-   const list=PROD.filter(p=>FILTER==="all"||p.label.indexOf(FILTER)===0);
-   const max=Math.max(...PROD.map(p=>+p.stores_in_stock),1);
-   $("#prodbars").innerHTML=list.map(p=>{
-     const pf=/pro fit/i.test(p.label);
-     return `<div class="barrow"><div class="lab">${p.label}</div>`+
-       `<div class="track"><div class="fill ${pf?'':'grey'}" style="width:${(+p.stores_in_stock/max*100).toFixed(1)}%"></div></div>`+
-       `<div class="val">${p.stores_in_stock} · ~${fmt(p.est_national)}</div></div>`;}).join("");
+ // ---- header / KPIs ----
+ const last=hist&&hist.length?hist[hist.length-1]:null;
+ const checked=last?+last.stores_found:0;
+ if(last){
+   $("#asof").textContent="updated "+(last.date||"").slice(0,10);
+   $("#coverage").textContent=fmt(checked)+" of 4,614 stores checked · "+(checked/4614*100).toFixed(1)+"%";
+   $("#k-now").textContent=fmt(last.carrying_any);
+   $("#k-now-s").textContent=(100*last.carrying_any/checked).toFixed(1)+"% of stores checked · ~"+fmt(last.est_national_any)+" nationwide";
  }
- renderProd();
- if(PROD.length){
-   const pf=PROD.filter(p=>/pro fit/i.test(p.label)).reduce((a,p)=>a+ +p.stores_in_stock,0);
-   const el=PROD.filter(p=>/elite/i.test(p.label)).reduce((a,p)=>a+ +p.stores_in_stock,0);
-   $("#insight").innerHTML=`The <b style="color:var(--gold)">Pro Fit</b> line is stocked about `+
-     `<b>${el?(pf/el).toFixed(1):'—'}×</b> more widely than <b>Elite-Rx</b>. Most carrying stores hold just a `+
-     `couple of colorways; stocking all ${N} is rare.`;
- }
+ $("#n-tracked").textContent=PROD.length;
+ $("#n-stores").textContent=fmt(checked);
 
- // line coverage bars (1..N), plus "none" note
- if(cov){const m=Object.fromEntries(cov.map(r=>[+r.products_in_stock,+r.store_count]));
-   const ks=Array.from({length:N},(_,i)=>i+1);            // 1..N
-   const max=Math.max(...ks.map(k=>m[k]||0),1);
-   $("#s-full").textContent=fmt(m[N]||0);
+ // ever carried: rows with any "1"
+ let everN=0;
+ if(ever&&ever.length){everN=ever.filter(r=>Object.entries(r).some(([k,v])=>k!=="store_id"&&v==="1")).length;}
+ $("#k-ever").textContent=everN?fmt(everN):(last?fmt(last.carrying_any):"—");
+
+ // brand split + full-set count from store_products
+ let pfAny=0,erAny=0,fullSet=0;
+ const pfKeys=PROD.filter(p=>p.pf&&inKeys.has(p.key)).map(p=>p.key);
+ const erKeys=PROD.filter(p=>!p.pf&&inKeys.has(p.key)).map(p=>p.key);
+ const carrying=[];
+ if(stores){for(const r of stores){
+   const pf=pfKeys.some(k=>r[k]==="1"), er=erKeys.some(k=>r[k]==="1");
+   if(pf)pfAny++; if(er)erAny++;
+   if(pfKeys.length&&pfKeys.every(k=>r[k]==="1"))fullSet++;
+   if(r.carries_any==="1")carrying.push({r,pf,er,c:+r.line_coverage});
+ }}
+ $("#k-set").textContent=fmt(fullSet);
+ $("#d-pf").textContent=fmt(pfAny); $("#d-er").textContent=fmt(erAny);
+ $("#d-ratio").textContent=erAny?("~"+(pfAny/erAny).toFixed(1)+"× wider"):"—";
+ $("#d-bar").innerHTML=`<i style="width:${100*pfAny/Math.max(pfAny+erAny,1)}%;background:var(--gold)"></i><i style="flex:1;background:var(--grey)"></i>`;
+ $("#insight").innerHTML=`Walmart is treating <b style="color:var(--gold)">Pro Fit</b> as the anchor: `+
+   `${fmt(fullSet)} stores shelve the complete 4-piece set, while Elite-Rx rides along in a smaller premium slot. `+
+   `If sell-through talks happen, Pro Fit royal/black is the story.`;
+
+ // ---- product bars: in-store sorted, online-only as struck chips ----
+ const max=Math.max(...inStore.map(p=>p.n),1);
+ const everByKey={};
+ if(ever&&ever.length){for(const r of ever){for(const[k,v]of Object.entries(r)){if(k!=="store_id"&&v==="1")everByKey[k]=(everByKey[k]||0)+1;}}}
+ $("#prodbars").innerHTML=inStore.map(p=>
+   `<div class="barrow"><div class="lab">${p.label}</div>`+
+   `<div class="track"><div class="fill ${p.pf?'':'grey'}" style="width:${(p.n/max*100).toFixed(1)}%"></div></div>`+
+   `<div class="val">${fmt(p.n)} now${everByKey[p.key]?` · ${fmt(everByKey[p.key])} ever`:''}</div></div>`).join("");
+ $("#onlineonly").innerHTML=online.map(p=>`<span class="chip">${p.label}</span>`).join("");
+ $("#chipnote").textContent=online.length?
+   `Confirmed online-only — checked at every store, found on shelves at ${online.reduce((a,p)=>a+p.n,0)} total. Not part of the in-store line.`:"";
+
+ // ---- depth bars (1..max nonzero) ----
+ if(cov){
+   const m=Object.fromEntries(cov.map(r=>[+r.products_in_stock,+r.store_count]));
+   const maxK=Math.max(...Object.keys(m).map(Number).filter(k=>k>0&&m[k]>0));
+   const ks=Array.from({length:maxK},(_,i)=>i+1);
+   const mx=Math.max(...ks.map(k=>m[k]||0),1);
    $("#covbars").innerHTML=ks.map(k=>
-     `<div class="barrow"><div class="lab">${k===N?('All '+N):(k+(k>1?' colorways':' colorway'))}</div>`+
-     `<div class="track"><div class="fill" style="width:${((m[k]||0)/max*100).toFixed(1)}%"></div></div>`+
-     `<div class="val">${fmt(m[k]||0)} stores</div></div>`).join("")+
-     `<div class="val" style="width:auto;text-align:left;margin-top:6px;color:var(--faint)">`+
-     `${fmt(m[0]||0)} of the stores checked carry none.</div>`;
+     `<div class="barrow"><div class="lab">${k} colorway${k>1?'s':''}</div>`+
+     `<div class="track"><div class="fill" style="width:${((m[k]||0)/mx*100).toFixed(1)}%"></div></div>`+
+     `<div class="val">${fmt(m[k]||0)} stores</div></div>`).join("");
  }
 
- const axis={x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
-             y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),precision:0},border:{display:false},beginAtZero:true}};
+ // ---- trend: in-stock RATE so sampled + full runs are comparable ----
  Chart.defaults.font.family="Inter";
+ const axis={x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
+             y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),callback:v=>v+"%"},border:{display:false},beginAtZero:true}};
+ if(hist&&hist.length){
+   new Chart($("#trend"),{type:"line",
+     data:{labels:hist.map(h=>(h.date||"").slice(5,10)),
+       datasets:[{data:hist.map(h=>+(100*h.carrying_any/h.stores_found).toFixed(2)),
+         borderColor:CSS('--gold'),backgroundColor:CSS('--gold-soft'),fill:true,tension:.25,
+         pointRadius:4,pointBackgroundColor:CSS('--gold')}]},
+     options:{plugins:{legend:{display:false},tooltip:{callbacks:{
+       label:c=>{const h=hist[c.dataIndex];return ` ${c.parsed.y}% — ${fmt(h.carrying_any)} of ${fmt(h.stores_found)} checked`;}}}},
+       scales:axis}});
+ }
 
- if(hist&&hist.length){new Chart($("#trend"),{type:"line",
-   data:{labels:hist.map(h=>(h.date||"").slice(0,10)),
-     datasets:[{data:hist.map(h=>+h.est_national_any),borderColor:CSS('--gold'),
-       backgroundColor:CSS('--gold-soft'),fill:true,tension:.25,pointRadius:3,pointBackgroundColor:CSS('--gold')}]},
-   options:{plugins:{legend:{display:false}},scales:axis}});}
+ // ---- state penetration table ----
+ if(states){
+   const rows=states.map(r=>({st:r.state,n:+r.stores,c:+r.carrying_any,p:+r.stores?+r.carrying_any/+r.stores:0}))
+                    .filter(r=>r.n>0).sort((a,b)=>b.p-a.p);
+   const best=rows.filter(r=>r.n>=20)[0];
+   if(best){$("#k-best").textContent=best.st;
+     $("#k-best-s").textContent=`${(best.p*100).toFixed(0)}% of its ${best.n} stores carry the line`;}
+   const mx=Math.max(...rows.map(r=>r.p),.01);
+   $("#states").innerHTML=rows.map(r=>
+     `<div class="strow"><div class="st">${r.st}</div>`+
+     `<div class="track"><div class="fill" style="width:${(r.p/mx*100).toFixed(1)}%"></div></div>`+
+     `<div class="cnt">${fmt(r.c)} / ${fmt(r.n)}</div><div class="pct">${(r.p*100).toFixed(0)}%</div></div>`).join("");
+ }
 
- if(states){const s=states.filter(r=>+r.carrying_any>0).sort((a,b)=>+b.carrying_any-+a.carrying_any);
-   new Chart($("#states"),{type:"bar",
-     data:{labels:s.map(r=>r.state),datasets:[{data:s.map(r=>+r.carrying_any),backgroundColor:CSS('--gold'),borderRadius:3}]},
-     options:{plugins:{legend:{display:false}},scales:axis}});}
-
- if(stores){const car=stores.filter(r=>r.carries_any==="1").sort((a,b)=>+b.line_coverage-+a.line_coverage);
-   $("#listhead").textContent="Top stores · "+car.length;
-   $("#list").innerHTML=car.map(r=>{const c=+r.line_coverage;
-     return `<div class="item"><div class="top"><span class="nm">${r.store_name}</span>`+
-       `<span class="cov">${c}/${N}</span></div><div class="sub">${r.city}, ${r.state}</div>`+
-       `<div class="mini"><i style="width:${c/N*100}%"></i></div></div>`;}).join("");}
-
- // pill filter
- document.querySelectorAll('.pill[data-f]').forEach(p=>p.addEventListener('click',()=>{
-   document.querySelectorAll('.pill[data-f]').forEach(x=>x.classList.remove('on'));
-   p.classList.add('on');FILTER=p.dataset.f;renderProd();}));
+ // ---- store finder ----
+ const N=inStore.length||1;
+ carrying.sort((a,b)=>b.c-a.c||(a.r.state<b.r.state?-1:1));
+ function render(list){
+   $("#listcount").textContent=`${fmt(list.length)} store${list.length!==1?'s':''}`+(list.length>200?" · showing 200":"");
+   $("#list").innerHTML=list.slice(0,200).map(({r,pf,er,c})=>
+     `<div class="item"><div class="top"><span class="nm">${r.store_name}</span><span class="cov">${c}/${N}</span></div>`+
+     `<div class="subln">${r.city}, ${r.state} ${r.postal}</div>`+
+     `<div style="margin-bottom:7px">${pf?'<span class="tag pf">PRO FIT</span>':''}${er?'<span class="tag er">ELITE-RX</span>':''}</div>`+
+     `<div class="mini"><i style="width:${c/N*100}%"></i></div></div>`).join("");
+ }
+ render(carrying);
+ $("#q").addEventListener("input",e=>{
+   const q=e.target.value.toLowerCase().trim();
+   render(!q?carrying:carrying.filter(({r})=>
+     (r.store_name+" "+r.city+" "+r.state+" "+r.postal).toLowerCase().includes(q)));
+ });
 })();
 </script>
 </body>
