@@ -101,8 +101,8 @@
       <div class="k">In stock this week</div><div class="s" id="k-now-s">—</div></div>
     <div class="kpi"><div class="v" id="k-out">—</div>
       <div class="k">Carriers sold out</div><div class="s">of stores ever seen carrying — a demand signal</div></div>
-    <div class="kpi"><div class="v" id="k-set">—</div>
-      <div class="k">Full Pro Fit set</div><div class="s">all 4 colorways on shelf at once</div></div>
+    <div class="kpi"><div class="v" id="k-depth">—</div>
+      <div class="k">Avg shelf depth</div><div class="s">colorways per carrying store, of 11 — deepens if Walmart commits</div></div>
   </div>
 
   <div class="grid">
@@ -202,7 +202,7 @@ VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:
  if(last&&everShow)$("#k-out").textContent=(100*(everShow-+last.carrying_any)/everShow).toFixed(0)+"%";
 
  // per-store derived
- let fullSet=0,pfAny=0,erAny=0;const carrying=[];
+ let pfAny=0,erAny=0;const carrying=[];
  const pfKeys=PROD.filter(p=>p.pf&&inKeys.has(p.key)).map(p=>p.key);
  const erKeys=PROD.filter(p=>!p.pf&&inKeys.has(p.key)).map(p=>p.key);
  const lines={};
@@ -215,11 +215,10 @@ VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:
  if(stores)for(const r of stores){
    if(pfKeys.some(k=>r[k]==="1"))pfAny++;
    if(erKeys.some(k=>r[k]==="1"))erAny++;
-   if(pfKeys.length&&pfKeys.every(k=>r[k]==="1"))fullSet++;
    for(const l in lines)if(lines[l].top.some(k=>r[k]==="1")&&lines[l].bottom.some(k=>r[k]==="1"))outfit[l]++;
    if(r.carries_any==="1")carrying.push({r,c:+r.line_coverage});
  }
- $("#k-set").textContent=fmt(fullSet);
+ if(carrying.length)$("#k-depth").textContent=(carrying.reduce((a,x)=>a+x.c,0)/carrying.length).toFixed(1);
 
  $("#outfits").innerHTML=Object.keys(lines).map(l=>{
    const anyL=l==="Pro Fit"?pfAny:erAny,col=l==="Pro Fit"?"var(--gold)":"var(--grey)";
