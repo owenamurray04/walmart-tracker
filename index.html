@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Doctor's Choice × Walmart — In-Store Intelligence</title>
+<title>Doctor's Choice × Walmart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -14,15 +14,16 @@
   :root{
     --ink:#0c0f14;--panel:#151b23;--panel2:#1b222c;--line:#27303c;
     --text:#e9ecf1;--muted:#8a94a4;--faint:#5b6573;
-    --gold:#e7b24a;--gold-soft:rgba(231,178,74,.14);--grey:#7f8b9c;--empty:#28303b;--up:#62c79e;
+    --gold:#e7b24a;--gold-soft:rgba(231,178,74,.14);--grey:#7f8b9c;--empty:#28303b;
+    --up:#62c79e;--down:#e07070;
     --display:'Archivo',sans-serif;--body:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1240px;margin:0 auto;padding:22px 22px 60px}
+  .wrap{max-width:1200px;margin:0 auto;padding:22px 22px 56px}
 
   .bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-  .title{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.5px;margin:0}
+  .title{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.5px;margin:0}
   .title b{color:var(--gold)}
   .badge{font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--gold-soft);
          border:1px solid var(--gold);border-radius:999px;padding:2px 11px}
@@ -30,20 +31,20 @@
   .dot{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up)}
 
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px 16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px 15px}
   .kpi.hot{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-soft),var(--panel) 65%)}
-  .kpi .v{font-family:var(--mono);font-weight:600;font-size:40px;letter-spacing:-1.5px;line-height:1.05}
+  .kpi .v{font-family:var(--mono);font-weight:600;font-size:38px;letter-spacing:-1.5px;line-height:1.05;display:flex;align-items:baseline;gap:10px}
   .kpi.hot .v{color:var(--gold)}
+  .kpi .delta{font-size:14px;letter-spacing:0;font-family:var(--mono)}
+  .delta.up{color:var(--up)} .delta.down{color:var(--down)} .delta.flat{color:var(--faint)}
   .kpi .k{font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--faint);margin-top:6px}
-  .kpi .s{color:var(--muted);font-size:12.5px;margin-top:4px}
+  .kpi .s{color:var(--muted);font-size:12.5px;margin-top:3px}
 
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:18px}
   .eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold);margin:0 0 4px}
   .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
   .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
-  .grid .card{margin-bottom:18px}
 
-  /* map */
   #usmap svg{width:100%;height:auto;display:block}
   #usmap path{stroke:var(--ink);stroke-width:1;transition:opacity .15s}
   #usmap path:hover{opacity:.75}
@@ -51,31 +52,32 @@
   .legend .ramp{flex:none;width:160px;height:8px;border-radius:5px;
     background:linear-gradient(90deg,var(--empty),rgba(231,178,74,.4),var(--gold))}
 
-  /* duel */
-  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
-  .duel .side{text-align:center}
-  .duel .nm{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase}
-  .duel .big{font-family:var(--mono);font-weight:600;font-size:40px;letter-spacing:-1.5px;line-height:1.1}
-  .duel .vs{font-family:var(--mono);color:var(--faint);font-size:12.5px}
-  .duel .sm{color:var(--muted);font-size:12px;margin-top:2px}
-  .duelbar{display:flex;height:11px;border-radius:7px;overflow:hidden;background:var(--empty);margin-top:14px}
-  .duelbar>i{display:block;height:100%}
+  .wow{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px}
+  .wow .w .v{font-family:var(--mono);font-weight:600;font-size:22px}
+  .wow .w .k{font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint);margin-top:1px}
 
-  /* bars */
   .barrow{display:flex;align-items:center;gap:14px;margin:10px 0}
-  .barrow .lab{width:185px;font-size:14px;color:var(--text);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barrow .lab{width:180px;font-size:14px;color:var(--text);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .track{flex:1;height:9px;background:var(--empty);border-radius:6px;overflow:hidden}
   .fill{height:100%;border-radius:6px;background:var(--gold)}
   .fill.grey{background:var(--grey)}
   .barrow .val{width:145px;text-align:right;font-family:var(--mono);font-size:12.5px;color:var(--muted);flex:none}
+  .duelbar{display:flex;height:11px;border-radius:7px;overflow:hidden;background:var(--empty);margin:16px 0 6px}
+  .duelbar>i{display:block;height:100%}
+  .duelrow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
   .mutedline{color:var(--faint);font-size:12.5px;margin:14px 0 0}
 
-  /* finder */
+  .fitrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .fitrow:last-child{border-bottom:none}
+  .fitrow .nm{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.5px}
+  .fitrow .big{font-family:var(--mono);font-weight:600;font-size:30px;letter-spacing:-1px}
+  .fitrow .pc{color:var(--muted);font-size:12.5px;text-align:right}
+
   .search{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);
           font-family:var(--body);font-size:14px;padding:11px 14px;outline:none;margin-bottom:10px}
   .search:focus{border-color:var(--gold)}
   .count{color:var(--faint);font-family:var(--mono);font-size:12px;margin-bottom:6px}
-  .list{overflow:auto;max-height:520px;margin:0 -6px;padding:0 6px}
+  .list{overflow:auto;max-height:430px;margin:0 -6px;padding:0 6px}
   .item{padding:11px 0;border-bottom:1px solid var(--line)}
   .item:last-child{border-bottom:none}
   .item .top{display:flex;justify-content:space-between;gap:10px}
@@ -83,7 +85,7 @@
   .item .cov{font-family:var(--mono);font-size:13px;color:var(--gold);flex:none}
   .item .subln{color:var(--muted);font-size:12.5px}
 
-  .foot{color:var(--faint);font-size:12px;margin-top:6px;line-height:1.7}
+  .foot{color:var(--faint);font-size:12px;margin-top:4px;line-height:1.7}
   @media(max-width:980px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -97,15 +99,19 @@
   </div>
 
   <div class="kpis">
-    <div class="kpi hot"><div class="v" id="k-ever">—</div><div class="k">Stores ever seen stocking</div><div class="s">true carriage — grows each run</div></div>
-    <div class="kpi"><div class="v" id="k-now">—</div><div class="k">In stock this week</div><div class="s" id="k-now-s">—</div></div>
-    <div class="kpi"><div class="v" id="k-set">—</div><div class="k">Full Pro Fit set</div><div class="s">all 4 colorways at once</div></div>
-    <div class="kpi"><div class="v" id="k-best">—</div><div class="k">Deepest state</div><div class="s" id="k-best-s">—</div></div>
+    <div class="kpi hot"><div class="v"><span id="k-ever">—</span><span class="delta" id="k-ever-d"></span></div>
+      <div class="k">Stores carrying</div><div class="s">seen stocking in any run — the true footprint</div></div>
+    <div class="kpi"><div class="v"><span id="k-now">—</span><span class="delta" id="k-now-d"></span></div>
+      <div class="k">In stock this week</div><div class="s" id="k-now-s">—</div></div>
+    <div class="kpi"><div class="v" id="k-out">—</div>
+      <div class="k">Carriers sold out</div><div class="s">of stores ever seen carrying — a demand signal</div></div>
+    <div class="kpi"><div class="v" id="k-set">—</div>
+      <div class="k">Full Pro Fit set</div><div class="s">all 4 colorways on shelf at once</div></div>
   </div>
 
   <div class="card">
     <p class="eyebrow">Where the line lives</p>
-    <p class="sub">share of each state's Walmart stores with ≥1 item in stock this week — hover any state for the counts</p>
+    <p class="sub">share of each state's Walmart stores with ≥1 item in stock — hover for counts</p>
     <div id="usmap"></div>
     <div class="legend"><span>0%</span><div class="ramp"></div><span id="legmax">—</span><span style="margin-left:auto" id="mapnote"></span></div>
   </div>
@@ -113,28 +119,27 @@
   <div class="grid">
     <div>
       <div class="card">
-        <p class="eyebrow">The in-store line</p>
-        <p class="sub">stores with each colorway in stock this week · "ever" = seen in any run</p>
-        <div id="prodbars"></div>
-        <p class="mutedline" id="onlineonly"></p>
+        <p class="eyebrow">Distribution momentum</p>
+        <p class="sub">stores stocking per run (gold) and cumulative stores ever seen carrying (grey)</p>
+        <div><canvas id="trend" height="115"></canvas></div>
+        <div class="wow" id="wow"></div>
       </div>
 
       <div class="card">
-        <p class="eyebrow">Reach over time</p>
-        <p class="sub">% of checked stores stocking ≥1 item, per run</p>
-        <div><canvas id="trend" height="105"></canvas></div>
+        <p class="eyebrow">The line on the shelf</p>
+        <p class="sub">stores with each colorway in stock · "ever" = seen in any run</p>
+        <div id="prodbars"></div>
+        <div class="duelbar" id="d-bar"></div>
+        <div class="duelrow"><span id="d-pf">—</span><span id="d-er">—</span></div>
+        <p class="mutedline" id="onlineonly"></p>
       </div>
     </div>
 
     <div>
       <div class="card">
-        <p class="eyebrow">Pro Fit vs Elite-Rx</p>
-        <div class="duel">
-          <div class="side"><div class="nm" style="color:var(--gold)">Pro Fit</div><div class="big" style="color:var(--gold)" id="d-pf">—</div><div class="sm">stores</div></div>
-          <div class="vs" id="d-ratio">—</div>
-          <div class="side"><div class="nm" style="color:var(--grey)">Elite-Rx</div><div class="big" style="color:var(--grey)" id="d-er">—</div><div class="sm">stores</div></div>
-        </div>
-        <div class="duelbar" id="d-bar"></div>
+        <p class="eyebrow">Complete-outfit availability</p>
+        <p class="sub">stores where a customer can buy a matching top + bottom today</p>
+        <div id="outfits"></div>
       </div>
 
       <div class="card">
@@ -147,9 +152,8 @@
   </div>
 
   <div class="foot">
-    Source: Walmart store-pickup inventory, all colorways × <span id="n-stores">—</span> of 4,614 U.S. stores.
-    Weekly "in stock" is a floor (sold-out carriers don't count that week); <b style="color:var(--muted)">ever seen stocking</b> is the true-carriage estimate and rises as runs accumulate.
-    Auto-refreshed via GitHub Actions.
+    Walmart store-pickup inventory · every colorway × <span id="n-stores">—</span> of 4,614 U.S. Walmart stores ·
+    weekly in-stock is a floor (a sold-out carrier doesn't count that week) · refreshed via GitHub Actions.
   </div>
 </div>
 
@@ -161,6 +165,7 @@ function parse(t){const rows=[];let i=0,f="",row=[],q=false;const push=()=>{row.
  while(i<t.length){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c=='"')q=true;else if(c==',')push();else if(c=='\n')end();else if(c=='\r'){}else f+=c;}i++;}
  if(f.length||row.length)end();const h=rows.shift()||[];return rows.filter(r=>r.length>1||r[0]).map(r=>Object.fromEntries(h.map((k,j)=>[k,(r[j]??"").trim()])));}
 const fmt=n=>(+n).toLocaleString();
+const delta=(el,d)=>{el.textContent=d>0?`+${fmt(d)}`:d<0?fmt(d):"±0";el.className="delta "+(d>0?"up":d<0?"down":"flat");};
 const IN_STORE_MIN=10;
 const FIPS={"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC","12":"FL",
 "13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD",
@@ -169,95 +174,150 @@ const FIPS={"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT
 "48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY"};
 
 (async function(){
- const [hist,prod,states,stores,ever]=await Promise.all([
+ const [hist,prod,states,stores,ever,log]=await Promise.all([
    csv("history.csv"),csv("product_summary.csv"),csv("state_summary.csv"),
-   csv("store_products.csv"),csv("ever_carried.csv")]);
+   csv("store_products.csv"),csv("ever_carried.csv"),csv("carry_log.csv")]);
 
  const PROD=(prod||[]).map(p=>({...p,n:+p.stores_in_stock,pf:/pro fit/i.test(p.label)}));
  const inStore=PROD.filter(p=>p.n>=IN_STORE_MIN).sort((a,b)=>b.n-a.n);
  const online=PROD.filter(p=>p.n<IN_STORE_MIN);
  const inKeys=new Set(inStore.map(p=>p.key));
+ const label={};PROD.forEach(p=>label[p.key]=p.label);
 
  const last=hist&&hist.length?hist[hist.length-1]:null;
+ const prev=hist&&hist.length>1?hist[hist.length-2]:null;
  const checked=last?+last.stores_found:0;
  if(last){
    $("#asof").textContent="updated "+(last.date||"").slice(0,10);
    $("#coverage").textContent=fmt(checked)+" of 4,614 stores · "+(checked/4614*100).toFixed(1)+"% coverage";
    $("#k-now").textContent=fmt(last.carrying_any);
-   $("#k-now-s").textContent=(100*last.carrying_any/checked).toFixed(1)+"% of checked · ~"+fmt(last.est_national_any)+" nationwide";
+   $("#k-now-s").textContent=(100*last.carrying_any/checked).toFixed(1)+"% of stores checked";
+   if(prev)delta($("#k-now-d"),last.carrying_any-prev.carrying_any);
  }
  $("#n-stores").textContent=fmt(checked);
 
+ // ever carried
  let everN=0,everByKey={};
  if(ever&&ever.length){
    everN=ever.filter(r=>Object.entries(r).some(([k,v])=>k!=="store_id"&&v==="1")).length;
    for(const r of ever)for(const[k,v]of Object.entries(r))if(k!=="store_id"&&v==="1")everByKey[k]=(everByKey[k]||0)+1;
  }
- $("#k-ever").textContent=everN?fmt(everN):(last?fmt(last.carrying_any):"—");
+ const everShow=everN||(last?+last.carrying_any:0);
+ $("#k-ever").textContent=fmt(everShow);
+ if(last&&everShow){
+   const out=everShow-+last.carrying_any;
+   $("#k-out").textContent=(100*out/everShow).toFixed(0)+"%";
+ }
 
- // brand split + full set + carrying list
- let pfAny=0,erAny=0,fullSet=0;const carrying=[];
+ // per-store derived
+ let fullSet=0,pfAny=0,erAny=0;const carrying=[];
  const pfKeys=PROD.filter(p=>p.pf&&inKeys.has(p.key)).map(p=>p.key);
  const erKeys=PROD.filter(p=>!p.pf&&inKeys.has(p.key)).map(p=>p.key);
+ const lines={};   // line -> {top:[keys], bottom:[keys]}
+ for(const p of inStore){
+   const line=/pro fit/i.test(p.label)?"Pro Fit":"Elite-Rx";
+   const part=/top/i.test(p.label)?"top":"bottom";
+   (lines[line]=lines[line]||{top:[],bottom:[]})[part].push(p.key);
+ }
+ const outfit={};for(const l in lines)outfit[l]=0;
  if(stores)for(const r of stores){
-   const pf=pfKeys.some(k=>r[k]==="1"),er=erKeys.some(k=>r[k]==="1");
-   if(pf)pfAny++;if(er)erAny++;
+   if(pfKeys.some(k=>r[k]==="1"))pfAny++;
+   if(erKeys.some(k=>r[k]==="1"))erAny++;
    if(pfKeys.length&&pfKeys.every(k=>r[k]==="1"))fullSet++;
-   if(r.carries_any==="1")carrying.push({r,pf,er,c:+r.line_coverage});
+   for(const l in lines){
+     if(lines[l].top.some(k=>r[k]==="1")&&lines[l].bottom.some(k=>r[k]==="1"))outfit[l]++;
+   }
+   if(r.carries_any==="1")carrying.push({r,c:+r.line_coverage});
  }
  $("#k-set").textContent=fmt(fullSet);
- $("#d-pf").textContent=fmt(pfAny);$("#d-er").textContent=fmt(erAny);
- $("#d-ratio").textContent=erAny?("~"+(pfAny/erAny).toFixed(1)+"×"):"—";
- $("#d-bar").innerHTML=`<i style="width:${100*pfAny/Math.max(pfAny+erAny,1)}%;background:var(--gold)"></i><i style="flex:1;background:var(--grey)"></i>`;
 
- // product bars
+ // outfit card
+ $("#outfits").innerHTML=Object.entries(lines).map(([l,_])=>{
+   const anyL=l==="Pro Fit"?pfAny:erAny;
+   return `<div class="fitrow"><div>
+     <div class="nm" style="color:${l==="Pro Fit"?"var(--gold)":"var(--grey)"}">${l}</div>
+     <div class="pc" style="text-align:left">top + bottom in stock together</div></div>
+     <div style="text-align:right"><div class="big" style="color:${l==="Pro Fit"?"var(--gold)":"var(--grey)"}">${fmt(outfit[l])}</div>
+     <div class="pc">${anyL?(100*outfit[l]/anyL).toFixed(0):0}% of its ${fmt(anyL)} stocked stores</div></div></div>`;
+ }).join("");
+
+ // product bars + brand split strip
  const max=Math.max(...inStore.map(p=>p.n),1);
  $("#prodbars").innerHTML=inStore.map(p=>
    `<div class="barrow"><div class="lab">${p.label}</div>`+
    `<div class="track"><div class="fill ${p.pf?'':'grey'}" style="width:${(p.n/max*100).toFixed(1)}%"></div></div>`+
    `<div class="val">${fmt(p.n)} now${everByKey[p.key]?` · ${fmt(everByKey[p.key])} ever`:''}</div></div>`).join("");
+ $("#d-bar").innerHTML=`<i style="width:${100*pfAny/Math.max(pfAny+erAny,1)}%;background:var(--gold)"></i><i style="flex:1;background:var(--grey)"></i>`;
+ $("#d-pf").textContent=`Pro Fit · ${fmt(pfAny)} stores`;
+ $("#d-er").textContent=`Elite-Rx · ${fmt(erAny)} stores`;
  if(online.length){
    const stray=online.reduce((a,p)=>a+p.n,0);
-   $("#onlineonly").textContent=`Online-only (not shelved in stores): ${online.map(p=>p.label.replace(/(Elite-Rx|Pro Fit) /,"")).join(", ")}`+
-     (stray?` — ${stray} stray unit${stray>1?'s':''} nationwide, likely customer returns.`:".");
+   $("#onlineonly").textContent=`Online-only colors (never shelved): ${online.map(p=>p.label.replace(/(Elite-Rx|Pro Fit) /,"")).join(", ")}`+
+     (stray?` — ${stray} stray unit${stray>1?'s':''} nationwide, likely returns.`:".");
  }
 
- // ---- real US map (Albers USA choropleth) ----
+ // ---- map: prefer self-hosted geometry, fall back to CDNs ----
  const pen={};let maxP=.01;
  if(states)for(const r of states){const n=+r.stores,c=+r.carrying_any,p=n?c/n:0;
    pen[r.state]={n,c,p};if(n>=5&&p>maxP)maxP=p;}
- const bestRows=(states||[]).map(r=>({st:r.state,n:+r.stores,c:+r.carrying_any,p:+r.stores?+r.carrying_any/+r.stores:0}))
-   .filter(r=>r.n>=20).sort((a,b)=>b.p-a.p);
- if(bestRows[0]){$("#k-best").textContent=bestRows[0].st;
-   $("#k-best-s").textContent=`${(bestRows[0].p*100).toFixed(0)}% of its ${bestRows[0].n} stores`;}
  $("#legmax").textContent=(maxP*100).toFixed(0)+"%";
- try{
-   const topo=await (await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")).json();
+ (async()=>{
+   const srcs=["states-10m.json",
+               "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json",
+               "https://unpkg.com/us-atlas@3/states-10m.json"];
+   let topo=null;
+   for(const s of srcs){try{const r=await fetch(s);if(r.ok){topo=await r.json();break;}}catch(e){}}
+   if(!topo){$("#usmap").innerHTML='<p class="sub">Map data unavailable — will self-heal on the next weekly run.</p>';return;}
    const feats=topojson.feature(topo,topo.objects.states).features;
-   const path=d3.geoPath();
    const svg=d3.create("svg").attr("viewBox","0 0 975 610");
    svg.selectAll("path").data(feats).join("path")
-     .attr("d",path)
+     .attr("d",d3.geoPath())
      .attr("fill",f=>{const st=FIPS[f.id],d=st&&pen[st];
        return d&&d.c>0?`rgba(231,178,74,${(.12+.88*Math.min(d.p/maxP,1)).toFixed(2)})`:CSS('--empty');})
      .append("title").text(f=>{const st=FIPS[f.id],d=st&&pen[st];
-       return d?`${st} — ${d.c} of ${d.n} stores stocking (${(d.p*100).toFixed(0)}%)`:(st||"")+" — no stores mapped";});
+       return d?`${st} — ${d.c} of ${d.n} stores stocking (${(d.p*100).toFixed(0)}%)`:(st||"");});
    $("#usmap").appendChild(svg.node());
    const pr=pen["PR"];if(pr&&pr.n)$("#mapnote").textContent=`+ PR: ${pr.c} of ${pr.n} (not shown)`;
- }catch(e){$("#usmap").innerHTML='<p class="sub">map unavailable offline</p>';}
+ })();
 
- // trend
+ // ---- momentum: weekly line + cumulative ever line + WoW facts ----
  Chart.defaults.font.family="Inter";
  if(hist&&hist.length){
+   // cumulative ever per run from carry_log (falls back to weekly count)
+   const runs=hist.map(h=>({d:(h.date||"").slice(0,10),now:+h.carrying_any}));
+   let cum=null;
+   if(log&&log.length){
+     const byDate={};for(const r of log)(byDate[(r.date||"").slice(0,10)]=byDate[(r.date||"").slice(0,10)]||new Set()).add(r.store_id);
+     const seen=new Set();cum=runs.map(r=>{const ids=byDate[r.d];if(ids)ids.forEach(i=>seen.add(i));return seen.size||null;});
+     // if log doesn't reach back, show ever total on the last point
+     if(cum[cum.length-1]===null&&everN)cum[cum.length-1]=everN;
+   }else if(everN){cum=runs.map((r,i)=>i===runs.length-1?everN:null);}
+   const ds=[{label:"in stock",data:runs.map(r=>r.now),borderColor:CSS('--gold'),
+     backgroundColor:CSS('--gold-soft'),fill:true,tension:.25,pointRadius:4,pointBackgroundColor:CSS('--gold')}];
+   if(cum)ds.push({label:"ever seen",data:cum,borderColor:CSS('--grey'),borderDash:[5,4],
+     fill:false,tension:.25,pointRadius:3,pointBackgroundColor:CSS('--grey'),spanGaps:true});
    new Chart($("#trend"),{type:"line",
-     data:{labels:hist.map(h=>(h.date||"").slice(5,10)),
-       datasets:[{data:hist.map(h=>+(100*h.carrying_any/h.stores_found).toFixed(2)),
-         borderColor:CSS('--gold'),backgroundColor:CSS('--gold-soft'),fill:true,tension:.25,
-         pointRadius:4,pointBackgroundColor:CSS('--gold')}]},
+     data:{labels:runs.map(r=>r.d.slice(5)),datasets:ds},
      options:{plugins:{legend:{display:false},tooltip:{callbacks:{
-       label:c=>{const h=hist[c.dataIndex];return ` ${c.parsed.y}% — ${fmt(h.carrying_any)} of ${fmt(h.stores_found)} checked`;}}}},
+       label:c=>` ${c.dataset.label}: ${fmt(c.parsed.y)} stores`}}},
        scales:{x:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted')},border:{display:false}},
-               y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),callback:v=>v+"%"},border:{display:false},beginAtZero:true}}}});
+               y:{grid:{color:CSS('--line')},ticks:{color:CSS('--muted'),precision:0},border:{display:false},beginAtZero:true}}}});
+   // WoW adds/drops from the last two snapshots in the log
+   if(log&&log.length){
+     const dates=[...new Set(log.map(r=>(r.date||"").slice(0,10)))].sort();
+     if(dates.length>=2){
+       const a=new Set(log.filter(r=>r.date.startsWith(dates[dates.length-2])).map(r=>r.store_id));
+       const b=new Set(log.filter(r=>r.date.startsWith(dates[dates.length-1])).map(r=>r.store_id));
+       const adds=[...b].filter(x=>!a.has(x)).length, drops=[...a].filter(x=>!b.has(x)).length;
+       $("#wow").innerHTML=
+         `<div class="w"><div class="v" style="color:var(--up)">+${fmt(adds)}</div><div class="k">newly stocking</div></div>`+
+         `<div class="w"><div class="v" style="color:var(--down)">−${fmt(drops)}</div><div class="k">went dark</div></div>`+
+         `<div class="w"><div class="v">${adds-drops>=0?"+":""}${fmt(adds-drops)}</div><div class="k">net vs last run</div></div>`;
+       if(prev)delta($("#k-ever-d"),adds);
+     }else{
+       $("#wow").innerHTML=`<div class="w"><div class="v" style="font-size:14px;color:var(--faint)">baseline set — adds/drops appear after the next run</div></div>`;
+     }
+   }
  }
 
  // store finder

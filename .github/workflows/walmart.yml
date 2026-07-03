@@ -42,6 +42,13 @@ jobs:
 
       - run: pip install requests
 
+      - name: Self-host the map geometry (one-time; keeps dashboard CDN-free)
+        run: |
+          if [ ! -f states-10m.json ]; then
+            curl -fsSL -o states-10m.json https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json \
+              || rm -f states-10m.json
+          fi
+
       - name: Sweep all products across all stores
         env:
           BRD_PROXY: ${{ secrets.BRD_PROXY }}

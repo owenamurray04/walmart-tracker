@@ -227,6 +227,16 @@ def main():
             ins = sum(1 for r in recs if r.get(p["key"]) == 1)
             w.writerow([now, p["key"], p["label"], ins])
 
+    # carry_log.csv: per-run snapshot of carrying store ids (for the
+    # dashboard's adds/drops momentum view)
+    with open("carry_log.csv", "a", newline="") as f:
+        w = csv.writer(f)
+        if f.tell() == 0:
+            w.writerow(["date", "store_id"])
+        for r in recs:
+            if r["carries_any"] == 1:
+                w.writerow([now, r["id"]])
+
     # ever_carried.csv: union across all runs — true carriage floor
     ever = defaultdict(dict)
     if os.path.exists("ever_carried.csv"):
