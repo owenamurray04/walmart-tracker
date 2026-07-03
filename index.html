@@ -263,15 +263,19 @@ const FIPS={"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT
  $("#legmax").textContent=(maxP*100).toFixed(0)+"%";
  (async()=>{
    const srcs=["states-10m.json",
-               "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json",
-               "https://unpkg.com/us-atlas@3/states-10m.json"];
+               "https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json",
+               "https://unpkg.com/us-atlas@3/states-albers-10m.json"];
    let topo=null;
    for(const s of srcs){try{const r=await fetch(s);if(r.ok){topo=await r.json();break;}}catch(e){}}
    if(!topo){$("#usmap").innerHTML='<p class="sub">Map data unavailable — will self-heal on the next weekly run.</p>';return;}
    const feats=topojson.feature(topo,topo.objects.states).features;
+   // auto-detect: lon/lat topojson needs the AlbersUSA projection; the
+   // pre-projected albers file renders as-is
+   const geo=topo.bbox&&Math.abs(topo.bbox[0])<=180&&Math.abs(topo.bbox[3])<=90;
+   const proj=geo?d3.geoAlbersUsa().scale(1300).translate([487.5,305]):null;
    const svg=d3.create("svg").attr("viewBox","0 0 975 610");
    svg.selectAll("path").data(feats).join("path")
-     .attr("d",d3.geoPath())
+     .attr("d",d3.geoPath(proj))
      .attr("fill",f=>{const st=FIPS[f.id],d=st&&pen[st];
        return d&&d.c>0?`rgba(231,178,74,${(.12+.88*Math.min(d.p/maxP,1)).toFixed(2)})`:CSS('--empty');})
      .append("title").text(f=>{const st=FIPS[f.id],d=st&&pen[st];
