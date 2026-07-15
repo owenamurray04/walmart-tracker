@@ -14,9 +14,9 @@ name: "1 · Weekly product check — the main scraper (~$10/run)"
 # gapfill_stores.py locally every month or two.
 
 on:
-  # Manual-only for now. To go back to autopilot, uncomment:
-  # schedule:
-  #   - cron: "0 13 * * 1"
+  # Autopilot: every Monday 13:00 UTC. Comment out to go manual-only.
+  schedule:
+    - cron: "0 13 * * 1"
   workflow_dispatch:
     inputs:
       budget:
