@@ -7,21 +7,32 @@ product in --products across the minimal covering set of ZIPs that blankets
 all known stores. Designed for GitHub Actions:
 
   - NO discovery calls: the map is fixed (refresh it with gapfill_stores.py)
-  - resumable: progress checkpoints to weekly_checkpoint.json every wave, so
-    a crashed/timed-out run re-billed nothing when re-run within 5 days
+  - resumable: progress checkpoints to weekly_checkpoint.json continuously, so
+    a crashed/timed-out run re-bills nothing when re-run within 5 days
   - hard budget cap on billed (successful) calls
   - outputs the same dashboard CSVs as before, PLUS:
       product_history.csv  — long-format per-product trend (fixed schema)
       ever_carried.csv     — union across runs: stores ever seen stocking
                              each product (true carriage, immune to stockouts)
 
+2026-07-21 rework (after the 07-20 run was throttled to a 78% failure rate):
+Bright Data's unlocker layer rate-limits bursty, near-identical request
+storms (`sr_rate_limit`). The old engine fired 120-call waves from 24
+workers with instant retries — exactly that. The sweep now:
+  - runs 8 workers (was 24), each launch spaced by a jittered gap (~0.35s)
+  - slows down automatically when failures spike, speeds back up on success
+  - retries failures up to 5x with exponential backoff (15s -> 4min)
+  - shuffles the call order so identical GraphQL shapes don't cluster
+  - REFUSES to overwrite dashboard files unless every planned call
+    succeeded (a degraded day = "no update", never a phantom sellout)
+
 Run:  export BRD_PROXY="http://...@brd.superproxy.io:33335"
-      python3 weekly_check.py --budget 11000 --products products.csv
+      python3 weekly_check.py --budget 7500 --products products_instore.csv
 """
 
-import argparse, csv, json, os, sys, time
+import argparse, csv, heapq, json, os, random, sys, time
 from collections import defaultdict, deque
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, wait as fut_wait, FIRST_COMPLETED
 from datetime import datetime, timezone
 
 from walmart_unlocker import (Budget, fetch, make_pool, covering_set,
@@ -34,6 +45,33 @@ except ImportError:
 
 CHECKPOINT = "weekly_checkpoint.json"
 CHECKPOINT_MAX_AGE_H = 120          # resume checkpoints younger than 5 days
+
+
+class Pacer:
+    """Global launch throttle: consecutive request starts are spaced by a
+    jittered gap that widens when calls fail (rate-limited) and relaxes back
+    toward the base gap as calls succeed."""
+    def __init__(self, base_gap=0.35, max_gap=8.0):
+        import threading
+        self.base, self.max, self.gap = base_gap, max_gap, base_gap
+        self.next_t = 0.0
+        self.lk = threading.Lock()
+
+    def wait(self):
+        with self.lk:
+            now = time.time()
+            slot = max(now, self.next_t)
+            self.next_t = slot + self.gap * (0.7 + 0.6 * random.random())
+        delay = slot - time.time()
+        if delay > 0:
+            time.sleep(delay)
+
+    def feedback(self, ok):
+        with self.lk:
+            if ok:
+                self.gap = max(self.base, self.gap * 0.93)
+            else:
+                self.gap = min(self.max, self.gap * 1.35)
 
 
 def atomic_write(path, writer_fn):
@@ -56,14 +94,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=int, default=12500)
     ap.add_argument("--products", default="products_instore.csv")
-    ap.add_argument("--workers", type=int, default=24)
+    ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--timeout", type=int, default=90)
-    ap.add_argument("--wave", type=int, default=120)
+    ap.add_argument("--gap", type=float, default=0.35,
+                    help="base seconds between request launches (jittered)")
+    ap.add_argument("--retries", type=int, default=5,
+                    help="max retries per call, with exponential backoff")
     args = ap.parse_args()
 
     proxies = make_pool(args)
     products = load_products(args.products)
-    by_key = {p["key"]: p for p in products}
 
     stores = {}
     for r in csv.DictReader(open(ALL_STORES)):
@@ -79,7 +119,8 @@ def main():
     total_calls = len(cover) * len(products)
     print(f"PLAN: {len(stores)} stores | covering set {len(cover)} ZIPs | "
           f"{len(products)} products -> {total_calls} calls "
-          f"(~${total_calls*1.5/1000:.2f}), budget cap {args.budget}")
+          f"(~${total_calls*1.5/1000:.2f}), budget cap {args.budget} | "
+          f"{args.workers} workers, {args.gap}s base gap")
 
     # ---- resume from checkpoint if fresh ----
     results = {}                     # "zip|key" -> {store_id: 0/1}
@@ -96,60 +137,101 @@ def main():
         except Exception:
             print("unreadable checkpoint — starting fresh")
 
-    work = deque((z, p) for z in cover for p in products
-                 if f"{z}|{p['key']}" not in results)
-    retry = defaultdict(int)
+    todo = [(z, p) for z in cover for p in products
+            if f"{z}|{p['key']}" not in results]
+    random.shuffle(todo)             # de-cluster identical request shapes
+    pending = deque(todo)
+    deferred = []                    # heap of (ready_ts, seq, z, p) — backoff retries
+    seq = 0
+    attempts = defaultdict(int)
+    dropped = 0
+    pacer = Pacer(args.gap)
     budget = Budget(args.budget)
     session = requests.Session()
     t0 = time.time()
+    last_save = last_note = time.time()
 
     def save_checkpoint():
         atomic_write(CHECKPOINT,
                      lambda f: json.dump({"ts": time.time(),
                                           "results": results}, f))
 
+    def job(z, p):
+        pacer.wait()                 # workers self-pace: launches never burst
+        return fetch(session, proxies, z, zip_state.get(z, ""),
+                     p["product_id"], args.timeout)
+
+    inflight = {}                    # future -> (z, p)
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        while work and budget.spent() < args.budget:
-            wave = []
-            while work and len(wave) < args.wave and budget.reserve():
-                wave.append(work.popleft())
-            if not wave:
-                break
-            futs = {ex.submit(fetch, session, proxies, z,
-                              zip_state.get(z, ""), p["product_id"],
-                              args.timeout): (z, p) for z, p in wave}
-            for fut in as_completed(futs):
-                z, p = futs[fut]
+        while pending or deferred or inflight:
+            now = time.time()
+            while deferred and deferred[0][0] <= now:
+                _, _, z, p = heapq.heappop(deferred)
+                pending.append((z, p))
+
+            while pending and len(inflight) < args.workers:
+                if not budget.reserve():
+                    break
+                z, p = pending.popleft()
+                inflight[ex.submit(job, z, p)] = (z, p)
+
+            if not inflight:
+                if (pending or deferred) and budget.spent() >= args.budget:
+                    break            # budget exhausted with work remaining
+                if not pending and not deferred:
+                    break            # all done (or all dropped)
+                nxt = (deferred[0][0] - time.time()) if deferred else 0.5
+                time.sleep(min(1.0, max(0.05, nxt)))
+                continue
+
+            done_set, _ = fut_wait(set(inflight), timeout=5,
+                                   return_when=FIRST_COMPLETED)
+            for fut in done_set:
+                z, p = inflight.pop(fut)
                 ok, rows = fut.result()
                 budget.release(ok)
+                pacer.feedback(ok)
+                key = f"{z}|{p['key']}"
                 if ok:
-                    results[f"{z}|{p['key']}"] = {s["id"]: s["stock"]
-                                                  for s in rows}
+                    results[key] = {s["id"]: s["stock"] for s in rows}
                 else:
-                    k = (z, p["key"])
-                    if retry[k] < 3:
-                        retry[k] += 1
-                        work.append((z, p))
-            save_checkpoint()
-            done = len(results)
-            print(f"  {done}/{total_calls} calls done, queue {len(work)}, "
-                  f"credits {budget.spent()}/{args.budget}, "
-                  f"{int(time.time()-t0)}s")
+                    attempts[key] += 1
+                    if attempts[key] <= args.retries:
+                        backoff = min(240.0, 15.0 * (2 ** (attempts[key] - 1)))
+                        backoff *= 0.75 + 0.5 * random.random()
+                        seq += 1
+                        heapq.heappush(deferred,
+                                       (time.time() + backoff, seq, z, p))
+                    else:
+                        dropped += 1
+
+            now = time.time()
+            if now - last_save > 45:
+                save_checkpoint()
+                last_save = now
+            if now - last_note > 60:
+                print(f"  {len(results)}/{total_calls} done | "
+                      f"queue {len(pending) + len(deferred)} "
+                      f"(+{len(inflight)} in flight) | dropped {dropped} | "
+                      f"gap {pacer.gap:.2f}s | "
+                      f"credits {budget.spent()}/{args.budget} | "
+                      f"{int(now - t0)}s", flush=True)
+                last_note = now
 
     # Publish guard: refuse to overwrite the dashboard unless EVERY planned
-    # call succeeded. Previously, a call that failed 3 retries was silently
-    # dropped from the queue, the run "completed" with holes, and every
-    # unfetched (store, product) cell counted as out-of-stock — a degraded
-    # proxy day could masquerade as a nationwide sellout (see 2026-07-20).
+    # call succeeded. A call that exhausts its retries is dropped from the
+    # queue, and every unfetched (store, product) cell would count as
+    # out-of-stock — a throttled day must read as "no update", not as a
+    # nationwide sellout (see 2026-07-20).
     missing = [(z, p["key"]) for z in cover for p in products
                if f"{z}|{p['key']}" not in results]
     if missing:
         save_checkpoint()
         sys.exit(f"PARTIAL: {len(results)}/{total_calls} calls succeeded; "
-                 f"{len(missing)} missing (budget stop, or failed all "
-                 f"retries). Checkpoint saved — re-run to retry just the "
-                 f"missing calls without re-billing successes. "
-                 f"NOT overwriting dashboard files.")
+                 f"{len(missing)} missing ({dropped} exhausted retries; "
+                 f"budget spent {budget.spent()}/{args.budget}). Checkpoint "
+                 f"saved — re-run to retry just the missing calls without "
+                 f"re-billing successes. NOT overwriting dashboard files.")
 
     # ---- complete: fold results into per-store availability ----
     have_keys = [p["key"] for p in products]

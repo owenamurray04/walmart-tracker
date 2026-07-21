@@ -4,9 +4,13 @@ name: "1 · Weekly product check — the main scraper (~$10/run)"
 # Unlocker (plain HTTP — runs fine on cloud runners, no browser needed).
 #
 # - Runs every Monday 13:00 UTC, or trigger manually from the Actions tab
-#   (where you can override the budget or product list).
+#   (where you can override the budget, product list, or pacing).
 # - Resumable: progress checkpoints are committed even if the run fails or
 #   times out, so re-running never re-bills completed calls.
+# - 2026-07-21: sweep engine reworked after Bright Data's unlocker layer
+#   started rate-limiting the old bursty pattern (sr_rate_limit). Requests
+#   are now paced and jittered; a throttled/incomplete run never overwrites
+#   the dashboard (it checkpoints and exits PARTIAL — just re-run it).
 # - Requires one repo secret: BRD_PROXY (Settings → Secrets → Actions):
 #   http://brd-customer-XXX-zone-walmart_unlocker:PASS@brd.superproxy.io:33335
 #
@@ -25,6 +29,12 @@ on:
       products:
         description: "Product list CSV (products_instore.csv = the 11 shelved colorways; products.csv = all 18 incl. online-only)"
         default: "products_instore.csv"
+      workers:
+        description: "Parallel workers (lower = gentler on rate limits)"
+        default: "8"
+      gap:
+        description: "Base seconds between request launches (raise if throttled)"
+        default: "0.35"
 
 permissions:
   contents: write
@@ -54,8 +64,10 @@ jobs:
           BRD_PROXY: ${{ secrets.BRD_PROXY }}
         run: |
           python -u weekly_check.py \
-            --budget  "${{ github.event.inputs.budget   || '7500' }}" \
-            --products "${{ github.event.inputs.products || 'products_instore.csv' }}"
+            --budget   "${{ github.event.inputs.budget   || '7500' }}" \
+            --products "${{ github.event.inputs.products || 'products_instore.csv' }}" \
+            --workers  "${{ github.event.inputs.workers  || '8' }}" \
+            --gap      "${{ github.event.inputs.gap      || '0.35' }}"
 
       - name: Commit results (even on failure/timeout, to save the checkpoint)
         if: always()
