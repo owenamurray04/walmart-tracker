@@ -98,9 +98,44 @@ def main():
     ap.add_argument("--timeout", type=int, default=90)
     ap.add_argument("--gap", type=float, default=0.35,
                     help="base seconds between request launches (jittered)")
+    ap.add_argument("--max-gap", type=float, default=8.0,
+                    help="ceiling the adaptive gap widens to under failures")
     ap.add_argument("--retries", type=int, default=5,
                     help="max retries per call, with exponential backoff")
+    ap.add_argument("--probe-minutes", type=float, default=0,
+                    help="start with N minutes of single-file, slow-paced "
+                         "calls; if the success rate in that window is poor, "
+                         "exit immediately (~100 gentle attempts) instead of "
+                         "grinding. The unlocker's throttle is reputation-"
+                         "based, so hammering a degraded pattern keeps it "
+                         "degraded — probe, back off, try next firing. "
+                         "0 = no probe.")
+    ap.add_argument("--probe-gap", type=float, default=5.0,
+                    help="seconds between launches during the probe window")
+    ap.add_argument("--probe-pass", type=float, default=0.6,
+                    help="probe success-rate needed to ramp to full speed")
+    ap.add_argument("--fresh-window", type=float, default=0,
+                    help="hours: exit immediately (doing nothing) if the last "
+                         "completed sweep is newer than this and there is no "
+                         "checkpoint to resume. Lets a dense cron schedule "
+                         "chain partial runs into exactly one sweep per week.")
     args = ap.parse_args()
+
+    # Chained-cron guard: if this week's sweep already completed and there's
+    # nothing to resume, this firing has no work to do.
+    if args.fresh_window > 0 and not os.path.exists(CHECKPOINT):
+        try:
+            last = open("history.csv").read().strip().splitlines()[-1].split(",")[0]
+            age_h = (time.time()
+                     - datetime.fromisoformat(last).timestamp()) / 3600
+            if 0 <= age_h < args.fresh_window:
+                print(f"Last completed sweep is {age_h:.0f}h old "
+                      f"(< {args.fresh_window:.0f}h fresh-window) and no "
+                      f"checkpoint to resume — this cycle's sweep is already "
+                      f"done. Nothing to do.")
+                return
+        except Exception:
+            pass                     # unreadable history — just run normally
 
     proxies = make_pool(args)
     products = load_products(args.products)
@@ -145,7 +180,16 @@ def main():
     seq = 0
     attempts = defaultdict(int)
     dropped = 0
-    pacer = Pacer(args.gap)
+    # Probe gate: while probing, run single-file at probe pace; ramp to full
+    # speed only once the window shows a healthy success rate.
+    probing = args.probe_minutes > 0
+    resumed_n = len(results)
+    worker_cap = 1 if probing else args.workers
+    pacer = Pacer(args.probe_gap if probing else args.gap, args.max_gap)
+    if probing:
+        print(f"PROBE: single-file at {args.probe_gap}s pace for "
+              f"{args.probe_minutes:g} min — need >={args.probe_pass:.0%} "
+              f"success to ramp up")
     budget = Budget(args.budget)
     session = requests.Session()
     t0 = time.time()
@@ -169,7 +213,35 @@ def main():
                 _, _, z, p = heapq.heappop(deferred)
                 pending.append((z, p))
 
-            while pending and len(inflight) < args.workers:
+            # Probe verdict: judge once the window has elapsed and there's a
+            # meaningful sample (hard-stop the judgement at 3x the window).
+            if probing:
+                elapsed_min = (now - t0) / 60
+                att = budget.attempts
+                if ((elapsed_min >= args.probe_minutes and att >= 15)
+                        or elapsed_min >= 3 * args.probe_minutes):
+                    ok_n = len(results) - resumed_n
+                    rate = ok_n / att if att else 0.0
+                    if rate >= args.probe_pass:
+                        print(f"PROBE PASSED: {ok_n}/{att} = {rate:.0%} — "
+                              f"ramping to {args.workers} workers, "
+                              f"{args.gap}s gap")
+                        probing = False
+                        worker_cap = args.workers
+                        with pacer.lk:
+                            pacer.base = pacer.gap = args.gap
+                    else:
+                        for fut in inflight:
+                            fut.cancel()
+                        save_checkpoint()
+                        sys.exit(f"PROBE FAILED: {ok_n}/{att} calls "
+                                 f"succeeded ({rate:.0%}) — the unlocker is "
+                                 f"still throttling this pattern. Backing "
+                                 f"off until the next scheduled firing "
+                                 f"(~{att} gentle attempts, dashboard "
+                                 f"untouched, checkpoint saved).")
+
+            while pending and len(inflight) < worker_cap:
                 if not budget.reserve():
                     break
                 z, p = pending.popleft()
@@ -197,7 +269,7 @@ def main():
                 else:
                     attempts[key] += 1
                     if attempts[key] <= args.retries:
-                        backoff = min(240.0, 15.0 * (2 ** (attempts[key] - 1)))
+                        backoff = min(90.0, 15.0 * (2 ** (attempts[key] - 1)))
                         backoff *= 0.75 + 0.5 * random.random()
                         seq += 1
                         heapq.heappush(deferred,
