@@ -234,12 +234,17 @@ def main():
                         for fut in inflight:
                             fut.cancel()
                         save_checkpoint()
-                        sys.exit(f"PROBE FAILED: {ok_n}/{att} calls "
-                                 f"succeeded ({rate:.0%}) — the unlocker is "
-                                 f"still throttling this pattern. Backing "
-                                 f"off until the next scheduled firing "
-                                 f"(~{att} gentle attempts, dashboard "
-                                 f"untouched, checkpoint saved).")
+                        # Exit GREEN (0), not red: on a 24/7 schedule a red
+                        # probe would email a failure notice every firing.
+                        # The signal for "sweep done" is the dashboard/data
+                        # commit itself, not the run color.
+                        print(f"PROBE BACKED OFF: {ok_n}/{att} calls "
+                              f"succeeded ({rate:.0%}, need "
+                              f"{args.probe_pass:.0%}) — the unlocker is "
+                              f"still throttling this pattern. Trying again "
+                              f"next firing (~{att} gentle attempts, "
+                              f"dashboard untouched, checkpoint saved).")
+                        return
 
             while pending and len(inflight) < worker_cap:
                 if not budget.reserve():
