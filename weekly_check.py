@@ -57,7 +57,7 @@ def main():
     ap.add_argument("--budget", type=int, default=12500)
     ap.add_argument("--products", default="products_instore.csv")
     ap.add_argument("--workers", type=int, default=24)
-    ap.add_argument("--timeout", type=int, default=45)
+    ap.add_argument("--timeout", type=int, default=90)
     ap.add_argument("--wave", type=int, default=120)
     args = ap.parse_args()
 
@@ -136,11 +136,20 @@ def main():
                   f"credits {budget.spent()}/{args.budget}, "
                   f"{int(time.time()-t0)}s")
 
-    if work:
+    # Publish guard: refuse to overwrite the dashboard unless EVERY planned
+    # call succeeded. Previously, a call that failed 3 retries was silently
+    # dropped from the queue, the run "completed" with holes, and every
+    # unfetched (store, product) cell counted as out-of-stock — a degraded
+    # proxy day could masquerade as a nationwide sellout (see 2026-07-20).
+    missing = [(z, p["key"]) for z in cover for p in products
+               if f"{z}|{p['key']}" not in results]
+    if missing:
         save_checkpoint()
-        sys.exit(f"PARTIAL: {len(results)}/{total_calls} done, budget/queue "
-                 f"stopped the run. Checkpoint saved — re-run to resume "
-                 f"without re-billing. Not overwriting dashboard files.")
+        sys.exit(f"PARTIAL: {len(results)}/{total_calls} calls succeeded; "
+                 f"{len(missing)} missing (budget stop, or failed all "
+                 f"retries). Checkpoint saved — re-run to retry just the "
+                 f"missing calls without re-billing successes. "
+                 f"NOT overwriting dashboard files.")
 
     # ---- complete: fold results into per-store availability ----
     have_keys = [p["key"] for p in products]

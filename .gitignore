@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store
 stores.csv
 proxy.txt
+_to_delete/
