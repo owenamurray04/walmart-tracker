@@ -45,6 +45,12 @@ on:
       gap:
         description: "Base seconds between request launches (raise if throttled)"
         default: "0.35"
+      retries:
+        description: "Max retries per call (raise to ~8 when success rate is low)"
+        default: "5"
+      carry:
+        description: "1 = ASAP mode: publish even if some calls never succeeded, filling only those cells from the previous publish"
+        default: "0"
 
 permissions:
   contents: write
@@ -84,6 +90,8 @@ jobs:
             --products "${{ github.event.inputs.products || 'products_instore.csv' }}" \
             --workers  "${{ github.event.inputs.workers  || '8' }}" \
             --gap      "${{ github.event.inputs.gap      || '0.35' }}" \
+            --retries  "${{ github.event.inputs.retries  || '5' }}" \
+            --carry-forward "${{ github.event.inputs.carry || '0' }}" \
             --fresh-window  "${{ github.event_name == 'schedule' && '156' || '0' }}" \
             --probe-minutes "${{ github.event_name == 'schedule' && '10' || '0' }}"
 

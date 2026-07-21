@@ -114,6 +114,17 @@ def main():
                     help="seconds between launches during the probe window")
     ap.add_argument("--probe-pass", type=float, default=0.6,
                     help="probe success-rate needed to ramp to full speed")
+    ap.add_argument("--carry-forward", type=int, default=0,
+                    help="1 = ASAP mode: if the run ends with unfetched "
+                         "cells but coverage is at least --min-fresh, "
+                         "publish anyway, filling ONLY the unfetched cells "
+                         "from the previous published store_products.csv "
+                         "(fresh where fetched, carried where not — never "
+                         "counted as out-of-stock). Keeps the checkpoint so "
+                         "later runs replace carried cells with real data.")
+    ap.add_argument("--min-fresh", type=float, default=0.6,
+                    help="minimum fraction of calls that must be fresh for "
+                         "a carry-forward publish")
     ap.add_argument("--fresh-window", type=float, default=0,
                     help="hours: exit immediately (doing nothing) if the last "
                          "completed sweep is newer than this and there is no "
@@ -302,7 +313,11 @@ def main():
     # nationwide sellout (see 2026-07-20).
     missing = [(z, p["key"]) for z in cover for p in products
                if f"{z}|{p['key']}" not in results]
-    if missing:
+    coverage = 1 - len(missing) / total_calls if total_calls else 1.0
+    carry_mode = bool(missing and args.carry_forward
+                      and coverage >= args.min_fresh
+                      and os.path.exists("store_products.csv"))
+    if missing and not carry_mode:
         save_checkpoint()
         sys.exit(f"PARTIAL: {len(results)}/{total_calls} calls succeeded; "
                  f"{len(missing)} missing ({dropped} exhausted retries; "
@@ -310,7 +325,7 @@ def main():
                  f"saved — re-run to retry just the missing calls without "
                  f"re-billing successes. NOT overwriting dashboard files.")
 
-    # ---- complete: fold results into per-store availability ----
+    # ---- complete (or carry-forward): fold results into availability ----
     have_keys = [p["key"] for p in products]
     for zk, per_store in results.items():
         key = zk.split("|", 1)[1]
@@ -318,6 +333,22 @@ def main():
             rec = stores.get(sid)
             if rec is not None:
                 rec[key] = stock
+
+    carried = 0
+    if carry_mode:
+        prev = {r["store_id"]: r
+                for r in csv.DictReader(open("store_products.csv"))}
+        for rec in stores.values():
+            pv = prev.get(rec["id"])
+            if not pv:
+                continue
+            for k in have_keys:
+                if k not in rec and pv.get(k) in ("0", "1"):
+                    rec[k] = int(pv[k])
+                    carried += 1
+        print(f"CARRY-FORWARD publish: {coverage:.1%} of calls fresh; "
+              f"{carried} cells filled from the previous publish; "
+              f"checkpoint kept so future runs replace them with real data.")
 
     recs = list(stores.values())
     for r in recs:
@@ -427,9 +458,12 @@ def main():
     atomic_write("ever_carried.csv", w_ever)
     ever_any = sum(1 for d in ever.values() if d)
 
-    if os.path.exists(CHECKPOINT):
+    if carry_mode:
+        save_checkpoint()          # keep: later runs refresh carried cells
+    elif os.path.exists(CHECKPOINT):
         os.remove(CHECKPOINT)
-    print(f"\nDONE: {total} stores checked for {len(products)} products; "
+    print(f"\nDONE{' (carry-forward)' if carry_mode else ''}: {total} stores "
+          f"checked for {len(products)} products; "
           f"{carries} in stock with >=1 item this week; "
           f"{ever_any} stores have EVER carried >=1 item. "
           f"Credits billed: {budget.spent()}.")
