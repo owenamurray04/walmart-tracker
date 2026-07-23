@@ -1,0 +1,52 @@
+name: "Bright Data support diagnostic (manual only)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      requests_per_mode:
+        description: "Requests for each A/B mode"
+        default: "20"
+      workers:
+        description: "Maximum parallel requests across both modes"
+        default: "20"
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: Run sanitized A/B reproduction
+        env:
+          BRD_PROXY: ${{ secrets.BRD_PROXY }}
+        run: |
+          python -u brightdata_repro.py \
+            --requests-per-mode "${{ inputs.requests_per_mode }}" \
+            --workers "${{ inputs.workers }}"
+
+      - name: Print sanitized summary
+        if: always()
+        run: |
+          if [ -f brightdata_diagnostic/summary.txt ]; then
+            cat brightdata_diagnostic/summary.txt
+          fi
+
+      - name: Upload sanitized support evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brightdata-support-evidence
+          path: brightdata_diagnostic/
+          if-no-files-found: warn
+          retention-days: 14
